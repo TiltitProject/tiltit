@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5df5653b-d460-4a55-8be3-965f0fff50b3"
+      }
+    },
+    "owner": "hweejae"
   }
 }
