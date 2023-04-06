@@ -2,6 +2,7 @@ import React from "react";
 import { Image } from "expo-image";
 import Matter from "matter-js";
 import { View } from "react-native";
+import { characterVirtualIdle } from "../assets/static";
 
 function Player1(props) {
   const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
@@ -24,7 +25,7 @@ function Player1(props) {
           height: heightBody,
           width: widthBody,
         }}
-        source={require("../assets/bricks/idle.png")}
+        source={characterVirtualIdle}
       />
     </View>
   );

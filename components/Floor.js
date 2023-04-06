@@ -1,6 +1,7 @@
 import React from "react";
 import Matter from "matter-js";
 import { View,Image } from "react-native";
+import { redRectangle } from "../assets/static";
 
 function Floor1(props) {
   const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
@@ -27,7 +28,7 @@ function Floor1(props) {
           width: widthBody,
           resizeMode: "repeat",
         }}
-        source={require("../assets/bricks/red_rectangle.png")}
+        source={redRectangle}
       />
     </View>
   );
