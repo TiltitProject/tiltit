@@ -11,5 +11,5 @@ export {
   grayBrickRectangle,
   redRectangle,
   grayBrickRowBigger,
-  characterVirtualIdle
+  characterVirtualIdle,
 };

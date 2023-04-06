@@ -1,38 +1,7 @@
 import React from "react";
 import Matter from "matter-js";
-import { View,Image } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { redRectangle } from "../assets/static";
-
-function Floor1(props) {
-  const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
-  const heightBody = props.body.bounds.max.y - props.body.bounds.min.y;
-  const xBody = props.body.position.x - widthBody / 2; //중심
-  const yBody = props.body.position.y - heightBody / 2;
-
-  const color = props.color;
-
-  return (
-    <View
-      style={{
-        backgroundColor: color,
-        position: "absolute",
-        left: xBody,
-        top: yBody,
-        width: widthBody,
-        height: heightBody,
-      }}
-    >
-      <Image
-        style={{
-          height: heightBody,
-          width: widthBody,
-          resizeMode: "repeat",
-        }}
-        source={redRectangle}
-      />
-    </View>
-  );
-}
 
 export default function FloorMaker(world, color, position, size) {
   const initialFloor = Matter.Bodies.rectangle(
@@ -52,6 +21,40 @@ export default function FloorMaker(world, color, position, size) {
     body: initialFloor,
     color,
     position,
-    renderer: <Floor1 />,
+    renderer: <Floor />,
   };
+}
+
+function Floor(props) {
+  const { body, color } = props;
+  const { bounds, position } = body;
+  const widthBody = bounds.max.x - bounds.min.x;
+  const heightBody = bounds.max.y - bounds.min.y;
+  const xBody = position.x - widthBody / 2;
+  const yBody = position.y - heightBody / 2;
+
+  return (
+    <View style={viewStyle(color, xBody, yBody, widthBody, heightBody)}>
+      <Image style={floorStyle(heightBody, widthBody)} source={redRectangle} />
+    </View>
+  );
+}
+
+function viewStyle(color, xBody, yBody, widthBody, heightBody) {
+  return StyleSheet.create({
+    backgroundColor: color,
+    position: "absolute",
+    left: xBody,
+    top: yBody,
+    width: widthBody,
+    height: heightBody,
+  });
+}
+
+function floorStyle(heightBody, widthBody) {
+  return StyleSheet.create({
+    height: heightBody,
+    width: widthBody,
+    resizeMode: "repeat",
+  });
 }

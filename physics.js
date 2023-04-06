@@ -1,7 +1,7 @@
 import Matter from "matter-js";
 
 export default function Physics(entities, { touches, time, dispatch }) {
-  const engine = entities.physics.engine;
+  const { engine } = entities.physics;
 
   touches.filter((touch) => {
     if (touch.type === "press") {

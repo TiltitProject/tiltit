@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet, Text, TouchableOpacity, View,
+} from "react-native";
 import { GameEngine } from "react-native-game-engine";
 
 import entities from "./entities";
@@ -18,13 +20,15 @@ export default function App() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
-      case "game_over":
-        setRunning(false);
-        gameEngine.stop();
-        break;
-      case "new_point":
-        setCurrentPoints(currentPoints + 1);
-        break;
+    case "game_over":
+      setRunning(false);
+      gameEngine.stop();
+      break;
+    case "new_point":
+      setCurrentPoints(currentPoints + 1);
+      break;
+    default:
+      break;
     }
   };
 
@@ -41,7 +45,7 @@ export default function App() {
         onEvent={handleGameEngine}
         style={styles.gameEngine}
       >
-        <StatusBar style="auto" hidden={true} />
+        <StatusBar style="auto" hidden />
       </GameEngine>
       {!running ? (
         <View style={styles.container}>

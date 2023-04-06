@@ -1,40 +1,7 @@
-// import { Image } from "expo-image";
 import React from "react";
 import Matter from "matter-js";
-import { View, Image } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { grayBrickRow } from "../assets/static";
-
-function Obstacle1(props) {
-  const widthBody = props.body.bounds.max.x - props.body.bounds.min.x;
-  const heightBody = props.body.bounds.max.y - props.body.bounds.min.y;
-  const xBody = props.body.position.x - widthBody / 2; //중심
-  const yBody = props.body.position.y - heightBody / 2;
-  const color = props.color;
-
-  return (
-    <View
-      style={{
-        position: "absolute",
-        left: xBody,
-        top: yBody,
-        width: widthBody,
-        height: heightBody,
-        borderWidth: 1,
-        borderColor: color,
-        borderStyle: "solid",
-      }}
-    >
-      <Image
-        style={{
-          height: heightBody,
-          width: widthBody,
-          resizeMode: "repeat",
-        }}
-        source={grayBrickRow}
-      />
-    </View>
-  );
-}
 
 export default function MakeObstacle(world, label, color, position, size) {
   const initialObstacle = Matter.Bodies.rectangle(
@@ -51,6 +18,42 @@ export default function MakeObstacle(world, label, color, position, size) {
     body: initialObstacle,
     color,
     position,
-    renderer: <Obstacle1 />,
+    renderer: <Obstacle />,
   };
+}
+
+function Obstacle(props) {
+  const { body, color } = props;
+  const { bounds, position } = body;
+  const widthBody = bounds.max.x - bounds.min.x;
+  const heightBody = bounds.max.y - bounds.min.y;
+  const xBody = position.x - widthBody / 2;
+  const yBody = position.y - heightBody / 2;
+
+  return (
+    <View style={viewStyle(color, xBody, yBody, widthBody, heightBody)}>
+      <Image style={floorStyle(heightBody, widthBody)} source={grayBrickRow} />
+    </View>
+  );
+}
+
+function viewStyle(color, xBody, yBody, widthBody, heightBody) {
+  return StyleSheet.create({
+    position: "absolute",
+    left: xBody,
+    top: yBody,
+    width: widthBody,
+    height: heightBody,
+    borderWidth: 1,
+    borderColor: color,
+    borderStyle: "solid",
+  });
+}
+
+function floorStyle(heightBody, widthBody) {
+  return StyleSheet.create({
+    height: heightBody,
+    width: widthBody,
+    resizeMode: "repeat",
+  });
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Gyroscope } from "expo-sensors";
 
-export const gyroSensor = (setData) => {
+const useGyroSensor = (setData) => {
   const [subscription, setSubscription] = useState(null);
 
   Gyroscope.setUpdateInterval(16);
 
-  const _subscribe = () => {
+  const subscribe = () => {
     setSubscription(
       Gyroscope.addListener((gyroscopeData) => {
         setData(gyroscopeData);
@@ -14,13 +14,17 @@ export const gyroSensor = (setData) => {
     );
   };
 
-  const _unsubscribe = () => {
-    subscription && subscription.remove();
+  const unsubscribe = () => {
+    if (subscription) {
+      subscription.remove();
+    }
     setSubscription(null);
   };
 
   useEffect(() => {
-    _subscribe();
-    return () => _unsubscribe();
+    subscribe();
+    return () => unsubscribe();
   }, []);
 };
+
+export default useGyroSensor;
