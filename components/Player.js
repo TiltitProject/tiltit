@@ -5,11 +5,10 @@ import { View, StyleSheet } from "react-native";
 import { characterVirtualIdle } from "../assets/static";
 
 export default function MakePlayer(world, color, position, size) {
-  const initialPlayer = Matter.Bodies.rectangle(
+  const initialPlayer = Matter.Bodies.circle(
     position.x,
     position.y,
-    size.width,
-    size.height,
+    size.width / 2,
     { label: "Player" },
   );
 
@@ -25,9 +24,9 @@ export default function MakePlayer(world, color, position, size) {
 
 function Player(props) {
   const { body } = props;
-  const { bounds, position } = body;
-  const widthBody = bounds.max.x - bounds.min.x;
-  const heightBody = bounds.max.y - bounds.min.y;
+  const { position, circleRadius } = body;
+  const widthBody = circleRadius * 2;
+  const heightBody = circleRadius * 2;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
 
@@ -55,5 +54,8 @@ function makeCharacterStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,
+    borderWidth: 1,
+    borderColor: "blue",
+    borderStyle: "solid",
   });
 }
