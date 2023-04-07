@@ -12,14 +12,14 @@ export default function restart() {
 
   const { world } = engine;
 
-  engine.gravity.y = 0.4;
+  engine.gravity.y = 0;
 
   return {
     physics: { engine, world },
     player: MakePlayer(
       world,
       "blue",
-      { x: 50, y: 200 },
+      { x: windowWidth / 2, y: windowHeight / 2 },
       { height: 40, width: 40 },
     ),
     floor: FloorMaker(

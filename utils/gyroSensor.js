@@ -7,11 +7,7 @@ const useGyroSensor = (setData) => {
   Gyroscope.setUpdateInterval(16);
 
   const subscribe = () => {
-    setSubscription(
-      Gyroscope.addListener((gyroscopeData) => {
-        setData(gyroscopeData);
-      }),
-    );
+    setSubscription(Gyroscope.addListener((gyroscopeData) => gyroscopeData));
   };
 
   const unsubscribe = () => {

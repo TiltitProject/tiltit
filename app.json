@@ -31,6 +31,14 @@
         "projectId": "5df5653b-d460-4a55-8be3-965f0fff50b3"
       }
     },
+    "plugins": [
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Allow $(PRODUCT_NAME) to access your device motion."
+        }
+      ]
+    ],
     "owner": "hweejae"
   }
 }
