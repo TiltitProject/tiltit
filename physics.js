@@ -8,6 +8,12 @@ export default function Physics(entities, { time, dispatch }) {
 
   DeviceMotion.addListener((result) => {
     const { beta, gamma } = result.rotation;
+
+    Matter.Body.setVelocity(entities.player.body, {
+      x: gamma * 10,
+      y: beta * 10,
+    });
+
     Matter.Body.applyForce(
       entities.player.body,
       entities.player.body.position,
