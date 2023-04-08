@@ -14,11 +14,11 @@ export default function Physics(entities, { time, dispatch }) {
       y: beta * 10,
     });
 
-    Matter.Body.applyForce(
-      entities.player.body,
-      entities.player.body.position,
-      { x: gamma / 20000, y: beta / 20000 },
-    );
+    // Matter.Body.applyForce(
+    //   entities.player.body,
+    //   entities.player.body.position,
+    //   { x: gamma / 20000, y: beta / 20000 },
+    // );
   });
 
   Matter.Events.on(engine, "collisionStart", () => {

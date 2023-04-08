@@ -54,8 +54,5 @@ function makeCharacterStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,
-    borderWidth: 1,
-    borderColor: "blue",
-    borderStyle: "solid",
   });
 }
