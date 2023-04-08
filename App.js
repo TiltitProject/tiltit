@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet, Text, TouchableOpacity, View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 
 import entities from "./entities";
 import Physics from "./physics";
+import usePreloadAssets from "./utils/usePreloadAssets";
 
 export default function App() {
   const [running, setRunning] = useState(false);
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
+  const [appIsReady, setAppIsReady] = useState(false);
 
-  useEffect(() => {
-    setRunning(true);
-  }, []);
+  usePreloadAssets(setAppIsReady, setRunning);
 
   const handleGameEngine = (e) => {
     switch (e.type) {
@@ -31,6 +28,10 @@ export default function App() {
       break;
     }
   };
+
+  if (!appIsReady) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
