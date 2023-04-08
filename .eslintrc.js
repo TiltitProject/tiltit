@@ -3,7 +3,7 @@ module.exports = {
     node: true,
     es2021: true,
   },
-  extends: ["airbnb", "airbnb/hooks"],
+  extends: ["airbnb", "airbnb/hooks", "prettier"],
   overrides: [],
   parserOptions: {
     ecmaVersion: "latest",

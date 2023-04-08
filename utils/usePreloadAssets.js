@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen";
 import { Asset } from "expo-asset";
+import * as SplashScreen from "expo-splash-screen";
 import * as staticImages from "../assets/static";
 
 const usePreloadAssets = (setAppIsReady, setRunning) => {
