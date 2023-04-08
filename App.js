@@ -1,44 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import * as SplashScreen from "expo-splash-screen";
-import { Asset } from "expo-asset";
 
-import * as staticImages from "./assets/static";
 import entities from "./entities";
 import Physics from "./physics";
+import usePreloadAssets from "./utils/usePreloadAssets";
 
 export default function App() {
   const [running, setRunning] = useState(false);
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
   const [appIsReady, setAppIsReady] = useState(false);
-  const imageArray = Object.values(staticImages);
 
-  function cacheImages(images) {
-    return images.map((image) => Asset.fromModule(image).downloadAsync());
-  }
-
-  useEffect(() => {
-    async function loadResourcesAndDataAsync() {
-      try {
-        SplashScreen.preventAutoHideAsync();
-
-        const imageAssets = cacheImages(imageArray);
-
-        await Promise.all(imageAssets);
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setAppIsReady(true);
-        SplashScreen.hideAsync();
-      }
-    }
-
-    setRunning(true);
-    loadResourcesAndDataAsync();
-  }, []);
+  usePreloadAssets(setAppIsReady, setRunning);
 
   const handleGameEngine = (e) => {
     switch (e.type) {
