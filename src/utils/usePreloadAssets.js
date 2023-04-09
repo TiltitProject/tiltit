@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Asset } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
-import * as staticImages from "../assets/static";
-import Dynamic from "../assets/dynamicImage";
+import * as staticImages from "../../assets/static";
+import Dynamic from "../../assets/dynamicImage";
 
-const usePreloadAssets = (setAppIsReady, setRunning) => {
+const usePreloadAssets = (setAppIsReady) => {
   const imageArray = Object.values(staticImages);
 
   function cacheImages(images) {
@@ -19,7 +19,7 @@ const usePreloadAssets = (setAppIsReady, setRunning) => {
         const imageAssets = cacheImages(imageArray);
         const dynamicImages = cacheImages(Dynamic.runningVirtualGuy);
 
-        await Promise.all([...imageAssets,...dynamicImages]);
+        await Promise.all([...imageAssets, ...dynamicImages]);
       } catch (e) {
         console.warn(e);
       } finally {
@@ -28,7 +28,6 @@ const usePreloadAssets = (setAppIsReady, setRunning) => {
       }
     }
 
-    setRunning(true);
     loadResourcesAndDataAsync();
   }, []);
 };

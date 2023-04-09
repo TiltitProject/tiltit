@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
 
-import Dynamic from "../assets/dynamicImage";
+import Dynamic from "../../assets/dynamicImage";
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
@@ -41,7 +41,7 @@ function Player(props) {
   if (distance > 10) {
     if (runningImageIndex < 11) {
       setLastPosition(JSON.parse(JSON.stringify(position)));
-      setRunningImageIndex((prev) => (prev += 1));
+      setRunningImageIndex((runningImageIndex + 1));
     } else {
       setLastPosition(JSON.parse(JSON.stringify(position)));
       setRunningImageIndex(0);

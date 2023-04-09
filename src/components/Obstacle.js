@@ -1,7 +1,7 @@
 import React from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import { grayBrickRow } from "../assets/static";
+import { grayBrickRow } from "../../assets/static";
 
 export default function MakeObstacle(world, label, color, position, size) {
   const initialObstacle = Matter.Bodies.rectangle(

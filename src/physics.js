@@ -1,5 +1,5 @@
 import Matter from "matter-js";
-import { applyVelocityCharacter } from "./utils/applyVelocity";
+import { applyVelocityCharacter } from "./utils/gyroMove";
 
 export default function physics(entities, { time, dispatch }) {
   const { engine } = entities.physics;
