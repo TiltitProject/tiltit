@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Asset } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
 import * as staticImages from "../assets/static";
+import Dynamic from "../assets/dynamicImage";
 
 const usePreloadAssets = (setAppIsReady, setRunning) => {
   const imageArray = Object.values(staticImages);
@@ -16,8 +17,9 @@ const usePreloadAssets = (setAppIsReady, setRunning) => {
         SplashScreen.preventAutoHideAsync();
 
         const imageAssets = cacheImages(imageArray);
+        const dynamicImages = cacheImages(Dynamic.runningVirtualGuy);
 
-        await Promise.all(imageAssets);
+        await Promise.all([...imageAssets,...dynamicImages]);
       } catch (e) {
         console.warn(e);
       } finally {

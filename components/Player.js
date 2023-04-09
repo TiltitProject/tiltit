@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Image } from "expo-image";
 import Matter from "matter-js";
-import { View, StyleSheet } from "react-native";
+import { Animated, View, StyleSheet, Dimensions } from "react-native";
 import { characterVirtualIdle } from "../assets/static";
+import Dynamic from "../assets/dynamicImage";
+
+const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get("window").width;
+
+const POSITION = { x: windowWidth / 2, y: windowHeight / 2 };
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(
     position.x,
     position.y,
-    size.width / 2,
-    { label: "Player" },
+    size / 2,
+    { label: "Player", image: characterVirtualIdle },
   );
 
   Matter.World.add(world, initialPlayer);
@@ -24,35 +30,61 @@ export default function MakePlayer(world, color, position, size) {
 
 function Player(props) {
   const { body } = props;
-  const { position, circleRadius } = body;
+  const { position, circleRadius, image } = body;
   const widthBody = circleRadius * 2;
-  const heightBody = circleRadius * 2;
+  const widthImage = widthBody * 1.5;
   const xBody = position.x - widthBody / 2;
-  const yBody = position.y - heightBody / 2;
+  const yBody = position.y - widthBody / 2;
+  const xImage = -widthBody * 0.3;
+  const yImage = -widthBody * 0.35;
+
+  const [lastPosition, setLastPosition] = useState(POSITION);
+  const [runningImageIndex, setRunningImageIndex] = useState(0);
+  const distance = Matter.Vector.magnitude(
+    Matter.Vector.sub(position, lastPosition),
+  );
+
+  if (distance > 10) {
+    if (runningImageIndex < 11) {
+      setLastPosition(JSON.parse(JSON.stringify(position)));
+      setRunningImageIndex((prev) => (prev += 1));
+    } else {
+      setLastPosition(JSON.parse(JSON.stringify(position)));
+      setRunningImageIndex(0);
+    }
+  }
 
   return (
-    <View style={makeViewStyle(xBody, yBody, widthBody, heightBody)}>
+    <View style={makeViewStyle(xBody, yBody, widthBody)}>
       <Image
-        style={makeCharacterStyle(heightBody, widthBody)}
-        source={characterVirtualIdle}
-        contentFit="cover"
+        style={makeCharacterStyle(xImage, yImage, widthImage)}
+        source={Dynamic.runningVirtualGuy[runningImageIndex]}
+        contentFit="stretch"
       />
     </View>
   );
 }
-function makeViewStyle(xBody, yBody, widthBody, heightBody) {
+function makeViewStyle(xBody, yBody, widthBody) {
   return StyleSheet.create({
     position: "absolute",
+    width: widthBody,
+    height: widthBody,
     left: xBody,
     top: yBody,
-    width: widthBody,
-    height: heightBody,
+    borderWidth: 1,
+    borderColor: "black",
+    borderStyle: "solid",
   });
 }
 
-function makeCharacterStyle(heightBody, widthBody) {
+function makeCharacterStyle(xImage, yImage, widthImage) {
   return StyleSheet.create({
-    height: heightBody,
-    width: widthBody,
+    width: widthImage,
+    height: widthImage,
+    left: xImage,
+    top: yImage,
+    borderWidth: 1,
+    borderColor: "black",
+    borderStyle: "solid",
   });
 }
