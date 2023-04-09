@@ -50,7 +50,7 @@ export default function restart() {
       world,
       "obstacleTop1",
       "black",
-      { x: 75 + 16, y: 70 },
+      { x: 75 + 16, y: 90 },
       { height: 16, width: 150 },
     ),
   };

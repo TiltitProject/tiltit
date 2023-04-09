@@ -1,22 +1,14 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import { Image } from "expo-image";
 import Matter from "matter-js";
-import { Animated, View, StyleSheet, Dimensions } from "react-native";
-import { characterVirtualIdle } from "../assets/static";
+import { View, StyleSheet } from "react-native";
+
 import Dynamic from "../assets/dynamicImage";
 
-const windowHeight = Dimensions.get("window").height;
-const windowWidth = Dimensions.get("window").width;
-
-const POSITION = { x: windowWidth / 2, y: windowHeight / 2 };
-
 export default function MakePlayer(world, color, position, size) {
-  const initialPlayer = Matter.Bodies.circle(
-    position.x,
-    position.y,
-    size / 2,
-    { label: "Player", image: characterVirtualIdle },
-  );
+  const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
+    label: "Player",
+  });
 
   Matter.World.add(world, initialPlayer);
 
@@ -30,7 +22,7 @@ export default function MakePlayer(world, color, position, size) {
 
 function Player(props) {
   const { body } = props;
-  const { position, circleRadius, image } = body;
+  const { position, circleRadius } = body;
   const widthBody = circleRadius * 2;
   const widthImage = widthBody * 1.5;
   const xBody = position.x - widthBody / 2;
@@ -38,7 +30,9 @@ function Player(props) {
   const xImage = -widthBody * 0.3;
   const yImage = -widthBody * 0.35;
 
-  const [lastPosition, setLastPosition] = useState(POSITION);
+  const [lastPosition, setLastPosition] = useState(
+    JSON.parse(JSON.stringify(position)),
+  );
   const [runningImageIndex, setRunningImageIndex] = useState(0);
   const distance = Matter.Vector.magnitude(
     Matter.Vector.sub(position, lastPosition),
