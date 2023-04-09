@@ -17,15 +17,15 @@ export default function App() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
-    case "game_over":
-      setRunning(false);
-      gameEngine.stop();
-      break;
-    case "new_point":
-      setCurrentPoints(currentPoints + 1);
-      break;
-    default:
-      break;
+      case "game_over":
+        setRunning(false);
+        gameEngine.stop();
+        break;
+      case "new_point":
+        setCurrentPoints(currentPoints + 1);
+        break;
+      default:
+        break;
     }
   };
 

@@ -20,7 +20,7 @@ export default function restart() {
       world,
       "blue",
       { x: windowWidth / 2, y: windowHeight / 2 },
-      { height: 40, width: 40 },
+      30,
     ),
     floor: FloorMaker(
       world,
