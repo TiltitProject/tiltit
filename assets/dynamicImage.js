@@ -33,5 +33,5 @@ export default {
     run11,
     run12,
   ],
-  hitVirtualGuy: [hit1, hit2, hit3, hit4, hit5, hit6, hit7],
+  hitVirtualGuy: [hit1, hit2, hit3, hit4, hit5, hit6, hit7, hit5],
 };

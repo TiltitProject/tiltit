@@ -14,7 +14,6 @@ export default function physics(entities, { time, dispatch }) {
       entities.obstacleTop1.body,
     );
     if (collision) {
-      console.log("collide");
       dispatch({ type: "game_over" });
     }
   });

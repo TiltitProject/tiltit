@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Image } from "expo-image";
+import React, { useState } from "react";
 import Matter from "matter-js";
-import { View, Animated, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import Dynamic from "../../assets/dynamicImage";
 import { selectCollideMonster } from "../features/gameSlice";
+import MovingPlayer from "./MovingPlayer";
+import CollidePlayer from "./CollidePlayer";
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
@@ -24,7 +24,7 @@ export default function MakePlayer(world, color, position, size) {
 
 function Player(props) {
   const { body } = props;
-  const { position, circleRadius, collide } = body;
+  const { position, circleRadius } = body;
   const widthBody = circleRadius * 2;
   const widthImage = widthBody * 1.5;
   const xBody = position.x - widthBody / 2;
@@ -32,16 +32,13 @@ function Player(props) {
   const xImage = -widthBody * 0.3;
   const yImage = -widthBody * 0.35;
   const isCollide = useSelector(selectCollideMonster);
-  const deathAnimation = useRef(new Animated.Value(0)).current;
   const [lastPosition, setLastPosition] = useState(
     JSON.parse(JSON.stringify(position)),
   );
   const [runningImageIndex, setRunningImageIndex] = useState(0);
-  const [collideImageIndex, setCollideImageIndex] = useState(0);
   const distance = Matter.Vector.magnitude(
     Matter.Vector.sub(position, lastPosition),
   );
-  const pan = useRef(new Animated.ValueXY()).current;
 
   if (distance > 10) {
     if (runningImageIndex < 11) {
@@ -53,66 +50,22 @@ function Player(props) {
     }
   }
 
-  if (isCollide) {
-    Animated.timing(deathAnimation, {
-      toValue: 6,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-
-    const interpolateX = deathAnimation.interpolate({
-      inputRange: [0, 1, 2, 3, 4, 5, 6],
-      outputRange: [10, 5, 10, 15, 20, 25, 30],
-      extrapolate: "clamp",
-    });
-
-    const interpolateY = deathAnimation.interpolate({
-      inputRange: [0, 1, 2, 3, 4, 5, 6],
-      outputRange: [10, 5, 0, 5, 0, 5, 0],
-      extrapolate: "clamp",
-    });
-
-    const interpolateImage = deathAnimation.interpolate({
-      inputRange: [0, 1, 2, 3, 4, 5, 6],
-      outputRange: [
-        Dynamic.hitVirtualGuy[0],
-        Dynamic.hitVirtualGuy[1],
-        Dynamic.hitVirtualGuy[2],
-        Dynamic.hitVirtualGuy[3],
-        Dynamic.hitVirtualGuy[4],
-        Dynamic.hitVirtualGuy[5],
-        Dynamic.hitVirtualGuy[6],
-      ],
-      extrapolate: "clamp",
-    });
-
-    return (
-      <View style={makeViewStyle(xBody, yBody, widthBody)}>
-        <Animated.Image
-          style={[
-            makeCollisionStyle(xImage, yImage, widthImage),
-            {
-              transform: [
-                { translateX: interpolateX },
-                { translateY: interpolateY },
-              ],
-            },
-          ]}
-          source={Dynamic.hitVirtualGuy[collideImageIndex]}
-          contentFit="stretch"
-        />
-      </View>
-    );
-  }
-
   return (
     <View style={makeViewStyle(xBody, yBody, widthBody)}>
-      {isCollide}
-      <Image
-        style={makeCharacterStyle(xImage, yImage, widthImage)}
-        source={Dynamic.runningVirtualGuy[runningImageIndex]}
-        contentFit="stretch"
-      />
+      {!isCollide ? (
+        <MovingPlayer
+          xImage={xImage}
+          yImage={yImage}
+          widthImage={widthImage}
+          runningImageIndex={runningImageIndex}
+        />
+      ) : (
+        <CollidePlayer
+          xImage={xImage}
+          yImage={yImage}
+          widthImage={widthImage}
+        />
+      )}
     </View>
   );
 }
@@ -127,27 +80,5 @@ function makeViewStyle(xBody, yBody, widthBody) {
     borderWidth: 1,
     borderColor: "black",
     borderStyle: "solid",
-  });
-}
-
-function makeCharacterStyle(xImage, yImage, widthImage) {
-  return StyleSheet.create({
-    width: widthImage,
-    height: widthImage,
-    left: xImage,
-    top: yImage,
-    borderWidth: 1,
-    borderColor: "black",
-  });
-}
-
-function makeCollisionStyle(xImage, yImage, widthImage) {
-  return StyleSheet.create({
-    width: widthImage,
-    height: widthImage,
-    left: xImage,
-    top: yImage,
-    borderWidth: 1,
-    borderColor: "black",
   });
 }

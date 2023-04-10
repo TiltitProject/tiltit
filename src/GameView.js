@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
-
 import {
   selectCollideMonster,
   resetCollision,
   collideMonster,
+  selectCrackEffect,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
+import { crackedScreen2 } from "../assets/static";
 
 export default function GameView() {
   const [running, setRunning] = useState(true);
@@ -18,6 +19,7 @@ export default function GameView() {
   const [currentPoints, setCurrentPoints] = useState(0);
   const hasCollideMonster = useSelector(selectCollideMonster);
   const dispatch = useDispatch();
+  const showingCrackedEffect = useSelector(selectCrackEffect);
 
   useEffect(() => {
     if (hasCollideMonster) {
@@ -55,8 +57,10 @@ export default function GameView() {
       >
         <StatusBar style="auto" hidden />
       </GameEngine>
-      {!running ? (
+      {/* {!running ? <View style={styles.container}></View> : null} */}
+      {showingCrackedEffect ? (
         <View style={styles.container}>
+          <Image source={crackedScreen2} contentFit="cover" />
           <TouchableOpacity
             style={styles.messageBox}
             onPress={() => {
@@ -102,5 +106,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     fontSize: 30,
+  },
+  fullImage: {
+    hight: 600,
+    width: 300,
   },
 });
