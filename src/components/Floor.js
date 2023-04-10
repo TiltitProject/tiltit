@@ -1,7 +1,7 @@
 import React from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import { redRectangle } from "../assets/static";
+import { redRectangle } from "../../assets/static";
 
 export default function FloorMaker(world, color, position, size) {
   const initialFloor = Matter.Bodies.rectangle(

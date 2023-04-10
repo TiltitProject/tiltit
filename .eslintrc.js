@@ -17,6 +17,8 @@ module.exports = {
     "import/no-extraneous-dependencies": "off",
     "react/style-prop-object": "off",
     "react/prop-types": "off",
+    "no-param-reassign": "off",
+    "consistent-return": "off",
     "no-use-before-define": "off",
     "react/jsx-props-no-spreading": "off",
     "array-callback-return": "off",
