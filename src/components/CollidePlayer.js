@@ -3,6 +3,8 @@ import { Animated, Dimensions, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import Dynamic from "../../assets/dynamicImage";
 import { showCrackEffect } from "../features/gameSlice";
+import playSound from "../utils/playSound";
+import { falling, hit, breakScreen } from "../../assets/audio";
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
@@ -19,8 +21,20 @@ export default function CollidePlayer({ xImage, yImage, widthImage }) {
       if (collideImageIndex < 7) {
         return setCollideImageIndex(collideImageIndex + 1);
       }
-      setTimeout(() => dispatch(showCrackEffect()), 300);
+      setTimeout(() => {
+        playSound(breakScreen, 0.7);
+      }, 100);
+
+      setTimeout(() => {
+        dispatch(showCrackEffect());
+      }, 300);
     }, 100);
+    if (collideImageIndex === 0) {
+      playSound(hit, 1);
+    }
+    if (collideImageIndex === 2) {
+      playSound(falling, 0.7);
+    }
 
     return () => {
       clearInterval(changeIndex);
@@ -92,7 +106,5 @@ function makeCollisionStyle(xImage, yImage, widthImage) {
     height: widthImage,
     left: xImage,
     top: yImage,
-    borderWidth: 1,
-    borderColor: "black",
   });
 }

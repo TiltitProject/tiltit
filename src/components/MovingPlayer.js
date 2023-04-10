@@ -24,7 +24,5 @@ function makeCharacterStyle(xImage, yImage, widthImage) {
     height: widthImage,
     left: xImage,
     top: yImage,
-    borderWidth: 1,
-    borderColor: "black",
   });
 }
