@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -17,7 +11,7 @@ import {
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
-import { crackedScreen2 } from "../assets/static";
+import { crackedScreen } from "../assets/static";
 
 export default function GameView() {
   const [running, setRunning] = useState(true);
@@ -65,10 +59,7 @@ export default function GameView() {
       </GameEngine>
       {showingCrackedEffect ? (
         <View style={styles.container}>
-          <Image
-            source={crackedScreen2}
-            contentFit="cover"
-          />
+          <Image source={crackedScreen} contentFit="cover" />
           <TouchableOpacity
             style={styles.messageBox}
             onPress={() => {
