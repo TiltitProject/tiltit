@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Image } from "expo-image";
 import Matter from "matter-js";
 import { View, Animated, StyleSheet } from "react-native";
@@ -6,23 +6,7 @@ import { useSelector } from "react-redux";
 import Dynamic from "../../assets/dynamicImage";
 import { selectCollideMonster } from "../features/gameSlice";
 
-export default function MakePlayer(world, color, position, size) {
-  const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
-    label: "Player",
-    collide: false,
-  });
-
-  Matter.World.add(world, initialPlayer);
-
-  return {
-    body: initialPlayer,
-    color,
-    position,
-    renderer: <Player />,
-  };
-}
-
-function Player(props) {
+function MovingPlayer(props) {
   const { body } = props;
   const { position, circleRadius, collide } = body;
   const widthBody = circleRadius * 2;
@@ -37,7 +21,6 @@ function Player(props) {
     JSON.parse(JSON.stringify(position)),
   );
   const [runningImageIndex, setRunningImageIndex] = useState(0);
-  const [collideImageIndex, setCollideImageIndex] = useState(0);
   const distance = Matter.Vector.magnitude(
     Matter.Vector.sub(position, lastPosition),
   );
@@ -131,17 +114,6 @@ function makeViewStyle(xBody, yBody, widthBody) {
 }
 
 function makeCharacterStyle(xImage, yImage, widthImage) {
-  return StyleSheet.create({
-    width: widthImage,
-    height: widthImage,
-    left: xImage,
-    top: yImage,
-    borderWidth: 1,
-    borderColor: "black",
-  });
-}
-
-function makeCollisionStyle(xImage, yImage, widthImage) {
   return StyleSheet.create({
     width: widthImage,
     height: widthImage,

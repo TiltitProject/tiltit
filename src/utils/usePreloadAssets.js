@@ -6,6 +6,7 @@ import Dynamic from "../../assets/dynamicImage";
 
 const usePreloadAssets = (setAppIsReady) => {
   const imageArray = Object.values(staticImages);
+  const dynamicArray = Object.values(Dynamic);
 
   function cacheImages(images) {
     return images.map((image) => Asset.fromModule(image).downloadAsync());
@@ -17,7 +18,7 @@ const usePreloadAssets = (setAppIsReady) => {
         SplashScreen.preventAutoHideAsync();
 
         const imageAssets = cacheImages(imageArray);
-        const dynamicImages = cacheImages(Dynamic.runningVirtualGuy);
+        const dynamicImages = dynamicArray.map((images) => cacheImages(images));
 
         await Promise.all([...imageAssets, ...dynamicImages]);
       } catch (e) {

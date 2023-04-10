@@ -4,7 +4,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 
-import { selectCollideMonster, collideMonster } from "./features/gameSlice";
+import {
+  selectCollideMonster,
+  resetCollision,
+  collideMonster,
+} from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
 
@@ -17,17 +21,16 @@ export default function GameView() {
 
   useEffect(() => {
     if (hasCollideMonster) {
-      gameEngine.stop();
-      setTimeout(() => {
-        setRunning(false);
-      }, 100);
+      setTimeout(() => {}, 100);
     }
-  });
+  }, [hasCollideMonster]);
 
   const handleGameEngine = (e) => {
     switch (e.type) {
       case "game_over":
         dispatch(collideMonster());
+        gameEngine.stop();
+        setRunning(false);
         break;
       case "new_point":
         setCurrentPoints(currentPoints + 1);
@@ -58,7 +61,7 @@ export default function GameView() {
             style={styles.messageBox}
             onPress={() => {
               setCurrentPoints(0);
-              dispatch(collideMonster());
+              dispatch(resetCollision());
               setRunning(true);
               gameEngine.swap(entities());
             }}

@@ -10,12 +10,15 @@ const gameSlice = createSlice({
   initialState,
   reducers: {
     collideMonster: (state) => {
-      state.hasCollideMonster = !state.hasCollideMonster;
+      state.hasCollideMonster = true;
     },
+    resetCollision: (state) => {
+      state.hasCollideMonster = false;
+    }
   },
 });
 
-export const { collideMonster } = gameSlice.actions;
+export const { collideMonster, resetCollision } = gameSlice.actions;
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
 
 export default gameSlice.reducer;
