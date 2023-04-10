@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -57,10 +63,12 @@ export default function GameView() {
       >
         <StatusBar style="auto" hidden />
       </GameEngine>
-      {/* {!running ? <View style={styles.container}></View> : null} */}
       {showingCrackedEffect ? (
         <View style={styles.container}>
-          <Image source={crackedScreen2} contentFit="cover" />
+          <Image
+            source={crackedScreen2}
+            contentFit="cover"
+          />
           <TouchableOpacity
             style={styles.messageBox}
             onPress={() => {
@@ -96,19 +104,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    backgroundColor: "lightgreen",
   },
   messageBox: {
+    position: "absolute",
+    flex: 1,
     backgroundColor: "black",
     paddingHorizontal: 30,
     paddingVertical: 10,
+    zIndex: 1,
   },
   message: {
     fontWeight: "bold",
     color: "white",
     fontSize: 30,
-  },
-  fullImage: {
-    hight: 600,
-    width: 300,
   },
 });

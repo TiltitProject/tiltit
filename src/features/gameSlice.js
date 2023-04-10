@@ -15,6 +15,7 @@ const gameSlice = createSlice({
     },
     resetCollision: (state) => {
       state.hasCollideMonster = false;
+      state.crackEffect = false;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;

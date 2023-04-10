@@ -36,8 +36,8 @@ export default function CollidePlayer({ xImage, yImage, widthImage }) {
   const interpolateX = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
     outputRange: [
-      (windowWidth - xCenter) / 4,
-      (windowWidth - xCenter) / 3,
+      (windowWidth - xCenter) / 5,
+      (windowWidth - xCenter) / 3.5,
       (windowWidth - xCenter) / 2,
       windowWidth - xCenter,
       windowWidth / 2 - xCenter,
