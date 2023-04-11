@@ -12,6 +12,7 @@ import {
 import entities from "./entities";
 import Physics from "./physics";
 import { crackedScreen } from "../assets/static";
+import Fadeout from "./components/Fadeout";
 
 export default function Stage() {
   const [running, setRunning] = useState(true);
@@ -44,6 +45,7 @@ export default function Stage() {
 
   return (
     <View style={styles.container}>
+      <Fadeout />
       <Text style={styles.score}>{currentPoints}</Text>
       <GameEngine
         ref={(ref) => {

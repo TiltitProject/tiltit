@@ -6,6 +6,7 @@ import redRectangle from "./bricks/red_rectangle.png";
 import characterVirtualIdle from "./characters/virtual_idle.png";
 import crackedScreen from "./effect/crackedScreen.png";
 import backgroundImage from "./background/main.png";
+import transition from "./background/transition.png";
 
 export {
   grayBrickColumn,
@@ -16,4 +17,5 @@ export {
   characterVirtualIdle,
   crackedScreen,
   backgroundImage,
+  transition,
 };

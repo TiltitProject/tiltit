@@ -3,13 +3,14 @@ import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
+  Image,
   ImageBackground,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Audio } from "expo-av";
-import { backgroundImage } from "../assets/static";
+import { backgroundImage, transition } from "../assets/static";
 import { playSound } from "./utils/playSound";
 import { hopefulBGM, start } from "../assets/audio";
 import { changePage } from "./features/gameSlice";
@@ -34,12 +35,14 @@ export default function MainPage() {
   const gameStart = () => {
     dispatch(changePage("Stage"));
     playSound(start, 1);
-    BGM.unloadAsync();
+    if (BGM) {
+      BGM.unloadAsync();
+    }
   };
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={backgroundImage} style={styles.image}>
+      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>
           <Text style={styles.textBox}>SELECT CHARACTER</Text>
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingBottom: 200,
   },
-  image: {
+  backgroundImage: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
@@ -82,5 +85,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     marginVertical: 10,
+  },
+  transition: {
+    position: "absolute",
+    width: 100,
+    height: 100,
+    left: 40,
+    top: 40,
+    color: "black",
   },
 });
