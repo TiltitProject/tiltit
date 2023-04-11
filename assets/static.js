@@ -5,6 +5,7 @@ import grayBrickRowBigger from "./bricks/gray_row_bigger.png";
 import redRectangle from "./bricks/red_rectangle.png";
 import characterVirtualIdle from "./characters/virtual_idle.png";
 import crackedScreen from "./effect/crackedScreen.png";
+import backgroundImage from "./background/main.png";
 
 export {
   grayBrickColumn,
@@ -14,4 +15,5 @@ export {
   grayBrickRowBigger,
   characterVirtualIdle,
   crackedScreen,
+  backgroundImage,
 };

@@ -6,7 +6,7 @@ import { selectCollideMonster } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
-import playSound from "../utils/playSound";
+import { playSound } from "../utils/playSound";
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
