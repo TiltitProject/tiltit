@@ -21,7 +21,8 @@
     "react-native": "0.71.6",
     "react-native-game-engine": "^1.2.0",
     "react-redux": "^8.0.5",
-    "expo-av": "~13.2.1"
+    "expo-av": "~13.2.1",
+    "expo-font": "~11.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -3,7 +3,7 @@ import { Animated, Dimensions, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import Dynamic from "../../assets/dynamicImage";
 import { showCrackEffect } from "../features/gameSlice";
-import playSound from "../utils/playSound";
+import { playSound } from "../utils/playSound";
 import { falling, hit, breakScreen } from "../../assets/audio";
 
 const windowHeight = Dimensions.get("window").height;
