@@ -5,19 +5,20 @@ import { transition } from "../../assets/static";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 
-export default function TransitionRow({destinationY, startTime}) {
+export default function TransitionRow({ startY, width, startTime }) {
   const animatedTransition = useRef(new Animated.Value(0)).current;
+  const offsetY = 80;
+  const destinationY = windowHeight;
 
-  useEffect(()=> {
+  useEffect(() => {
     setTimeout(() => {
       Animated.timing(animatedTransition, {
         toValue: 5,
-        duration: 500,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
     }, startTime);
   }, []);
-
 
   const interpolateY = animatedTransition.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
@@ -33,14 +34,14 @@ export default function TransitionRow({destinationY, startTime}) {
 
   const interpolateSize = animatedTransition.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
-    outputRange: [1, 7, 14, 21, 28, 35],
+    outputRange: [1, 30, 90, 190, 280, 450],
   });
 
   return (
     <>
       <Animated.Image
         style={[
-          transitionRow.left,
+          leftBoxStyle(startY, width),
           {
             transform: [
               { translateY: interpolateY },
@@ -53,7 +54,7 @@ export default function TransitionRow({destinationY, startTime}) {
       />
       <Animated.Image
         style={[
-          transitionRow.center,
+          centerBoxStyle(startY, width),
           {
             transform: [
               { translateY: interpolateY },
@@ -66,7 +67,7 @@ export default function TransitionRow({destinationY, startTime}) {
       />
       <Animated.Image
         style={[
-          transitionRow.right,
+          rightBoxStyle(startY, width),
           {
             transform: [
               { translateY: interpolateY },
@@ -81,29 +82,35 @@ export default function TransitionRow({destinationY, startTime}) {
   );
 }
 
-const transitionRow = StyleSheet.create({
-  left: {
+function leftBoxStyle(startY, width) {
+  return StyleSheet.create({
     position: "absolute",
-    width: 10,
-    height: 10,
+    width,
+    height: width,
     left: (windowWidth / 10) * 2 - 10,
-    top: -10,
+    top: startY,
     zIndex: 999,
-  },
-  center: {
+  });
+}
+
+function centerBoxStyle(startY, width) {
+  return StyleSheet.create({
     position: "absolute",
-    width: 10,
-    height: 10,
+    width,
+    height: width,
     left: (windowWidth / 10) * 5 - 10,
-    top: -10,
+    top: startY,
     zIndex: 999,
-  },
-  right: {
+  });
+}
+
+function rightBoxStyle(startY, width) {
+  return StyleSheet.create({
     position: "absolute",
-    width: 10,
-    height: 10,
+    width,
+    height: width,
     left: (windowWidth / 10) * 8 - 10,
-    top: -10,
+    top: startY,
     zIndex: 999,
-  },
-});
+  });
+}

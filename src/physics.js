@@ -1,10 +1,16 @@
 import Matter from "matter-js";
 import { applyVelocityCharacter } from "./utils/gyroMove";
 
-export default function physics(entities, { time, dispatch }) {
+export default function physics(entities, { touches, time, dispatch }) {
   const { engine } = entities.physics;
 
   Matter.Engine.update(engine, time.delta);
+
+  touches.filter((touch) => {
+    if (touch.type === "press") {
+      dispatch({ type: "pause" });
+    }
+  });
 
   applyVelocityCharacter(entities);
 

@@ -1,30 +1,27 @@
-import React, { useRef, useEffect } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
-import { transition } from "../../assets/static";
-import TransitionRow from "./TransitionRow";
+import React from "react";
+import { Dimensions } from "react-native";
+import FadeoutRow from "./FadeoutRow";
 
 const windowHeight = Dimensions.get("window").height;
-const windowWidth = Dimensions.get("window").width;
 
 export default function Fadeout() {
-  const offsetY = 60;
-  const destinationY1 = windowHeight - offsetY;
-  const destinationY2 = (windowHeight / 7) * 6 - offsetY;
-  const destinationY3 = (windowHeight / 7) * 5 - offsetY;
-  const destinationY4 = (windowHeight / 7) * 4 - offsetY;
-  const destinationY5 = (windowHeight / 7) * 3 - offsetY;
-  const destinationY6 = (windowHeight / 7) * 2 - offsetY;
-  const destinationY7 = (windowHeight / 7) * 1 - offsetY;
+  const startY1 = 10;
+  const startY2 = startY1 - windowHeight / 6;
+  const startY3 = startY1 - (windowHeight / 6) * 2;
+  const startY4 = startY1 - (windowHeight / 6) * 3;
+  const startY5 = startY1 - (windowHeight / 6) * 4;
+  const startY6 = startY1 - (windowHeight / 6) * 5;
+  const startY7 = startY1 - (windowHeight / 6) * 6;
 
   return (
     <>
-      <TransitionRow destinationY={destinationY1} startTime={0} />
-      <TransitionRow destinationY={destinationY2} startTime={150} />
-      <TransitionRow destinationY={destinationY3} startTime={300} />
-      <TransitionRow destinationY={destinationY4} startTime={450} />
-      <TransitionRow destinationY={destinationY5} startTime={600} />
-      <TransitionRow destinationY={destinationY6} startTime={750} />
-      <TransitionRow destinationY={destinationY7} startTime={900} />
+      <FadeoutRow startY={startY1} width={1} startTime={0} />
+      <FadeoutRow startY={startY2} width={1.5} startTime={0} />
+      <FadeoutRow startY={startY3} width={1.5} startTime={0} />
+      <FadeoutRow startY={startY4} width={2} startTime={0} />
+      <FadeoutRow startY={startY5} width={2.5} startTime={0} />
+      <FadeoutRow startY={startY6} width={2.5} startTime={0} />
+      <FadeoutRow startY={startY7} width={3} startTime={0} />
     </>
   );
 }

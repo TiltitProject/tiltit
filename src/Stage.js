@@ -8,44 +8,92 @@ import {
   resetCollision,
   collideMonster,
   selectCrackEffect,
+  changePage,
+  backToMainPage,
+  selectModalVisible,
+  selectRunningGame,
+  showModal,
+  removeModal,
+  runGame,
+  stopGame,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
 import { crackedScreen } from "../assets/static";
 import Fadeout from "./components/Fadeout";
+import MenuModal from "./modal/MenuModal";
 
 export default function Stage() {
-  const [running, setRunning] = useState(true);
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
-  const hasCollideMonster = useSelector(selectCollideMonster);
+  const [isFadeout, setIsFadeout] = useState(false);
+  const running = useSelector(selectRunningGame);
+  const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
 
   useEffect(() => {
-    if (hasCollideMonster) {
-      setTimeout(() => {}, 100);
-    }
-  }, [hasCollideMonster]);
+    dispatch(runGame());
+  }, []);
+
+  const handleModalOpen = () => {
+    dispatch(showModal());
+  };
 
   const handleGameEngine = (e) => {
     switch (e.type) {
       case "game_over":
         dispatch(collideMonster());
         gameEngine.stop();
-        setRunning(false);
         break;
       case "new_point":
         setCurrentPoints(currentPoints + 1);
+        break;
+      case "pause":
+        handleModalOpen();
         break;
       default:
         break;
     }
   };
 
+  const restartGame = () => {
+    dispatch(resetCollision());
+    gameEngine.swap(entities());
+  };
+
+  const handleBackToMainPage = () => {
+    setIsFadeout(true);
+    dispatch(removeModal());
+    setTimeout(() => {
+      dispatch(backToMainPage());
+      gameEngine.swap(entities());
+    }, 1200);
+  };
+
+  const onModalClose = () => {
+    dispatch(removeModal());
+  };
+
   return (
     <View style={styles.container}>
-      <Fadeout />
+      {isFadeout && <Fadeout />}
+      <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
+        <View style={styles.container}>
+          <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
+            <Text style={styles.message}>RESTART GAME</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.messageBox}
+            onPress={handleBackToMainPage}
+          >
+            <Text style={styles.message}>MAIN PAGE</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.messageBox} onPress={onModalClose}>
+            <Text style={styles.message}>CONTINUE</Text>
+          </TouchableOpacity>
+        </View>
+      </MenuModal>
       <Text style={styles.score}>{currentPoints}</Text>
       <GameEngine
         ref={(ref) => {
@@ -62,17 +110,19 @@ export default function Stage() {
       {showingCrackedEffect ? (
         <View style={styles.container}>
           <Image source={crackedScreen} contentFit="cover" />
-          <TouchableOpacity
-            style={styles.messageBox}
-            onPress={() => {
-              setCurrentPoints(0);
-              dispatch(resetCollision());
-              setRunning(true);
-              gameEngine.swap(entities());
-            }}
-          >
-            <Text style={styles.message}>START GAME</Text>
-          </TouchableOpacity>
+          <MenuModal isVisible onClose={onModalClose}>
+            <View style={styles.container}>
+              <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
+                <Text style={styles.message}>RESTART GAME</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.messageBox}
+                onPress={handleBackToMainPage}
+              >
+                <Text style={styles.message}>MAIN PAGE</Text>
+              </TouchableOpacity>
+            </View>
+          </MenuModal>
         </View>
       ) : null}
     </View>
@@ -100,16 +150,17 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgreen",
   },
   messageBox: {
-    position: "absolute",
     flex: 1,
-    backgroundColor: "black",
-    paddingHorizontal: 30,
-    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 5,
+    paddingVertical: 20,
     zIndex: 1,
   },
   message: {
+    fontFamily: "menu-font",
     fontWeight: "bold",
     color: "white",
-    fontSize: 30,
+    fontSize: 22,
   },
 });
