@@ -5,10 +5,9 @@ import { transition } from "../../assets/static";
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 
-export default function TransitionRow({ startY, width, startTime }) {
+export default function FadeInRow({ startY, width, startTime }) {
   const animatedTransition = useRef(new Animated.Value(0)).current;
-  const offsetY = 80;
-  const destinationY = windowHeight;
+  const destinationY = windowHeight * 2;
 
   useEffect(() => {
     setTimeout(() => {
@@ -34,7 +33,7 @@ export default function TransitionRow({ startY, width, startTime }) {
 
   const interpolateSize = animatedTransition.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
-    outputRange: [1, 30, 90, 190, 280, 450],
+    outputRange: [450, 200, 140, 50, 20, 1],
   });
 
   return (

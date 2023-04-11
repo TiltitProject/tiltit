@@ -7,8 +7,7 @@ const windowWidth = Dimensions.get("window").width;
 
 export default function FadeoutRow({ startY, width, startTime }) {
   const animatedTransition = useRef(new Animated.Value(0)).current;
-  const offsetY = 80;
-  const destinationY = windowHeight;
+  const destinationY = windowHeight * 2;
 
   useEffect(() => {
     setTimeout(() => {

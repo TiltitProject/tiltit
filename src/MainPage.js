@@ -3,21 +3,24 @@ import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   Text,
-  Image,
   ImageBackground,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { Audio } from "expo-av";
-import { backgroundImage, transition } from "../assets/static";
+import { backgroundImage } from "../assets/static";
 import { playSound } from "./utils/playSound";
 import { hopefulBGM, start } from "../assets/audio";
 import { changePage } from "./features/gameSlice";
+import FadeIn from "./components/FadeIn";
+import Fadeout from "./components/Fadeout";
 
 export default function MainPage() {
   const dispatch = useDispatch();
   const [BGM, setBGM] = useState(null);
+  const [isFadeout, setIsFadeout] = useState(false);
+  const [isFadeIn, setIsFadeIn] = useState(true);
 
   useEffect(() => {
     const playBGM = async () => {
@@ -30,18 +33,27 @@ export default function MainPage() {
       await sound.playAsync();
     };
     playBGM();
+    setTimeout(() => {
+      setIsFadeIn(false);
+    }, 1200);
   }, []);
 
   const gameStart = () => {
-    dispatch(changePage("Stage"));
+    setIsFadeout(true);
     playSound(start, 1);
     if (BGM) {
       BGM.unloadAsync();
     }
+    setTimeout(() => {
+      dispatch(changePage("Stage"));
+    }, 1200);
+
   };
 
   return (
     <View style={styles.container}>
+      {isFadeIn && <FadeIn />}
+      {isFadeout && <Fadeout />}
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>

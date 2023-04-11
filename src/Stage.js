@@ -22,11 +22,13 @@ import Physics from "./physics";
 import { crackedScreen } from "../assets/static";
 import Fadeout from "./components/Fadeout";
 import MenuModal from "./modal/MenuModal";
+import FadeIn from "./components/FadeIn";
 
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
   const [isFadeout, setIsFadeout] = useState(false);
+  const [isFadeIn, setIsFadeIn] = useState(true);
   const running = useSelector(selectRunningGame);
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
@@ -34,6 +36,9 @@ export default function Stage() {
 
   useEffect(() => {
     dispatch(runGame());
+    setTimeout(() => {
+      setIsFadeIn(false);
+    }, 1200);
   }, []);
 
   const handleModalOpen = () => {
@@ -77,6 +82,7 @@ export default function Stage() {
 
   return (
     <View style={styles.container}>
+      {isFadeIn && <FadeIn />}
       {isFadeout && <Fadeout />}
       <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
         <View style={styles.container}>
