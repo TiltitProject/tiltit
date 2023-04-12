@@ -4,38 +4,63 @@ import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  selectCollideMonster,
   resetCollision,
   collideMonster,
   selectCrackEffect,
+  backToMainPage,
+  selectModalVisible,
+  selectRunningGame,
+  showModal,
+  removeModal,
+  runGame,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
 import { crackedScreen } from "../assets/static";
+import MenuModal from "./modal/MenuModal";
+import FadeIn from "./components/mountAnimation/FadeIn";
+import Fadeout from "./components/mountAnimation/Fadeout";
+import { playSound } from "./utils/playSound";
+import { start, select } from "../assets/audio";
+import Menu from "./modal/Menu";
 
 export default function Stage() {
-  const [running, setRunning] = useState(true);
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
-  const hasCollideMonster = useSelector(selectCollideMonster);
+  const [isFadeout, setIsFadeout] = useState(false);
+  const [isFadeIn, setIsFadeIn] = useState(true);
+  const running = useSelector(selectRunningGame);
+  const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
 
   useEffect(() => {
-    if (hasCollideMonster) {
-      setTimeout(() => {}, 100);
-    }
-  }, [hasCollideMonster]);
+    dispatch(runGame());
+    setTimeout(() => {
+      setIsFadeIn(false);
+    }, 700);
+  }, []);
+
+  const handleIsFadeout = () => {
+    setIsFadeout(true);
+  };
+
+  const handleModalOpen = () => {
+    dispatch(showModal());
+    playSound(select, 1);
+  };
 
   const handleGameEngine = (e) => {
     switch (e.type) {
       case "game_over":
         dispatch(collideMonster());
         gameEngine.stop();
-        setRunning(false);
         break;
       case "new_point":
         setCurrentPoints(currentPoints + 1);
+        break;
+      case "pause":
+        handleModalOpen();
         break;
       default:
         break;
@@ -44,6 +69,15 @@ export default function Stage() {
 
   return (
     <View style={styles.container}>
+      {isFadeIn && <FadeIn />}
+      {isFadeout && <Fadeout />}
+      <Menu
+        onIsFadeout={handleIsFadeout}
+        gameEngine={gameEngine}
+        entities={entities}
+        isModalVisible={isModalVisible}
+        pause
+      />
       <Text style={styles.score}>{currentPoints}</Text>
       <GameEngine
         ref={(ref) => {
@@ -60,17 +94,12 @@ export default function Stage() {
       {showingCrackedEffect ? (
         <View style={styles.container}>
           <Image source={crackedScreen} contentFit="cover" />
-          <TouchableOpacity
-            style={styles.messageBox}
-            onPress={() => {
-              setCurrentPoints(0);
-              dispatch(resetCollision());
-              setRunning(true);
-              gameEngine.swap(entities());
-            }}
-          >
-            <Text style={styles.message}>START GAME</Text>
-          </TouchableOpacity>
+          <Menu
+            onIsFadeout={handleIsFadeout}
+            gameEngine={gameEngine}
+            entities={entities}
+            isModalVisible
+          />
         </View>
       ) : null}
     </View>
@@ -96,18 +125,5 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "lightgreen",
-  },
-  messageBox: {
-    position: "absolute",
-    flex: 1,
-    backgroundColor: "black",
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    zIndex: 1,
-  },
-  message: {
-    fontWeight: "bold",
-    color: "white",
-    fontSize: 30,
   },
 });

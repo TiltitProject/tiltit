@@ -13,10 +13,14 @@ import { backgroundImage } from "../assets/static";
 import { playSound } from "./utils/playSound";
 import { hopefulBGM, start } from "../assets/audio";
 import { changePage } from "./features/gameSlice";
+import FadeIn from "./components/mountAnimation/FadeIn";
+import Fadeout from "./components/mountAnimation/Fadeout";
 
 export default function MainPage() {
   const dispatch = useDispatch();
   const [BGM, setBGM] = useState(null);
+  const [isFadeout, setIsFadeout] = useState(false);
+  const [isFadeIn, setIsFadeIn] = useState(true);
 
   useEffect(() => {
     const playBGM = async () => {
@@ -29,17 +33,28 @@ export default function MainPage() {
       await sound.playAsync();
     };
     playBGM();
+    setTimeout(() => {
+      setIsFadeIn(false);
+    }, 700);
   }, []);
 
   const gameStart = () => {
-    dispatch(changePage("Stage"));
+    setIsFadeout(true);
     playSound(start, 1);
-    BGM.unloadAsync();
+    if (BGM) {
+      BGM.unloadAsync();
+    }
+    setTimeout(() => {
+      dispatch(changePage("Stage"));
+    }, 700);
+
   };
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={backgroundImage} style={styles.image}>
+      {isFadeIn && <FadeIn />}
+      {isFadeout && <Fadeout />}
+      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>
           <Text style={styles.textBox}>SELECT CHARACTER</Text>
@@ -67,7 +82,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingBottom: 200,
   },
-  image: {
+  backgroundImage: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
@@ -82,5 +97,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
     marginVertical: 10,
+  },
+  transition: {
+    position: "absolute",
+    width: 100,
+    height: 100,
+    left: 40,
+    top: 40,
+    color: "black",
   },
 });
