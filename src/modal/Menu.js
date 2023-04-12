@@ -43,6 +43,11 @@ export default function Menu({
   return (
     <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
       <View style={styles.container}>
+        {!pause && (
+          <View style={styles.messageBox}>
+            <Text style={styles.title}>GAME OVER</Text>
+          </View>
+        )}
         <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
           <Text style={styles.message}>RESTART GAME</Text>
         </TouchableOpacity>
@@ -78,8 +83,13 @@ const styles = StyleSheet.create({
   },
   message: {
     fontFamily: "menu-font",
-    fontWeight: "bold",
     color: "white",
     fontSize: 22,
+  },
+  title: {
+    fontFamily: "menu-font",
+    fontWeight: "bold",
+    color: "white",
+    fontSize: 30,
   },
 });

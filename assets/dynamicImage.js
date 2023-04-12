@@ -32,7 +32,6 @@ import rock12 from "./monsters/rock/Rock1_Run_12.png";
 import rock13 from "./monsters/rock/Rock1_Run_13.png";
 import rock14 from "./monsters/rock/Rock1_Run_14.png";
 
-
 export default {
   runningVirtualGuy: [
     run1,
@@ -49,4 +48,20 @@ export default {
     run12,
   ],
   hitVirtualGuy: [hit1, hit2, hit3, hit4, hit5, hit6, hit7, hit5],
+  rock: [
+    rock1,
+    rock2,
+    rock3,
+    rock4,
+    rock5,
+    rock6,
+    rock7,
+    rock8,
+    rock9,
+    rock10,
+    rock11,
+    rock12,
+    rock13,
+    rock14,
+  ],
 };

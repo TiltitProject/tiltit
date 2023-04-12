@@ -44,10 +44,7 @@ function Player(props) {
 
   useEffect(() => {
     if (distance > 10) {
-      if (
-        runningImageIndex === 5 ||
-        runningImageIndex === 11
-      ) {
+      if (runningImageIndex === 5 || runningImageIndex === 11) {
         playSound(walking, 0.4);
       }
       if (runningImageIndex < 11) {
@@ -73,6 +70,7 @@ function Player(props) {
         <CollidePlayer
           xImage={xImage}
           yImage={yImage}
+          lastPosition={lastPosition}
           widthImage={widthImage}
         />
       )}
@@ -87,5 +85,6 @@ function makeViewStyle(xBody, yBody, widthBody) {
     height: widthBody,
     left: xBody,
     top: yBody,
+    zIndex: 2,
   });
 }

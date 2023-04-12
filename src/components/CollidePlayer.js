@@ -2,18 +2,23 @@ import React, { useState, useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import Dynamic from "../../assets/dynamicImage";
-import { showCrackEffect } from "../features/gameSlice";
+import { showCrackEffect, showModal } from "../features/gameSlice";
 import { playSound } from "../utils/playSound";
 import { falling, hit, breakScreen } from "../../assets/audio";
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 
-export default function CollidePlayer({ xImage, yImage, widthImage }) {
+export default function CollidePlayer({
+  xImage,
+  yImage,
+  lastPosition,
+  widthImage,
+}) {
   const deathAnimation = useRef(new Animated.Value(0)).current;
   const [collideImageIndex, setCollideImageIndex] = useState(0);
-  const xCenter = xImage - widthImage / 2;
-  const yCenter = yImage - widthImage / 2;
+  const xCenter = lastPosition.x - widthImage / 2;
+  const yCenter = lastPosition.y - widthImage / 2;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,6 +33,11 @@ export default function CollidePlayer({ xImage, yImage, widthImage }) {
       setTimeout(() => {
         dispatch(showCrackEffect());
       }, 300);
+
+      setTimeout(() => {
+        dispatch(showModal());
+      }, 600);
+
     }, 100);
     if (collideImageIndex === 0) {
       playSound(hit, 1);
@@ -41,33 +51,40 @@ export default function CollidePlayer({ xImage, yImage, widthImage }) {
     };
   }, [collideImageIndex]);
 
-  Animated.timing(deathAnimation, {
-    toValue: 5,
-    duration: 500,
-    useNativeDriver: true,
-  }).start();
+  useEffect(() => {
+    Animated.timing(deathAnimation, {
+      toValue: 5,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+  const xVertex = windowWidth - xCenter - widthImage / 2;
+  const xDestination = windowWidth / 2 - xCenter - widthImage / 2;
 
   const interpolateX = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
     outputRange: [
-      (windowWidth - xCenter) / 5,
-      (windowWidth - xCenter) / 3.5,
-      (windowWidth - xCenter) / 2,
-      windowWidth - xCenter,
-      windowWidth / 2 - xCenter,
-      windowWidth / 4 - xCenter - widthImage,
+      (xVertex / 3) * 0.5,
+      (xVertex / 3) * 1,
+      (xVertex / 3) * 2,
+      xVertex,
+      xDestination / 2,
+      xDestination / 2,
     ],
   });
+
+  const yVertex = (windowHeight / 2 - yCenter) / 2;
+  const yDestination = windowHeight / 2 - yCenter;
 
   const interpolateY = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],
     outputRange: [
-      (windowHeight / 2 - yCenter) / 8,
-      (windowHeight / 2 - yCenter) / 7,
-      (windowHeight / 2 - yCenter) / 6,
-      (windowHeight / 2 - yCenter) / 5,
-      (windowHeight / 2 - yCenter) / 4,
-      (windowHeight / 2 - yCenter) / 2,
+      (yVertex / 3) * 0.5,
+      (yVertex / 3) * 1,
+      (yVertex / 3) * 2,
+      yVertex,
+      yDestination / 2,
+      yDestination,
     ],
   });
 

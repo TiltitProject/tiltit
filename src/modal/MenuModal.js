@@ -11,7 +11,7 @@ export default function MenuModal({ isVisible, children }) {
 
 const styles = StyleSheet.create({
   modalContent: {
-    height: "30%",
+    height: "40%",
     width: "80%",
     backgroundColor: "#25292e",
     borderTopRightRadius: 18,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
     position: "absolute",
-    bottom: "35%",
+    bottom: "30%",
     left: "10%",
     paddingVertical: 30,
     borderWidth: 10,

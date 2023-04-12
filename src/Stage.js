@@ -76,39 +76,41 @@ export default function Stage() {
   return (
     <View style={styles.container}>
       <ImageBackground source={space} style={styles.backgroundImage}>
-      {isFadeIn && <FadeIn />}
-      {isFadeout && <Fadeout />}
-      <Menu
-        onIsFadeout={handleIsFadeout}
-        gameEngine={gameEngine}
-        entities={entities}
-        isModalVisible={isModalVisible}
-        pause
-      />
-      <Text style={styles.score}>{currentPoints}</Text>
-      <GameEngine
-        ref={(ref) => {
-          setGameEngine(ref);
-        }}
-        systems={[Physics]}
-        entities={entities()}
-        running={running}
-        onEvent={handleGameEngine}
-        style={styles.gameEngine}
-      >
-        <StatusBar style="auto" hidden />
-      </GameEngine>
-      {showingCrackedEffect ? (
-        <View style={styles.container}>
-          <Image source={crackedScreen} contentFit="cover" />
+        {isFadeIn && <FadeIn />}
+        {isFadeout && <Fadeout />}
+        {!showingCrackedEffect && (
           <Menu
             onIsFadeout={handleIsFadeout}
             gameEngine={gameEngine}
             entities={entities}
-            isModalVisible
+            isModalVisible={isModalVisible}
+            pause
           />
-        </View>
-      ) : null}
+        )}
+        <Text style={styles.score}>{currentPoints}</Text>
+        <GameEngine
+          ref={(ref) => {
+            setGameEngine(ref);
+          }}
+          systems={[Physics]}
+          entities={entities()}
+          running={running}
+          onEvent={handleGameEngine}
+          style={styles.gameEngine}
+        >
+          <StatusBar style="auto" hidden />
+        </GameEngine>
+        {showingCrackedEffect ? (
+          <View style={styles.container}>
+            <Image source={crackedScreen} contentFit="cover" />
+            <Menu
+              onIsFadeout={handleIsFadeout}
+              gameEngine={gameEngine}
+              entities={entities}
+              isModalVisible={isModalVisible}
+            />
+          </View>
+        ) : null}
       </ImageBackground>
     </View>
   );

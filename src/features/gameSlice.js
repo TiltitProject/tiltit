@@ -21,6 +21,7 @@ const gameSlice = createSlice({
       state.hasCollideMonster = false;
       state.crackEffect = false;
       state.runningGame = true;
+      state.isModalVisible = false;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;

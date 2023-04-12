@@ -1,10 +1,8 @@
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
 import MakePlayer from "../components/Player";
-import FloorMaker from "../components/Floor";
-import MakeObstacle from "../components/Obstacle";
+import MakeMonster from "../components/Monster";
 import BlockMaker from "../components/Block";
-import { blockColumnThree } from "../../assets/static";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -17,7 +15,6 @@ export default function restart() {
   const engine = Matter.Engine.create({ enableSleeping: false });
 
   const { world } = engine;
-
 
   const blockLeftBottomX = (width) => {
     const leftBottomX = FLOOR_WIDTH / 2 + width / 2;
@@ -70,7 +67,7 @@ export default function restart() {
       world,
       {
         x: blockLeftBottomX(BLOCK_SIZE) + BLOCK_SIZE * 9,
-        y: blockLeftBottomY(BLOCK_SIZE * 18) - GAME_HEIGHT / 8
+        y: blockLeftBottomY(BLOCK_SIZE * 18) - GAME_HEIGHT / 8,
       },
       { height: BLOCK_SIZE * 18, width: BLOCK_SIZE },
       "brownColumn",
@@ -88,8 +85,7 @@ export default function restart() {
       world,
       {
         x: blockLeftBottomX(BLOCK_SIZE * 2) + BLOCK_SIZE * 2,
-        y:
-          blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 18,
+        y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 18,
       },
       { height: BLOCK_SIZE * 2, width: BLOCK_SIZE * 2 },
       "goldTwice",
@@ -98,8 +94,7 @@ export default function restart() {
       world,
       {
         x: blockLeftBottomX(BLOCK_SIZE) + BLOCK_SIZE * 2,
-        y:
-          blockLeftBottomY(BLOCK_SIZE * 12) - GAME_HEIGHT / 8 - BLOCK_SIZE * 6,
+        y: blockLeftBottomY(BLOCK_SIZE * 12) - GAME_HEIGHT / 8 - BLOCK_SIZE * 6,
       },
       { height: BLOCK_SIZE * 12, width: BLOCK_SIZE },
       "brownColumn",
@@ -139,9 +134,7 @@ export default function restart() {
       {
         x: blockLeftBottomX(BLOCK_SIZE) + BLOCK_SIZE * 6.5,
         y:
-          blockLeftBottomY(BLOCK_SIZE * 9) -
-          GAME_HEIGHT / 8 -
-          BLOCK_SIZE * 3.5,
+          blockLeftBottomY(BLOCK_SIZE * 9) - GAME_HEIGHT / 8 - BLOCK_SIZE * 3.5,
       },
       { height: BLOCK_SIZE * 9, width: BLOCK_SIZE },
       "brownColumn",
@@ -155,12 +148,15 @@ export default function restart() {
       { height: BLOCK_SIZE, width: BLOCK_SIZE * 6 },
       "brownRow",
     ),
-    obstacleTop1: MakeObstacle(
+    topMonster: MakeMonster(
       world,
       "obstacleTop1",
       "black",
-      { x: 75 + 16, y: 90 },
-      { height: 16, width: 150 },
+      {
+        x: blockLeftBottomX(BLOCK_SIZE * 2),
+        y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 20,
+      },
+      { height: 40, width: 40 },
     ),
   };
 }
