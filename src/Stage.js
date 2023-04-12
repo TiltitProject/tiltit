@@ -22,6 +22,7 @@ import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
 import { playSound } from "./utils/playSound";
 import { start, select } from "../assets/audio";
+import Menu from "./modal/Menu";
 
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
@@ -40,29 +41,13 @@ export default function Stage() {
     }, 700);
   }, []);
 
+  const handleIsFadeout = () => {
+    setIsFadeout(true);
+  };
+
   const handleModalOpen = () => {
     dispatch(showModal());
     playSound(select, 1);
-  };
-  const restartGame = () => {
-    playSound(start, 1);
-    dispatch(resetCollision());
-    gameEngine.swap(entities());
-  };
-
-  const handleBackToMainPage = () => {
-    setIsFadeout(true);
-    playSound(select, 1);
-    dispatch(removeModal());
-    setTimeout(() => {
-      dispatch(backToMainPage());
-      gameEngine.swap(entities());
-    }, 700);
-  };
-
-  const onModalClose = () => {
-    playSound(select, 1);
-    dispatch(removeModal());
   };
 
   const handleGameEngine = (e) => {
@@ -86,22 +71,13 @@ export default function Stage() {
     <View style={styles.container}>
       {isFadeIn && <FadeIn />}
       {isFadeout && <Fadeout />}
-      <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
-        <View style={styles.container}>
-          <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
-            <Text style={styles.message}>RESTART GAME</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.messageBox}
-            onPress={handleBackToMainPage}
-          >
-            <Text style={styles.message}>MAIN PAGE</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.messageBox} onPress={onModalClose}>
-            <Text style={styles.message}>CONTINUE</Text>
-          </TouchableOpacity>
-        </View>
-      </MenuModal>
+      <Menu
+        onIsFadeout={handleIsFadeout}
+        gameEngine={gameEngine}
+        entities={entities}
+        isModalVisible={isModalVisible}
+        pause
+      />
       <Text style={styles.score}>{currentPoints}</Text>
       <GameEngine
         ref={(ref) => {
@@ -118,19 +94,12 @@ export default function Stage() {
       {showingCrackedEffect ? (
         <View style={styles.container}>
           <Image source={crackedScreen} contentFit="cover" />
-          <MenuModal isVisible onClose={onModalClose}>
-            <View style={styles.container}>
-              <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
-                <Text style={styles.message}>RESTART GAME</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.messageBox}
-                onPress={handleBackToMainPage}
-              >
-                <Text style={styles.message}>MAIN PAGE</Text>
-              </TouchableOpacity>
-            </View>
-          </MenuModal>
+          <Menu
+            onIsFadeout={handleIsFadeout}
+            gameEngine={gameEngine}
+            entities={entities}
+            isModalVisible
+          />
         </View>
       ) : null}
     </View>
@@ -156,19 +125,5 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "lightgreen",
-  },
-  messageBox: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 5,
-    paddingVertical: 20,
-    zIndex: 1,
-  },
-  message: {
-    fontFamily: "menu-font",
-    fontWeight: "bold",
-    color: "white",
-    fontSize: 22,
   },
 });

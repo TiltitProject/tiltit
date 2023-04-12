@@ -42,10 +42,12 @@ const gameSlice = createSlice({
       state.crackEffect = false;
     },
     showModal: (state) => {
+      state.runningGame = false;
       state.isModalVisible = true;
     },
     removeModal: (state) => {
       state.isModalVisible = false;
+      state.runningGame = true;
     }
   },
 });
