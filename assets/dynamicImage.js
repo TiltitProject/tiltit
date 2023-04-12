@@ -17,6 +17,21 @@ import hit4 from "./characters/virtualGuy/hit/virtual_Hit_4.png";
 import hit5 from "./characters/virtualGuy/hit/virtual_Hit_5.png";
 import hit6 from "./characters/virtualGuy/hit/virtual_Hit_6.png";
 import hit7 from "./characters/virtualGuy/hit/virtual_Hit_7.png";
+import rock1 from "./monsters/rock/Rock1_Run_1.png";
+import rock2 from "./monsters/rock/Rock1_Run_2.png";
+import rock3 from "./monsters/rock/Rock1_Run_3.png";
+import rock4 from "./monsters/rock/Rock1_Run_4.png";
+import rock5 from "./monsters/rock/Rock1_Run_5.png";
+import rock6 from "./monsters/rock/Rock1_Run_6.png";
+import rock7 from "./monsters/rock/Rock1_Run_7.png";
+import rock8 from "./monsters/rock/Rock1_Run_8.png";
+import rock9 from "./monsters/rock/Rock1_Run_9.png";
+import rock10 from "./monsters/rock/Rock1_Run_10.png";
+import rock11 from "./monsters/rock/Rock1_Run_11.png";
+import rock12 from "./monsters/rock/Rock1_Run_12.png";
+import rock13 from "./monsters/rock/Rock1_Run_13.png";
+import rock14 from "./monsters/rock/Rock1_Run_14.png";
+
 
 export default {
   runningVirtualGuy: [
