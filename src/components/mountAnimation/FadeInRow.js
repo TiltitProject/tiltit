@@ -1,23 +1,19 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Animated, Dimensions, StyleSheet } from "react-native";
-import { transition } from "../../assets/static";
+import { transition } from "../../../assets/static";
 
 const windowHeight = Dimensions.get("window").height;
 const windowWidth = Dimensions.get("window").width;
 
-export default function FadeInRow({ startY, width, startTime }) {
+export default function FadeInRow({ startY, width }) {
   const animatedTransition = useRef(new Animated.Value(0)).current;
   const destinationY = windowHeight * 2;
 
-  useEffect(() => {
-    setTimeout(() => {
-      Animated.timing(animatedTransition, {
-        toValue: 5,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
-    }, startTime);
-  }, []);
+  Animated.timing(animatedTransition, {
+    toValue: 5,
+    duration: 1000,
+    useNativeDriver: true,
+  }).start();
 
   const interpolateY = animatedTransition.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5],

@@ -13,8 +13,8 @@ import { backgroundImage } from "../assets/static";
 import { playSound } from "./utils/playSound";
 import { hopefulBGM, start } from "../assets/audio";
 import { changePage } from "./features/gameSlice";
-import FadeIn from "./components/FadeIn";
-import Fadeout from "./components/Fadeout";
+import FadeIn from "./components/mountAnimation/FadeIn";
+import Fadeout from "./components/mountAnimation/Fadeout";
 
 export default function MainPage() {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export default function MainPage() {
     playBGM();
     setTimeout(() => {
       setIsFadeIn(false);
-    }, 1200);
+    }, 700);
   }, []);
 
   const gameStart = () => {
@@ -46,7 +46,7 @@ export default function MainPage() {
     }
     setTimeout(() => {
       dispatch(changePage("Stage"));
-    }, 1200);
+    }, 700);
 
   };
 

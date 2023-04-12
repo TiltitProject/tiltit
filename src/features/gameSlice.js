@@ -24,7 +24,6 @@ const gameSlice = createSlice({
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;
-      state.isModalVisible = true;
     },
     changePage: (state, action) => {
       state.currentPage = action.payload;
@@ -40,6 +39,7 @@ const gameSlice = createSlice({
       state.isModalVisible = false;
       state.hasCollideMonster = false;
       state.isGameRunning = false;
+      state.crackEffect = false;
     },
     showModal: (state) => {
       state.isModalVisible = true;

@@ -6,5 +6,16 @@ import hit from "./sounds/effect/hit.wav";
 import swipe from "./sounds/effect/swipe.wav";
 import start from "./sounds/effect/start.wav";
 import hopefulBGM from "./sounds/bgm/hopefulBGM.mp3";
+import select from "./sounds/effect/console.wav";
 
-export { mainBGM, hopefulBGM, walking, breakScreen, falling, hit, swipe, start };
+export {
+  select,
+  mainBGM,
+  hopefulBGM,
+  walking,
+  breakScreen,
+  falling,
+  hit,
+  swipe,
+  start,
+};

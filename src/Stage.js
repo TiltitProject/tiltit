@@ -4,25 +4,24 @@ import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  selectCollideMonster,
   resetCollision,
   collideMonster,
   selectCrackEffect,
-  changePage,
   backToMainPage,
   selectModalVisible,
   selectRunningGame,
   showModal,
   removeModal,
   runGame,
-  stopGame,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
 import { crackedScreen } from "../assets/static";
-import Fadeout from "./components/Fadeout";
 import MenuModal from "./modal/MenuModal";
-import FadeIn from "./components/FadeIn";
+import FadeIn from "./components/mountAnimation/FadeIn";
+import Fadeout from "./components/mountAnimation/Fadeout";
+import { playSound } from "./utils/playSound";
+import { start, select } from "../assets/audio";
 
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
@@ -38,11 +37,32 @@ export default function Stage() {
     dispatch(runGame());
     setTimeout(() => {
       setIsFadeIn(false);
-    }, 1200);
+    }, 700);
   }, []);
 
   const handleModalOpen = () => {
     dispatch(showModal());
+    playSound(select, 1);
+  };
+  const restartGame = () => {
+    playSound(start, 1);
+    dispatch(resetCollision());
+    gameEngine.swap(entities());
+  };
+
+  const handleBackToMainPage = () => {
+    setIsFadeout(true);
+    playSound(select, 1);
+    dispatch(removeModal());
+    setTimeout(() => {
+      dispatch(backToMainPage());
+      gameEngine.swap(entities());
+    }, 700);
+  };
+
+  const onModalClose = () => {
+    playSound(select, 1);
+    dispatch(removeModal());
   };
 
   const handleGameEngine = (e) => {
@@ -60,24 +80,6 @@ export default function Stage() {
       default:
         break;
     }
-  };
-
-  const restartGame = () => {
-    dispatch(resetCollision());
-    gameEngine.swap(entities());
-  };
-
-  const handleBackToMainPage = () => {
-    setIsFadeout(true);
-    dispatch(removeModal());
-    setTimeout(() => {
-      dispatch(backToMainPage());
-      gameEngine.swap(entities());
-    }, 1200);
-  };
-
-  const onModalClose = () => {
-    dispatch(removeModal());
   };
 
   return (
