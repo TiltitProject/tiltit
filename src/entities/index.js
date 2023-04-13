@@ -3,29 +3,29 @@ import { Dimensions } from "react-native";
 import MakePlayer from "../components/Player";
 import MakeMonster from "../components/Monster";
 import BlockMaker from "../components/Block";
+import ItemMaker from "../components/Item";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
 const GAME_HEIGHT = WINDOW_HEIGHT - FLOOR_WIDTH;
-const GAME_WIDTH = WINDOW_WIDTH - FLOOR_WIDTH;
 const BLOCK_SIZE = 32;
 
 export default function restart() {
   const engine = Matter.Engine.create({ enableSleeping: false });
-
   const { world } = engine;
+  engine.gravity.y = 0;
 
   const blockLeftBottomX = (width) => {
     const leftBottomX = FLOOR_WIDTH / 2 + width / 2;
     return leftBottomX;
   };
+
   const blockLeftBottomY = (height) => {
     const leftBottomX = WINDOW_HEIGHT - FLOOR_WIDTH / 2 - height / 2;
     return leftBottomX;
   };
 
-  engine.gravity.y = 0;
 
   return {
     physics: { engine, world },
@@ -157,6 +157,15 @@ export default function restart() {
         y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 20,
       },
       { height: 40, width: 40 },
+    ),
+    goal: ItemMaker(
+      world,
+      {
+        x: blockLeftBottomX(BLOCK_SIZE * 2) + BLOCK_SIZE * 3,
+        y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 15.5 + 3,
+      },
+      { height: 60, width: 60 },
+      "goal",
     ),
   };
 }

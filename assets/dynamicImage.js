@@ -31,6 +31,14 @@ import rock11 from "./monsters/rock/Rock1_Run_11.png";
 import rock12 from "./monsters/rock/Rock1_Run_12.png";
 import rock13 from "./monsters/rock/Rock1_Run_13.png";
 import rock14 from "./monsters/rock/Rock1_Run_14.png";
+import goal1 from "./Items/goal/Goal_Pressed_1.png";
+import goal2 from "./Items/goal/Goal_Pressed_2.png";
+import goal3 from "./Items/goal/Goal_Pressed_3.png";
+import goal4 from "./Items/goal/Goal_Pressed_4.png";
+import goal5 from "./Items/goal/Goal_Pressed_5.png";
+import goal6 from "./Items/goal/Goal_Pressed_6.png";
+import goal7 from "./Items/goal/Goal_Pressed_7.png";
+import goal8 from "./Items/goal/Goal_Pressed_8.png";
 
 export default {
   runningVirtualGuy: [
@@ -63,5 +71,15 @@ export default {
     rock12,
     rock13,
     rock14,
+  ],
+  goal: [
+    goal1,
+    goal2,
+    goal3,
+    goal4,
+    goal5,
+    goal6,
+    goal7,
+    goal8
   ],
 };

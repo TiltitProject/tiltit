@@ -7,6 +7,7 @@ const initialState = {
   currentPage: "MainPage",
   isModalVisible: false,
   runningGame: false,
+  currentPoint: 0,
 };
 
 const gameSlice = createSlice({
@@ -70,5 +71,6 @@ export const selectCrackEffect = (state) => state.game.crackEffect;
 export const selectPage = (state) => state.game.currentPage;
 export const selectRunningGame = (state) => state.game.runningGame;
 export const selectModalVisible = (state) => state.game.isModalVisible;
+export const selectCurrentPoint = (state) => state.game.currentPoint;
 
 export default gameSlice.reducer;

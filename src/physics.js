@@ -1,16 +1,16 @@
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
-import { applyVelocityCharacter } from "./utils/gyroMove";
 
 const windowWidth = Dimensions.get("window").width;
 
 let moveRight = true;
 let moveLeft = false;
 
-export default function physics(entities, { touches, time, dispatch }) {
+export default function physics(entities, { touches, time, dispatch, beta, gamma }) {
   const { engine } = entities.physics;
 
-  Matter.Engine.update(engine, time.delta);
+  Matter.Engine.update(engine);
+  engine.timing.delta = 1 / 80;
 
   if (entities.topMonster.body.position.x >= windowWidth * 0.9) {
     moveRight = false;
@@ -31,8 +31,6 @@ export default function physics(entities, { touches, time, dispatch }) {
       dispatch({ type: "pause" });
     }
   });
-
-  applyVelocityCharacter(entities);
 
   Matter.Events.on(engine, "collisionStart", () => {
     const collision = Matter.Collision.collides(

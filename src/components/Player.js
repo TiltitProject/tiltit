@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
+import { DeviceMotion } from "expo-sensors";
 import { selectCollideMonster } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
 import { playSound } from "../utils/playSound";
+import adjustDegree from "../utils/adjustDegree";
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
     label: "Player",
-    collide: false,
   });
 
   Matter.World.add(world, initialPlayer);
@@ -56,6 +57,34 @@ function Player(props) {
       }
     }
   }, [distance, runningImageIndex]);
+
+  const [subscription, setSubscription] = useState(null);
+
+  const subscribe = () => {
+    setSubscription(DeviceMotion);
+  };
+
+  const unsubscribe = () => {
+    if (subscription) {
+      subscription.remove();
+    }
+    setSubscription(null);
+  };
+
+  useEffect(() => {
+    subscribe();
+    DeviceMotion.setUpdateInterval(20);
+    DeviceMotion.addListener((result) => {
+      const ratioXY = 1.5;
+      const adjust = adjustDegree(result);
+
+      Matter.Body.setVelocity(body, {
+        x: adjust.applyGamma * adjust.responsiveNess,
+        y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
+      });
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <View style={makeViewStyle(xBody, yBody, widthBody)}>

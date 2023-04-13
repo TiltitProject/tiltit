@@ -3,8 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
   ImageBackground,
-  Text,
-  Image,
   View,
   Dimensions,
 } from "react-native";
@@ -20,12 +18,13 @@ import {
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
-import { crackedScreen, space } from "../assets/static";
+import { space } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
 import { playSound } from "./utils/playSound";
 import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
+import Header from "./components/Header";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -78,16 +77,14 @@ export default function Stage() {
       <ImageBackground source={space} style={styles.backgroundImage}>
         {isFadeIn && <FadeIn />}
         {isFadeout && <Fadeout />}
-        {!showingCrackedEffect && (
-          <Menu
-            onIsFadeout={handleIsFadeout}
-            gameEngine={gameEngine}
-            entities={entities}
-            isModalVisible={isModalVisible}
-            pause
-          />
-        )}
-        <Text style={styles.score}>{currentPoints}</Text>
+        <Menu
+          onIsFadeout={handleIsFadeout}
+          gameEngine={gameEngine}
+          entities={entities}
+          isModalVisible={isModalVisible}
+          pause={!showingCrackedEffect}
+        />
+        <Header />
         <GameEngine
           ref={(ref) => {
             setGameEngine(ref);
@@ -100,17 +97,6 @@ export default function Stage() {
         >
           <StatusBar style="auto" hidden />
         </GameEngine>
-        {showingCrackedEffect ? (
-          <View style={styles.container}>
-            <Image source={crackedScreen} contentFit="cover" />
-            <Menu
-              onIsFadeout={handleIsFadeout}
-              gameEngine={gameEngine}
-              entities={entities}
-              isModalVisible={isModalVisible}
-            />
-          </View>
-        ) : null}
       </ImageBackground>
     </View>
   );
@@ -122,10 +108,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  score: {
-    textAlign: "center",
+  time: {
+    position: "absolute",
+    top: "3%",
     fontSize: 40,
     fontWeight: "bold",
+    margin: 20,
+  },
+  scoreMenu: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    fontFamily: "menu-font",
+    fontSize: 15,
+    margin: 20,
+  },
+  score: {
+    position: "absolute",
+    top: 35,
+    left: 14,
+    fontFamily: "menu-font",
+    fontSize: 13,
     margin: 20,
   },
   backgroundImage: {
