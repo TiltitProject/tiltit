@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { apple } from "../../assets/static";
+import { goal } from "../../assets/static";
 import { selectHasClear } from "../features/gameSlice";
+import Dynamic from "../../assets/dynamicImage";
 
 export default function Goal() {
   const [golImageIndex, setGoalImageIndex] = useState(0);

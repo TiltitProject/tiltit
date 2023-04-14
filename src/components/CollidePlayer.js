@@ -37,8 +37,8 @@ export default function CollidePlayer({
       setTimeout(() => {
         dispatch(showModal());
       }, 600);
-
     }, 100);
+
     if (collideImageIndex === 0) {
       playSound(hit, 1);
     }
@@ -58,6 +58,7 @@ export default function CollidePlayer({
       useNativeDriver: true,
     }).start();
   }, []);
+
   const xVertex = windowWidth - xCenter - widthImage / 2;
   const xDestination = windowWidth / 2 - xCenter - widthImage / 2;
 

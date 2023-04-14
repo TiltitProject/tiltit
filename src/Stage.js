@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  ImageBackground,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, ImageBackground, View, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -25,6 +20,7 @@ import { playSound } from "./utils/playSound";
 import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
+import Item from "./components/Goal";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -95,6 +91,7 @@ export default function Stage() {
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
+          <Item />
           <StatusBar style="auto" hidden />
         </GameEngine>
       </ImageBackground>

@@ -17,7 +17,7 @@ import goldTwice from "./stage/blocks/gold-twice.png";
 import ironRowThree from "./stage/blocks/iron-row-three.png";
 import ironColumnThree from "./stage/blocks/iron-column-three.png";
 import goal from "./Items/goal/Goal.png";
-
+import apple from "./Items/apple/Apple.png";
 
 export {
   grayBrickColumn,
@@ -39,4 +39,5 @@ export {
   ironColumnThree,
   goldTwice,
   goal,
+  apple,
 };

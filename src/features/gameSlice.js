@@ -8,6 +8,7 @@ const initialState = {
   isModalVisible: false,
   runningGame: false,
   currentPoint: 0,
+  hasClear: false,
 };
 
 const gameSlice = createSlice({
@@ -50,7 +51,10 @@ const gameSlice = createSlice({
     removeModal: (state) => {
       state.isModalVisible = false;
       state.runningGame = true;
-    }
+    },
+    clearStage: (state) => {
+      state.hasClear = true;
+    },
   },
 });
 
@@ -63,7 +67,8 @@ export const {
   showCrackEffect,
   resetCollision,
   showModal,
-  removeModal
+  removeModal,
+  clearStage,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -72,5 +77,6 @@ export const selectPage = (state) => state.game.currentPage;
 export const selectRunningGame = (state) => state.game.runningGame;
 export const selectModalVisible = (state) => state.game.isModalVisible;
 export const selectCurrentPoint = (state) => state.game.currentPoint;
+export const selectHasClear = (state) => state.game.hasClear;
 
 export default gameSlice.reducer;

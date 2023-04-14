@@ -6,7 +6,7 @@ const windowWidth = Dimensions.get("window").width;
 let moveRight = true;
 let moveLeft = false;
 
-export default function physics(entities, { touches, time, dispatch, beta, gamma }) {
+export default function physics(entities, { touches, dispatch }) {
   const { engine } = entities.physics;
 
   Matter.Engine.update(engine);
@@ -38,6 +38,8 @@ export default function physics(entities, { touches, time, dispatch, beta, gamma
       entities.topMonster.body,
     );
     if (collision) {
+      delete entities.item;
+
       dispatch({ type: "game_over" });
     }
   });

@@ -82,4 +82,7 @@ export default {
     goal7,
     goal8
   ],
+  apple: [
+
+  ]
 };

@@ -27,12 +27,11 @@ export default function FloorMaker(world, position, size, type) {
 
 function Floor(props) {
   const { body } = props;
-  const { bounds, position, type, isStatic } = body;
+  const { bounds, position, type } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
-  console.log(isStatic);
 
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
