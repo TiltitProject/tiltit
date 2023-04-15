@@ -21,6 +21,7 @@ import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
 import Item from "./components/Goal";
+import stage2 from "./entities/stage2";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -76,7 +77,7 @@ export default function Stage() {
         <Menu
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={entities}
+          entities={stage2}
           isModalVisible={isModalVisible}
           pause={!showingCrackedEffect}
         />
@@ -86,7 +87,7 @@ export default function Stage() {
             setGameEngine(ref);
           }}
           systems={[Physics]}
-          entities={entities()}
+          entities={stage2()}
           running={running}
           onEvent={handleGameEngine}
           style={styles.gameEngine}
