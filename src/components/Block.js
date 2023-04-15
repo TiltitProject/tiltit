@@ -8,6 +8,7 @@ import {
   goldTwice,
   ironColumnThree,
   ironRowThree,
+  gold,
 } from "../../assets/static";
 
 export default function BlockMaker(world, position, size, type) {
@@ -70,6 +71,12 @@ function Block(props) {
         <Image
           style={floorStyle(heightBody, widthBody)}
           source={ironColumnThree}
+        />
+      )}
+      {type === "gold" && (
+        <Image
+          style={floorStyle(heightBody, widthBody)}
+          source={gold}
         />
       )}
     </View>

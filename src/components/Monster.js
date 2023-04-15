@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import Dynamic from "../../assets/dynamicImage";
 
-export default function MakeMonster(world, label, color, position, size) {
+export default function MakeMonster(world, position, size, image) {
   const initialObstacle = Matter.Bodies.rectangle(
     position.x,
     position.y,
     size.width,
     size.height,
-    { label, isStatic: true },
+    { isStatic: true, image },
   );
 
   Matter.World.add(world, initialObstacle);
 
   return {
     body: initialObstacle,
-    color,
     position,
     renderer: <Monster />,
   };
@@ -25,7 +23,7 @@ export default function MakeMonster(world, label, color, position, size) {
 function Monster(props) {
   const [imageIndex, setImageIndex] = useState(0);
   const { body } = props;
-  const { bounds, position } = body;
+  const { bounds, position, image } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
@@ -33,7 +31,7 @@ function Monster(props) {
 
   useEffect(() => {
     const changeIndex = setTimeout(() => {
-      if (imageIndex < 14) {
+      if (imageIndex < image.length -1) {
         return setImageIndex(imageIndex + 1);
       }
       setImageIndex(0);
@@ -47,8 +45,8 @@ function Monster(props) {
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
       <Image
-        style={floorStyle(heightBody, widthBody)}
-        source={Dynamic.rock[imageIndex]}
+        style={imageStyle(heightBody, widthBody)}
+        source={image[imageIndex]}
       />
     </View>
   );
@@ -64,7 +62,7 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
   });
 }
 
-function floorStyle(heightBody, widthBody) {
+function imageStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,

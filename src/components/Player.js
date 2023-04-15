@@ -95,7 +95,7 @@ function Player(props) {
       subscribe();
       DeviceMotion.setUpdateInterval(20);
       DeviceMotion.addListener((result) => {
-        const ratioXY = 1.5;
+        const ratioXY = 2;
         const adjust = adjustDegree(result);
 
         Matter.Body.setVelocity(body, {
@@ -135,6 +135,5 @@ function makeViewStyle(xBody, yBody, widthBody) {
     height: widthBody,
     left: xBody,
     top: yBody,
-    zIndex: 2,
   });
 }

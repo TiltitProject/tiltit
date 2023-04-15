@@ -1,5 +1,4 @@
 import { Dimensions } from "react-native";
-import { sheet } from "./stageMaze.json";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -8,22 +7,44 @@ const GAME_HEIGHT = WINDOW_HEIGHT - FLOOR_WIDTH;
 const GAME_WIDTH = WINDOW_WIDTH - FLOOR_WIDTH;
 const BLOCK_SIZE = GAME_WIDTH / 16;
 
-const makeObject = (objectNum) => {
-  const objects = {};
-  Array.from(Array(objectNum).keys()).forEach((num) => {
-    objects[num + 1] = {
+const mockEntity = {
+  block: {
+    number: 0,
+    size: 0,
+  },
+  monster: {
+    number: 0,
+    size: 0,
+  },
+};
+
+const makeObject = (entity) => {
+  const objects = {
+    block: {},
+    monster: {},
+  };
+  Array.from(Array(entity.block.number).keys()).forEach((num) => {
+    objects.block[`s${num + 1}`] = {
       row: [],
       col: [],
     };
   });
-
+  Array.from(Array(entity.monster.number).keys()).forEach((num) => {
+    objects.monster[`m${num + 1}`] = {
+      row: [],
+      col: [],
+    };
+  });
   return objects;
 };
 
-const makeInitialMap = (objectNum) => {
-  const objects = {};
-  Array.from(Array(objectNum).keys()).forEach((num) => {
-    objects[num + 1] = {
+const makeInitialMap = (entity) => {
+  const objects = {
+    block: {},
+    monster: {},
+  };
+  Array.from(Array(entity.block.number).keys()).forEach((num) => {
+    objects.block[num + 1] = {
       position: {
         x: 0,
         y: 0,
@@ -34,20 +55,36 @@ const makeInitialMap = (objectNum) => {
       },
     };
   });
-
+  Array.from(Array(entity.monster.number).keys()).forEach((num) => {
+    objects.monster[num + 1] = {
+      position: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 0,
+        height: 0,
+      },
+    };
+  });
   return objects;
 };
 
-const makeObjectHash = (objectNum) => {
-  const objectHashInfo = makeObject(objectNum);
-  const columnArray = Object.values(sheet);
+const makeObjectHash = (data, entity) => {
+  const objectHashInfo = makeObject(entity);
+  const columnArray = Object.values(data);
 
   columnArray.forEach((eachColumn, columnIndex) => {
     const rowArray = Object.values(eachColumn);
+
     rowArray.forEach((object, rowIndex) => {
-      if (object) {
-        objectHashInfo[object].row.push(rowIndex + 1);
-        objectHashInfo[object].col.push(columnIndex + 1);
+      if (object && [...object].includes("s")) {
+        objectHashInfo.block[object]?.row.push(rowIndex);
+        objectHashInfo.block[object]?.col.push(columnIndex);
+      }
+      if (object && [...object].includes("m")) {
+        objectHashInfo.monster[object]?.row.push(rowIndex);
+        objectHashInfo.monster[object]?.col.push(columnIndex);
       }
     });
   });
@@ -55,25 +92,45 @@ const makeObjectHash = (objectNum) => {
   return objectHashInfo;
 };
 
-const makeMapInfo = () => {
-  const objectHashInfo = makeObjectHash(31);
-  const initialMap = makeInitialMap(31);
-  const objectHashArray = Object.values(objectHashInfo);
+const applyPositionWidth = (hashInfo, staticObject, entity) => {
+  const blockHashArray = Object.values(hashInfo.block);
+  const monsterHashArray = Object.values(hashInfo.monster);
 
-  objectHashArray.forEach((object, index) => {
+  blockHashArray.forEach((object, index) => {
     const propIndex = object.col.length - 1;
-    const height = (object.col[propIndex] - object.col[0] + 1) * BLOCK_SIZE;
-    const width = (object.row[propIndex] - object.row[0] + 1) * BLOCK_SIZE;
+    const height = (object.col[propIndex] - object.col[0] + 1) * entity.block.size;
+    const width = (object.row[propIndex] - object.row[0] + 1) * entity.block.size;
     const margin = FLOOR_WIDTH / 2;
-    const y = margin + height / 2 + object.col[0] * BLOCK_SIZE;
-    const x = margin + width / 2 + object.row[0] * BLOCK_SIZE;
+    const y = margin + 10 + height / 2 + object.col[0] * entity.gridSize;
+    const x = margin + width / 2 + object.row[0] * entity.gridSize;
 
-    initialMap[index + 1].size.height = height;
-    initialMap[index + 1].size.width = width;
-    initialMap[index + 1].position.x = x;
-    initialMap[index + 1].position.y = y;
+    staticObject.block[index + 1].size.height = height;
+    staticObject.block[index + 1].size.width = width;
+    staticObject.block[index + 1].position.x = x;
+    staticObject.block[index + 1].position.y = y;
   });
-  return initialMap;
+
+  monsterHashArray.forEach((object, index) => {
+    const propIndex = object.col.length - 1;
+    const height = (object.col[propIndex] - object.col[0] + 1) * entity.monster.size;
+    const width = (object.row[propIndex] - object.row[0] + 1) * entity.monster.size;
+    const margin = FLOOR_WIDTH / 2;
+    const y = margin + 10 + height / 2 + object.col[0] * entity.gridSize;
+    const x = margin + width / 2 + object.row[0] * entity.gridSize;
+
+    staticObject.monster[index + 1].size.height = height;
+    staticObject.monster[index + 1].size.width = width;
+    staticObject.monster[index + 1].position.x = x;
+    staticObject.monster[index + 1].position.y = y;
+  });
+};
+
+const makeMapInfo = (data, entity) => {
+  const mapHashInfo = makeObjectHash(data, entity);
+  const staticObjects = makeInitialMap(entity);
+  applyPositionWidth(mapHashInfo, staticObjects, entity);
+
+  return staticObjects;
 };
 
 export default makeMapInfo;

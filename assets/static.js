@@ -14,6 +14,7 @@ import blockRowThree from "./stage/blocks/block-row-three.png";
 import goldRowThree from "./stage/blocks/gold-row-three.png";
 import goldColumnThree from "./stage/blocks/gold-column-three.png";
 import goldTwice from "./stage/blocks/gold-twice.png";
+import gold from "./stage/blocks/gold.png";
 import ironRowThree from "./stage/blocks/iron-row-three.png";
 import ironColumnThree from "./stage/blocks/iron-column-three.png";
 import goal from "./Items/goal/Goal.png";
@@ -40,4 +41,5 @@ export {
   goldTwice,
   goal,
   apple,
+  gold
 };

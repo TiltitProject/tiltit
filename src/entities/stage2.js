@@ -5,6 +5,9 @@ import MakeMonster from "../components/Monster";
 import BlockMaker from "../components/Block";
 import ItemMaker from "../components/Goal";
 import makeMap from "../utils/makeMap";
+import { sheet } from "../../assets/stageMaze.json";
+import { makeBlocks, makeMonsters } from "../utils/makeEntities";
+import Dynamic from "../../assets/dynamicImage";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -16,12 +19,38 @@ const BLOCK_SIZE = GAME_WIDTH / 16;
 export default function restart() {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
-  const map = makeMap();
   engine.gravity.y = 0;
 
-  console.log(map[1].position);
-  console.log(map[1].size);
+  const entity = {
+    gridSize: BLOCK_SIZE,
+    block: {
+      number: 31,
+      size: BLOCK_SIZE,
+    },
+    monster: {
+      number: 4,
+      size: 40,
+    },
+  };
+  const mapInfo = makeMap(sheet, entity);
 
+  const blocks = makeBlocks(world, mapInfo, entity);
+  const monsters = makeMonsters(world, mapInfo, entity, Dynamic.rock);
+  // const blocks = makeBlocks(
+  //   world,
+  //   { type: "s", number: 31 },
+  //   BLOCK_SIZE,
+  //   sheet,
+  // );
+  // const monsters = makeMonsters(
+  //   world,
+  //   "m",
+  //   4,
+  //   BLOCK_SIZE,
+  //   40,
+  //   sheet,
+  //   Dynamic.rock,
+  // );
 
   const blockLeftBottomX = (width) => {
     const leftBottomX = FLOOR_WIDTH / 2 + width / 2;
@@ -38,13 +67,13 @@ export default function restart() {
     player: MakePlayer(world, "blue", { x: 50, y: WINDOW_HEIGHT - 50 }, 28),
     floor: BlockMaker(
       world,
-      { x: WINDOW_WIDTH / 2, y: WINDOW_HEIGHT },
+      { x: WINDOW_WIDTH / 2, y: WINDOW_HEIGHT + 5 },
       { height: FLOOR_WIDTH, width: WINDOW_WIDTH },
       "ironRow",
     ),
     topFloor: BlockMaker(
       world,
-      { x: WINDOW_WIDTH / 2, y: -200 },
+      { x: WINDOW_WIDTH / 2, y: +10 },
       { height: FLOOR_WIDTH, width: WINDOW_WIDTH },
       "ironRow",
     ),
@@ -60,46 +89,16 @@ export default function restart() {
       { height: WINDOW_HEIGHT, width: FLOOR_WIDTH },
       "ironColumn",
     ),
-    block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    block2: BlockMaker(world, map[2].position, map[2].size, "brownRow"),
-    block3: BlockMaker(world, map[3].position, map[3].size, "brownRow"),
-    block4: BlockMaker(world, map[4].position, map[4].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
-    // block1: BlockMaker(world, map[1].position, map[1].size, "brownRow"),
+    ...blocks,
+    ...monsters,
     topMonster: MakeMonster(
       world,
-      "obstacleTop1",
-      "black",
       {
         x: blockLeftBottomX(BLOCK_SIZE * 2),
         y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 20,
       },
       { height: 40, width: 40 },
+      Dynamic.rock,
     ),
     // goal: ItemMaker(
     //   world,
