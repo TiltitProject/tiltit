@@ -1,10 +1,5 @@
 import Matter from "matter-js";
-import { Dimensions } from "react-native";
-
-const windowWidth = Dimensions.get("window").width;
-
-let moveRight = true;
-let moveLeft = false;
+import entityInfo from "./entities/entitiesInfo";
 
 export default function Physics(entities, { touches, dispatch }) {
   const { engine } = entities.physics;
@@ -19,15 +14,29 @@ export default function Physics(entities, { touches, dispatch }) {
   });
 
   Matter.Events.on(engine, "collisionStart", () => {
-    const collision = Matter.Collision.collides(
-      entities.player.body,
-      entities.topMonster.body,
-    );
-    if (collision) {
-      delete entities.item;
+    const monsterNumber = entityInfo.monster.number;
+    const monsterArray = Array.from(Array(monsterNumber).keys());
+    monsterArray.forEach((num) => {
+      const monster = `monster${num + 1}`;
+      const collision = Matter.Collision.collides(
+        entities.player.body,
+        entities[monster].body,
+      );
+      if (collision) {
+        delete entities.item;
 
-      dispatch({ type: "game_over" });
-    }
+        dispatch({ type: "game_over" });
+      }
+    });
+    // const collision = Matter.Collision.collides(
+    //   entities.player.body,
+    //   entities.topMonster.body,
+    // );
+    // if (collision) {
+    //   delete entities.item;
+
+    //   dispatch({ type: "game_over" });
+    // }
   });
 
   return entities;

@@ -24,7 +24,7 @@ const entityInfo = {
       },
       2: {
         direction: "column",
-        speed: 3,
+        speed: 4,
         distance: GAME_WIDTH / 5,
         image: Dynamic.rock,
       },
@@ -36,7 +36,7 @@ const entityInfo = {
       },
       4: {
         direction: "column",
-        speed: 3,
+        speed: 5,
         distance: GAME_WIDTH / 5,
         image: Dynamic.rock,
       },

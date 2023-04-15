@@ -75,7 +75,7 @@ export default function Stage() {
         {isFadeIn && <FadeIn />}
         {isFadeout && <Fadeout />}
         {showingCrackedEffect && (
-          <Image source={crackedScreen} contentFit="cover" />
+          <Image style={styles.crackedScreen}source={crackedScreen} contentFit="cover" />
         )}
         <Menu
           onIsFadeout={handleIsFadeout}
@@ -109,28 +109,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  time: {
-    position: "absolute",
-    top: "3%",
-    fontSize: 40,
-    fontWeight: "bold",
-    margin: 20,
-  },
-  scoreMenu: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    fontFamily: "menu-font",
-    fontSize: 15,
-    margin: 20,
-  },
-  score: {
-    position: "absolute",
-    top: 35,
-    left: 14,
-    fontFamily: "menu-font",
-    fontSize: 13,
-    margin: 20,
+  crackedScreen: {
+    zIndex: 2,
   },
   backgroundImage: {
     flex: 1,

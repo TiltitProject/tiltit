@@ -49,7 +49,6 @@ export default function restart() {
       "ironColumn",
     ),
     ...blocks,
-    // monster1,
     ...monsters,
     // topMonster: MakeMonster(
     //   world,
