@@ -32,7 +32,7 @@ export const makeBlocks = (world, mapInfo, entity) => {
   return objects;
 };
 
-export const makeMonsters = (world, mapInfo, entity, image) => {
+export const makeMonsters = (world, mapInfo, entity) => {
   const objects = {};
 
   Array.from(Array(entity.monster.number).keys()).forEach((index) => {
@@ -42,10 +42,29 @@ export const makeMonsters = (world, mapInfo, entity, image) => {
       world,
       mapInfo.monster[objectNum].position,
       mapInfo.monster[objectNum].size,
-      image,
+      entity.monster.specifics[objectNum],
     );
   });
 
-
   return objects;
 };
+
+export const makeMonster = (
+  world,
+  mapInfo,
+  id,
+  image,
+  direction,
+  speed,
+  distance,
+) =>
+  MonsterMaker(
+    world,
+    mapInfo.monster[id].position,
+    mapInfo.monster[id].size,
+    image,
+    direction,
+    speed,
+    distance,
+    mapInfo.monster[id].position,
+  );

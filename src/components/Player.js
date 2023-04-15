@@ -135,5 +135,6 @@ function makeViewStyle(xBody, yBody, widthBody) {
     height: widthBody,
     left: xBody,
     top: yBody,
+    zIndex: 1,
   });
 }

@@ -15,7 +15,7 @@ export default function Menu({
   gameEngine,
   entities,
   isModalVisible,
-  pause,
+  isGameOver,
 }) {
   const dispatch = useDispatch();
 
@@ -43,7 +43,7 @@ export default function Menu({
   return (
     <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
       <View style={styles.container}>
-        {!pause && (
+        {!isGameOver && (
           <View style={styles.messageBox}>
             <Text style={styles.title}>GAME OVER</Text>
           </View>
@@ -57,7 +57,7 @@ export default function Menu({
         >
           <Text style={styles.message}>MAIN PAGE</Text>
         </TouchableOpacity>
-        {pause && (
+        {isGameOver && (
           <TouchableOpacity style={styles.messageBox} onPress={onModalClose}>
             <Text style={styles.message}>CONTINUE</Text>
           </TouchableOpacity>

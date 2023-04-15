@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, ImageBackground, View, Dimensions } from "react-native";
+import { StyleSheet, Image, ImageBackground, View, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,7 +13,7 @@ import {
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
-import { space } from "../assets/static";
+import { crackedScreen, space } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
 import { playSound } from "./utils/playSound";
@@ -74,12 +74,15 @@ export default function Stage() {
       <ImageBackground source={space} style={styles.backgroundImage}>
         {isFadeIn && <FadeIn />}
         {isFadeout && <Fadeout />}
+        {showingCrackedEffect && (
+          <Image source={crackedScreen} contentFit="cover" />
+        )}
         <Menu
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
           entities={stage2}
           isModalVisible={isModalVisible}
-          pause={!showingCrackedEffect}
+          isGameOver={!showingCrackedEffect}
         />
         <Header />
         <GameEngine

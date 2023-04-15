@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, Dimensions } from "react-native";
+import useMoveRow from "../utils/useMoveMonster";
 
-export default function MakeMonster(world, position, size, image) {
+const windowWidth = Dimensions.get("window").width;
+
+export default function MakeMonster(world, position, size, specifics ) {
   const initialObstacle = Matter.Bodies.rectangle(
     position.x,
     position.y,
     size.width,
     size.height,
-    { isStatic: true, image },
+    { isStatic: true, specifics, initialPosition: position },
   );
 
   Matter.World.add(world, initialObstacle);
@@ -23,15 +26,24 @@ export default function MakeMonster(world, position, size, image) {
 function Monster(props) {
   const [imageIndex, setImageIndex] = useState(0);
   const { body } = props;
-  const { bounds, position, image } = body;
+  const {
+    bounds,
+    position,
+    specifics,
+    initialPosition,
+  } = body;
+
+
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
 
+  useMoveRow(body, initialPosition, Matter, specifics);
+
   useEffect(() => {
     const changeIndex = setTimeout(() => {
-      if (imageIndex < image.length -1) {
+      if (imageIndex < specifics.image.length - 1) {
         return setImageIndex(imageIndex + 1);
       }
       setImageIndex(0);
@@ -46,7 +58,7 @@ function Monster(props) {
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
       <Image
         style={imageStyle(heightBody, widthBody)}
-        source={image[imageIndex]}
+        source={specifics.image[imageIndex]}
       />
     </View>
   );
