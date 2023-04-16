@@ -1,6 +1,5 @@
 import BlockMaker from "../components/Block";
 import MonsterMaker from "../components/Monster";
-import makeItem from "../components/Item";
 
 export const makeBlocks = (world, mapInfo, entity) => {
   const objects = {};
@@ -49,22 +48,40 @@ export const makeMonsters = (world, mapInfo, entity) => {
   return objects;
 };
 
-export const makeItems = (world, mapInfo, entity) => {
-  const objects = {};
+export const makeItems = (mapInfo, entity) => {
+  // const itemArray = Array.from(Array(entity.item.number).keys()).map(
+  //   (index) => {
+  //     const objectNum = index + 1;
 
-  Array.from(Array(entity.item.number).keys()).forEach((index) => {
-    const objectNum = index + 1;
+  //     return (
+  //       <MakeItem
+  //         position={mapInfo.item[objectNum].position}
+  //         size={mapInfo.item[objectNum].size}
+  //         image={entity.item.image}
+  //       />
+  //     );
+  //   },
+  // );
 
-    objects[`item${objectNum}`] = makeItem(
-      world,
-      mapInfo.item[objectNum].position,
-      mapInfo.item[objectNum].size,
-      entity.item.image,
-    );
-  });
-
-  return objects;
+  // console.log(itemArray);
 };
+
+// export const makeItems = (world, mapInfo, entity) => {
+//   const objects = {};
+
+//   Array.from(Array(entity.item.number).keys()).forEach((index) => {
+//     const objectNum = index + 1;
+
+//     objects[`item${objectNum}`] = makeItem(
+//       world,
+//       mapInfo.item[objectNum].position,
+//       mapInfo.item[objectNum].size,
+//       entity.item.image,
+//     );
+//   });
+
+//   return objects;
+// };
 
 export const makeMonster = (
   world,

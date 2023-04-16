@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Image, ImageBackground, View, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  ImageBackground,
+  View,
+  Dimensions,
+} from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -10,6 +16,8 @@ import {
   selectRunningGame,
   showModal,
   runGame,
+  getItemOnce,
+  reachGoal,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
@@ -20,8 +28,13 @@ import { playSound } from "./utils/playSound";
 import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
-import Item from "./components/Goal";
+import Goal from "./components/Goal";
 import stage2 from "./entities/stage2";
+import entityInfo from "./entities/entitiesInfo";
+import { sheet } from "../assets/stageMaze.json";
+import makeMapInfo from "./utils/makeMap";
+import Item from "./components/Item";
+import Result from "./modal/Result";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -35,9 +48,11 @@ export default function Stage() {
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
+  const mapInfo = makeMapInfo(sheet, entityInfo);
 
   useEffect(() => {
-    dispatch(runGame());
+    dispatch(runGame(entityInfo.item.number));
+    gameEngine?.swap(entities());
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
@@ -54,6 +69,12 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "clear":
+        dispatch(reachGoal());
+        break;
+      case "get_item":
+        dispatch(getItemOnce(e.payload));
+        break;
       case "game_over":
         dispatch(collideMonster());
         gameEngine.stop();
@@ -75,15 +96,20 @@ export default function Stage() {
         {isFadeIn && <FadeIn />}
         {isFadeout && <Fadeout />}
         {showingCrackedEffect && (
-          <Image style={styles.crackedScreen}source={crackedScreen} contentFit="cover" />
+          <Image
+            style={styles.crackedScreen}
+            source={crackedScreen}
+            contentFit="cover"
+          />
         )}
         <Menu
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
           entities={stage2}
           isModalVisible={isModalVisible}
-          isGameOver={!showingCrackedEffect}
+          isGameOver={showingCrackedEffect}
         />
+        {/* <Result/> */}
         <Header />
         <GameEngine
           ref={(ref) => {
@@ -95,7 +121,19 @@ export default function Stage() {
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
-          <Item />
+          {Array.from(Array(entityInfo.item.number).keys()).map((num) => (
+            <Item
+              key={num + 1}
+              position={mapInfo.item[num + 1].position}
+              size={mapInfo.item[num + 1].size}
+              image={entityInfo.item.image}
+              num={num + 1}
+            />
+          ))}
+          <Goal
+            position={mapInfo.goal[1].position}
+            size={mapInfo.goal[1].size}
+          />
           <StatusBar style="auto" hidden />
         </GameEngine>
       </ImageBackground>

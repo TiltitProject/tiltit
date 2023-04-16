@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
 const initialState = {
   hasCollideMonster: false,
@@ -8,7 +9,9 @@ const initialState = {
   isModalVisible: false,
   runningGame: false,
   currentPoint: 0,
+  getTrophy: false,
   hasClear: false,
+  itemsVisible: {},
 };
 
 const gameSlice = createSlice({
@@ -31,7 +34,14 @@ const gameSlice = createSlice({
     changePage: (state, action) => {
       state.currentPage = action.payload;
     },
-    runGame: (state) => {
+    runGame: (state, action) => {
+      const items = {};
+
+      Array.from(Array(action.payload).keys()).forEach((num) => {
+        items[num + 1] = true;
+      });
+
+      state.itemsVisible = items;
       state.runningGame = true;
     },
     stopGame: (state) => {
@@ -52,9 +62,17 @@ const gameSlice = createSlice({
       state.isModalVisible = false;
       state.runningGame = true;
     },
-    clearStage: (state) => {
+    getTrophy: (state) => {
       state.hasClear = true;
     },
+    getItem: (state, action) => {
+      state.itemsVisible[action.payload] = false;
+      state.currentPoint += 100;
+    },
+    stageClear: (state) => {
+      state.hasClear = true;
+      state.runningGame = false;
+    }
   },
 });
 
@@ -68,7 +86,10 @@ export const {
   resetCollision,
   showModal,
   removeModal,
-  clearStage,
+  getTrophy,
+  setItemData,
+  getItem,
+  stageClear,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -77,6 +98,23 @@ export const selectPage = (state) => state.game.currentPage;
 export const selectRunningGame = (state) => state.game.runningGame;
 export const selectModalVisible = (state) => state.game.isModalVisible;
 export const selectCurrentPoint = (state) => state.game.currentPoint;
-export const selectHasClear = (state) => state.game.hasClear;
+export const selectGetTrophy = (state) => state.game.hasClear;
+export const selectItemsVisible = (state) => state.game.itemsVisible;
+
+export const getItemOnce = (num) => (dispatch, getState) => {
+  const canGetItem = selectItemsVisible(getState())[num];
+
+  if (canGetItem) {
+    dispatch(getItem(num));
+  }
+};
+
+export const reachGoal = () => (dispatch, getState) => {
+  const alreadyGetTrophy = selectGetTrophy(getState());
+
+  if (!alreadyGetTrophy) {
+    dispatch(getTrophy());
+  }
+};
 
 export default gameSlice.reducer;

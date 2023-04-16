@@ -12,7 +12,7 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
 
-export default function restart() {
+export default function Restart() {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;
@@ -20,7 +20,6 @@ export default function restart() {
   const mapInfo = makeMap(sheet, entityInfo);
   const blocks = makeBlocks(world, mapInfo, entityInfo);
   const monsters = makeMonsters(world, mapInfo, entityInfo);
-  const items = makeItems(world, mapInfo, entityInfo);
 
   return {
     physics: { engine, world },
@@ -51,24 +50,5 @@ export default function restart() {
     ),
     ...blocks,
     ...monsters,
-    ...items,
-    // topMonster: MakeMonster(
-    //   world,
-    //   {
-    //     x: blockLeftBottomX(BLOCK_SIZE * 2),
-    //     y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 20,
-    //   },
-    //   { height: 40, width: 40 },
-    //   Dynamic.rock,
-    // ),
-    // goal: ItemMaker(
-    //   world,
-    //   {
-    //     x: blockLeftBottomX(BLOCK_SIZE * 2) + BLOCK_SIZE * 3,
-    //     y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 15.5 + 3,
-    //   },
-    //   { height: 60, width: 60 },
-    //   "goal",
-    // ),
   };
 }

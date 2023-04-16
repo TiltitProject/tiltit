@@ -15,7 +15,7 @@ const entityInfo = {
   },
   goal: {
     number: 1,
-    size: BLOCK_SIZE * 2,
+    size: 72,
   },
   item: {
     number: 19,
@@ -46,7 +46,7 @@ const entityInfo = {
       },
       4: {
         direction: "column",
-        speed: 5,
+        speed: 2.5,
         distance: GAME_WIDTH / 5,
         image: Dynamic.rock,
       },
