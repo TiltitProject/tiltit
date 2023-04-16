@@ -1,5 +1,6 @@
 import { Dimensions } from "react-native";
 import Dynamic from "../../assets/dynamicImage";
+import { apple } from "../../assets/static";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
@@ -11,6 +12,15 @@ const entityInfo = {
   block: {
     number: 31,
     size: BLOCK_SIZE,
+  },
+  goal: {
+    number: 1,
+    size: BLOCK_SIZE * 2,
+  },
+  item: {
+    number: 19,
+    size: BLOCK_SIZE *1.5,
+    image: apple,
   },
   monster: {
     number: 4,

@@ -63,7 +63,7 @@ function Player(props) {
   }, [hasClear, lastPosition]);
 
   useEffect(() => {
-    if (distance > 10) {
+    if (distance > 7) {
       if (runningImageIndex === 5 || runningImageIndex === 11) {
         playSound(walking, 0.4);
       }

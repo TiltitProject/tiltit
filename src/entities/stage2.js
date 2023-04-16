@@ -5,7 +5,7 @@ import BlockMaker from "../components/Block";
 import ItemMaker from "../components/Goal";
 import makeMap from "../utils/makeMap";
 import { sheet } from "../../assets/stageMaze.json";
-import { makeBlocks, makeMonsters, makeMonster } from "../utils/makeEntities";
+import { makeBlocks, makeMonsters, makeItems } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -20,6 +20,7 @@ export default function restart() {
   const mapInfo = makeMap(sheet, entityInfo);
   const blocks = makeBlocks(world, mapInfo, entityInfo);
   const monsters = makeMonsters(world, mapInfo, entityInfo);
+  const items = makeItems(world, mapInfo, entityInfo);
 
   return {
     physics: { engine, world },
@@ -50,6 +51,7 @@ export default function restart() {
     ),
     ...blocks,
     ...monsters,
+    ...items,
     // topMonster: MakeMonster(
     //   world,
     //   {

@@ -4,7 +4,8 @@ import entityInfo from "./entities/entitiesInfo";
 export default function Physics(entities, { touches, dispatch }) {
   const { engine } = entities.physics;
 
-  Matter.Engine.update(engine);
+
+  Matter.Engine.update(engine, );
   engine.timing.delta = 1 / 80;
 
   touches.filter((touch) => {
@@ -23,11 +24,25 @@ export default function Physics(entities, { touches, dispatch }) {
         entities[monster].body,
       );
       if (collision) {
-        delete entities.item;
-
         dispatch({ type: "game_over" });
       }
     });
+    // const itemNumber = entityInfo.item.number;
+    // const itemArray = Array.from(Array(itemNumber).keys());
+    // itemArray.forEach((num) => {
+    //   const item = `item${num + 1}`;
+    //   if (entities[item]?.body) {
+    //     const collision = Matter.Collision.collides(
+    //       entities.player.body,
+    //       entities[item]?.body,
+    //     );
+    //     if (collision) {
+    //       delete entities[item];
+    //     }
+
+    // dispatch({ type: "game_over" });
+    //   }
+    // });
     // const collision = Matter.Collision.collides(
     //   entities.player.body,
     //   entities.topMonster.body,

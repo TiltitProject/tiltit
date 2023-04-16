@@ -1,32 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import React, { useEffect,useRef, useState } from "react";
+import { View, Animated, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
+import Matter from "matter-js";
 import { apple } from "../../assets/static";
 import { selectHasClear } from "../features/gameSlice";
 
-export default function Goal() {
-  const [golImageIndex, setGoalImageIndex] = useState(0);
-  const hasClear = useSelector(selectHasClear);
+export default function makeItem(world, position, size, image) {
+  const initialObstacle = Matter.Bodies.rectangle(
+    position.x,
+    position.y,
+    size.width,
+    size.height,
+    { isStatic: true, image, },
+  );
 
-  useEffect(() => {
-    const changeIndex = setTimeout(() => {
-      if (golImageIndex < 8 && hasClear) {
-        return setGoalImageIndex(golImageIndex + 1);
-      }
-    }, 100);
+  Matter.World.add(world, initialObstacle);
 
-    return () => {
-      clearInterval(changeIndex);
-    };
-  }, [golImageIndex, hasClear]);
+  return {
+    body: initialObstacle,
+    position,
+    renderer: <Item />,
+  };
+}
+
+function Item(props) {
+  const { body } = props;
+  const { bounds, position, image } = body;
+
+  const widthBody = bounds.max.x - bounds.min.x;
+  const heightBody = bounds.max.y - bounds.min.y;
+  const xBody = position.x - widthBody / 2;
+  const yBody = position.y - heightBody / 2;
 
   return (
-    <View style={viewStyle(114, 217, 60, 60)}>
-      {!hasClear ? (
-        <Image style={makeStyle(60, 60)} source={goal} />
-      ) : (
-        <Image style={makeStyle(60, 60)} source={Dynamic.goal[golImageIndex]} />
-      )}
+    <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
+      <Animated.Image
+        style={imageStyle(heightBody, widthBody)}
+        source={image}
+      />
     </View>
   );
 }
@@ -38,11 +49,10 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
     top: yBody,
     width: widthBody,
     height: heightBody,
-    zIndex: 10,
   });
 }
 
-function makeStyle(heightBody, widthBody) {
+function imageStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,

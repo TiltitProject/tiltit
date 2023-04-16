@@ -3,8 +3,6 @@ import Matter from "matter-js";
 import { View, Image, StyleSheet, Dimensions } from "react-native";
 import useMoveRow from "../utils/useMoveMonster";
 
-const windowWidth = Dimensions.get("window").width;
-
 export default function MakeMonster(world, position, size, specifics ) {
   const initialObstacle = Matter.Bodies.rectangle(
     position.x,
@@ -32,7 +30,6 @@ function Monster(props) {
     specifics,
     initialPosition,
   } = body;
-
 
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;

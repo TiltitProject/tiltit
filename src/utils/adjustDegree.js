@@ -3,7 +3,7 @@ const adjustDegree = (result) => {
   const { beta, gamma } = result.rotation;
   const degree45 = 0.785;
   const LIMIT_INPUT = 8;
-  const responsiveNess = 10;
+  const responsiveNess = 11;
   const limitDegree = LIMIT_INPUT / responsiveNess;
 
   let applyGamma = gamma;

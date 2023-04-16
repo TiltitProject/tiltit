@@ -39,6 +39,22 @@ import goal5 from "./Items/goal/Goal_Pressed_5.png";
 import goal6 from "./Items/goal/Goal_Pressed_6.png";
 import goal7 from "./Items/goal/Goal_Pressed_7.png";
 import goal8 from "./Items/goal/Goal_Pressed_8.png";
+import apple2 from "./Items/apple/Apple_2.png";
+import apple3 from "./Items/apple/Apple_3.png";
+import apple4 from "./Items/apple/Apple_4.png";
+import apple5 from "./Items/apple/Apple_5.png";
+import apple6 from "./Items/apple/Apple_6.png";
+import apple7 from "./Items/apple/Apple_7.png";
+import apple8 from "./Items/apple/Apple_8.png";
+import apple9 from "./Items/apple/Apple_9.png";
+import apple10 from "./Items/apple/Apple_10.png";
+import apple11 from "./Items/apple/Apple_11.png";
+import apple12 from "./Items/apple/Apple_12.png";
+import apple13 from "./Items/apple/Apple_13.png";
+import apple14 from "./Items/apple/Apple_14.png";
+import apple15 from "./Items/apple/Apple_15.png";
+import apple16 from "./Items/apple/Apple_16.png";
+import apple17 from "./Items/apple/Apple_17.png";
 
 export default {
   runningVirtualGuy: [
@@ -72,17 +88,23 @@ export default {
     rock13,
     rock14,
   ],
-  goal: [
-    goal1,
-    goal2,
-    goal3,
-    goal4,
-    goal5,
-    goal6,
-    goal7,
-    goal8
-  ],
+  goal: [goal1, goal2, goal3, goal4, goal5, goal6, goal7, goal8],
   apple: [
-
-  ]
+    apple2,
+    apple3,
+    apple4,
+    apple5,
+    apple6,
+    apple7,
+    apple8,
+    apple9,
+    apple10,
+    apple11,
+    apple12,
+    apple13,
+    apple14,
+    apple15,
+    apple16,
+    apple17,
+  ],
 };
