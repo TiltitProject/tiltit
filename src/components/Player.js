@@ -47,20 +47,6 @@ function Player(props) {
   const distance = Matter.Vector.magnitude(
     Matter.Vector.sub(position, lastPosition),
   );
-  // const hasClear = useSelector(selectHasClear);
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   if (
-  //     !hasClear &&
-  //     lastPosition.x > 114 &&
-  //     lastPosition.x < 174 &&
-  //     lastPosition.y > 217 &&
-  //     lastPosition.y < 277
-  //   ) {
-  //     dispatch(clearStage());
-  //   }
-  // }, [hasClear, lastPosition]);
 
   useEffect(() => {
     if (distance > 7) {

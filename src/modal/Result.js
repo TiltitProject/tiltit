@@ -1,11 +1,13 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native";
 import { playSound } from "../utils/playSound";
 import {
   backToMainPage,
   removeModal,
-  resetCollision,
+  restartGame,
+  selectStageInfo,
+  selectCurrentStage,
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
@@ -18,10 +20,12 @@ export default function Result({
   isModalVisible,
 }) {
   const dispatch = useDispatch();
+  const stage = useSelector(selectCurrentStage);
+  const stageResult = useSelector(selectStageInfo)[stage];
 
-  const restartGame = () => {
+  const handleRestartGame = () => {
     playSound(start, 1);
-    dispatch(resetCollision());
+    dispatch(restartGame());
     gameEngine.swap(entities());
   };
 
@@ -45,21 +49,21 @@ export default function Result({
       <View style={styles.resultContainer}>
         <View style={styles.scoreBox}>
           <Image source={apple} />
-          <Text style={styles.scoreText}>X 10 = result</Text>
+          <Text style={styles.scoreText}>{stageResult.itemScore/ 100} X 100 = {stageResult.itemScore}</Text>
         </View>
         <View style={styles.scoreBox}>
           <Image style={styles.clock} source={clock} />
-          <Text style={styles.scoreText}>X 10 = result</Text>
+          <Text style={styles.scoreText}>50 X {stageResult.leftTime} = {stageResult.leftTime * 50}</Text>
         </View>
         <View style={styles.scoreBox}>
-          <Text style={styles.scoreText}>total = score</Text>
+          <Text style={styles.scoreText}>total = {stageResult.total}</Text>
         </View>
       </View>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
+        <TouchableOpacity style={styles.messageBox} onPress={handleRestartGame}>
           <Text style={styles.message}>Next Stage</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
+        <TouchableOpacity style={styles.messageBox} onPress={handleRestartGame}>
           <Text style={styles.message}>RESTART GAME</Text>
         </TouchableOpacity>
         <TouchableOpacity

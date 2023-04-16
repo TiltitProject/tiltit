@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 
 const initialState = {
   hasCollideMonster: false,
@@ -9,9 +8,18 @@ const initialState = {
   isModalVisible: false,
   runningGame: false,
   currentPoint: 0,
+  leftTime: 30,
   getTrophy: false,
   hasClear: false,
+  stageInfo: {
+    1: {
+      itemScore: 0,
+      leftTime: 0,
+      total: 0,
+    },
+  },
   itemsVisible: {},
+  currentStage: 1,
 };
 
 const gameSlice = createSlice({
@@ -22,11 +30,14 @@ const gameSlice = createSlice({
       state.hasCollideMonster = true;
       state.runningGame = false;
     },
-    resetCollision: (state) => {
+    restartGame: (state) => {
       state.hasCollideMonster = false;
       state.crackEffect = false;
       state.runningGame = true;
       state.isModalVisible = false;
+      state.getTrophy = false;
+      state.hasClear = false;
+      state.leftTime = 30;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;
@@ -43,6 +54,9 @@ const gameSlice = createSlice({
 
       state.itemsVisible = items;
       state.runningGame = true;
+      state.getTrophy = false;
+      state.hasClear = false;
+      state.leftTime = 30;
     },
     stopGame: (state) => {
       state.runningGame = false;
@@ -63,16 +77,24 @@ const gameSlice = createSlice({
       state.runningGame = true;
     },
     getTrophy: (state) => {
-      state.hasClear = true;
+      state.getTrophy = true;
     },
     getItem: (state, action) => {
       state.itemsVisible[action.payload] = false;
       state.currentPoint += 100;
     },
-    stageClear: (state) => {
-      state.hasClear = true;
+    countDownLeftTime: (state) => {
+      state.leftTime -= 1;
+    },
+    setStageResult: (state, action) => {
+      const { currentStage, currentPoint, leftTime } = action.payload;
+
+      state.stageInfo[currentStage].itemScore = currentPoint;
+      state.stageInfo[currentStage].leftTime = leftTime;
+      state.stageInfo[currentStage].total = currentPoint + leftTime * 50;
       state.runningGame = false;
-    }
+      state.hasClear = true;
+    },
   },
 });
 
@@ -83,13 +105,14 @@ export const {
   backToMainPage,
   changePage,
   showCrackEffect,
-  resetCollision,
+  restartGame,
   showModal,
   removeModal,
   getTrophy,
   setItemData,
   getItem,
-  stageClear,
+  countDownLeftTime,
+  setStageResult,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -98,8 +121,12 @@ export const selectPage = (state) => state.game.currentPage;
 export const selectRunningGame = (state) => state.game.runningGame;
 export const selectModalVisible = (state) => state.game.isModalVisible;
 export const selectCurrentPoint = (state) => state.game.currentPoint;
-export const selectGetTrophy = (state) => state.game.hasClear;
+export const selectGetTrophy = (state) => state.game.getTrophy;
 export const selectItemsVisible = (state) => state.game.itemsVisible;
+export const selectLeftTime = (state) => state.game.leftTime;
+export const selectCurrentStage = (state) => state.game.currentStage;
+export const selectStageInfo = (state) => state.game.stageInfo;
+export const selectStageClear = (state) => state.game.hasClear;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
@@ -115,6 +142,23 @@ export const reachGoal = () => (dispatch, getState) => {
   if (!alreadyGetTrophy) {
     dispatch(getTrophy());
   }
+};
+
+export const applyStageResult = () => (dispatch, getState) => {
+  const currentStage = selectCurrentStage(getState());
+  const currentPoint = selectCurrentPoint(getState());
+  const leftTime = selectLeftTime(getState());
+
+  dispatch(setStageResult({ currentStage, currentPoint, leftTime }));
+};
+
+export const timeCountDown = () => (dispatch, getState) => {
+  const leftTime = selectLeftTime(getState());
+
+  if (leftTime > 0) {
+    return dispatch(countDownLeftTime());
+  }
+  dispatch(collideMonster());
 };
 
 export default gameSlice.reducer;

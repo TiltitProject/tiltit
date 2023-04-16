@@ -1,29 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Text, Image, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
-import { selectCurrentPoint, selectRunningGame } from "../features/gameSlice";
-import { clock } from "../../assets/static";
+import React, { useEffect } from "react";
+import { Text, StyleSheet } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCurrentPoint,
+  selectRunningGame,
+  selectLeftTime,
+  timeCountDown
+} from "../features/gameSlice";
 
 export default function Header() {
-  const [restTime, setRestTime] = useState(30);
   const currentPoint = useSelector(selectCurrentPoint);
+  const leftTime = useSelector(selectLeftTime);
   const isGameRun = useSelector(selectRunningGame);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const setTime = setTimeout(() => {
       if (isGameRun) {
-        setRestTime(restTime - 1);
+        dispatch(timeCountDown());
       }
     }, 1000);
 
     return () => {
       clearInterval(setTime);
     };
-  }, [restTime, isGameRun]);
+  }, [leftTime, isGameRun]);
 
   return (
     <>
-      <Text style={styles.time}>{restTime}</Text>
+      <Text style={styles.time}>{leftTime}</Text>
       <Text style={styles.scoreMenu}>score</Text>
       <Text style={styles.score}>{currentPoint}</Text>
     </>

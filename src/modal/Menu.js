@@ -5,7 +5,7 @@ import { playSound } from "../utils/playSound";
 import {
   backToMainPage,
   removeModal,
-  resetCollision,
+  restartGame,
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
@@ -19,9 +19,9 @@ export default function Menu({
 }) {
   const dispatch = useDispatch();
 
-  const restartGame = () => {
+  const handleRestartGame = () => {
     playSound(start, 1);
-    dispatch(resetCollision());
+    dispatch(restartGame());
     gameEngine.swap(entities());
   };
 
@@ -52,7 +52,7 @@ export default function Menu({
             <Text style={styles.title}>MENU</Text>
           </View>
         )}
-        <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
+        <TouchableOpacity style={styles.messageBox} onPress={handleRestartGame}>
           <Text style={styles.message}>RESTART GAME</Text>
         </TouchableOpacity>
         <TouchableOpacity

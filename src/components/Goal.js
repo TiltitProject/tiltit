@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { goal } from "../../assets/static";
-import { selectGetTrophy, stageClear } from "../features/gameSlice";
+import { selectGetTrophy, applyStageResult } from "../features/gameSlice";
 import Dynamic from "../../assets/dynamicImage";
 
 export default function Goal({ position, size }) {
@@ -22,7 +22,9 @@ export default function Goal({ position, size }) {
     }, 200);
 
     if (golImageIndex === 8) {
-      dispatch(stageClear());
+      setTimeout(() => {
+        dispatch(applyStageResult());
+      }, 500);
     }
 
     return () => {

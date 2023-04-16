@@ -18,6 +18,9 @@ import {
   runGame,
   getItemOnce,
   reachGoal,
+  selectStageInfo,
+  selectCurrentStage,
+  selectStageClear,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
@@ -49,6 +52,7 @@ export default function Stage() {
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
   const mapInfo = makeMapInfo(sheet, entityInfo);
+  const hasClear = useSelector(selectStageClear);
 
   useEffect(() => {
     dispatch(runGame(entityInfo.item.number));
@@ -109,7 +113,12 @@ export default function Stage() {
           isModalVisible={isModalVisible}
           isGameOver={showingCrackedEffect}
         />
-        {/* <Result/> */}
+        <Result
+          onIsFadeout={handleIsFadeout}
+          gameEngine={gameEngine}
+          entities={stage2}
+          isModalVisible={hasClear}
+        />
         <Header />
         <GameEngine
           ref={(ref) => {

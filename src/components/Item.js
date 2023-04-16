@@ -1,24 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, Image, StyleSheet } from "react-native";
+import React from "react";
+import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { selectItemsVisible } from "../features/gameSlice";
-// export default function makeItem(world, position, size, image) {
-//   const initialObstacle = Matter.Bodies.rectangle(
-//     position.x,
-//     position.y,
-//     size.width,
-//     size.height,
-//     { isStatic: true, image, },
-//   );
 
-//   Matter.World.add(world, initialObstacle);
-
-//   return {
-//     body: initialObstacle,
-//     position,
-//     renderer: <Item />,
-//   };
-// }
 
 export default function Item({ position, size, image, num }) {
   const widthBody = size.width;
