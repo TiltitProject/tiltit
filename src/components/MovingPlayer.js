@@ -1,6 +1,6 @@
 import React from "react";
 import { Image } from "expo-image";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Dynamic from "../../assets/dynamicImage";
 
 export default function MovingPlayer({
@@ -10,11 +10,13 @@ export default function MovingPlayer({
   runningImageIndex,
 }) {
   return (
-    <Image
-      style={makeCharacterStyle(xImage, yImage, widthImage)}
-      source={Dynamic.runningVirtualGuy[runningImageIndex]}
-      contentFit="stretch"
-    />
+    <View>
+      <Image
+        style={makeCharacterStyle(xImage, yImage, widthImage)}
+        source={Dynamic.runningVirtualGuy[runningImageIndex]}
+        contentFit="stretch"
+      />
+    </View>
   );
 }
 

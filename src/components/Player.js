@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
-import { selectCollideMonster } from "../features/gameSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { DeviceMotion } from "expo-sensors";
+import {
+  selectCollideMonster,
+  selectHasClear,
+  clearStage,
+} from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
 import { playSound } from "../utils/playSound";
+import adjustDegree from "../utils/adjustDegree";
+import Item from "./Goal";
 
 export default function MakePlayer(world, color, position, size) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
     label: "Player",
-    collide: false,
   });
 
   Matter.World.add(world, initialPlayer);
@@ -41,13 +47,24 @@ function Player(props) {
   const distance = Matter.Vector.magnitude(
     Matter.Vector.sub(position, lastPosition),
   );
+  // const hasClear = useSelector(selectHasClear);
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   if (
+  //     !hasClear &&
+  //     lastPosition.x > 114 &&
+  //     lastPosition.x < 174 &&
+  //     lastPosition.y > 217 &&
+  //     lastPosition.y < 277
+  //   ) {
+  //     dispatch(clearStage());
+  //   }
+  // }, [hasClear, lastPosition]);
 
   useEffect(() => {
-    if (distance > 10) {
-      if (
-        runningImageIndex === 5 ||
-        runningImageIndex === 11
-      ) {
+    if (distance > 7) {
+      if (runningImageIndex === 5 || runningImageIndex === 11) {
         playSound(walking, 0.4);
       }
       if (runningImageIndex < 11) {
@@ -59,6 +76,36 @@ function Player(props) {
       }
     }
   }, [distance, runningImageIndex]);
+
+  const [subscription, setSubscription] = useState(null);
+
+  const subscribe = () => {
+    setSubscription(DeviceMotion);
+  };
+
+  const unsubscribe = () => {
+    if (subscription) {
+      subscription.remove();
+    }
+    setSubscription(null);
+  };
+
+  useEffect(() => {
+    if (!isCollide) {
+      subscribe();
+      DeviceMotion.setUpdateInterval(20);
+      DeviceMotion.addListener((result) => {
+        const ratioXY = 2;
+        const adjust = adjustDegree(result);
+
+        Matter.Body.setVelocity(body, {
+          x: adjust.applyGamma * adjust.responsiveNess,
+          y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
+        });
+      });
+      return () => unsubscribe();
+    }
+  }, [isCollide]);
 
   return (
     <View style={makeViewStyle(xBody, yBody, widthBody)}>
@@ -73,6 +120,7 @@ function Player(props) {
         <CollidePlayer
           xImage={xImage}
           yImage={yImage}
+          lastPosition={lastPosition}
           widthImage={widthImage}
         />
       )}
@@ -87,5 +135,6 @@ function makeViewStyle(xBody, yBody, widthBody) {
     height: widthBody,
     left: xBody,
     top: yBody,
+    zIndex: 1,
   });
 }

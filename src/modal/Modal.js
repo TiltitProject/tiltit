@@ -11,17 +11,14 @@ export default function MenuModal({ isVisible, children }) {
 
 const styles = StyleSheet.create({
   modalContent: {
-    height: "30%",
+    height: "40%",
     width: "80%",
     backgroundColor: "#25292e",
-    borderTopRightRadius: 18,
-    borderTopLeftRadius: 18,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
+    borderRadius: 15,
     position: "absolute",
-    bottom: "35%",
+    bottom: "30%",
     left: "10%",
-    paddingVertical: 30,
+    paddingVertical: 20,
     borderWidth: 10,
     zIndex: 99,
   },

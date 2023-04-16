@@ -47,7 +47,6 @@ export default function MainPage() {
     setTimeout(() => {
       dispatch(changePage("Stage"));
     }, 700);
-
   };
 
   return (

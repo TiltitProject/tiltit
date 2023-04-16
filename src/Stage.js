@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, Image, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  ImageBackground,
+  View,
+  Dimensions,
+} from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  resetCollision,
   collideMonster,
   selectCrackEffect,
-  backToMainPage,
   selectModalVisible,
   selectRunningGame,
   showModal,
-  removeModal,
   runGame,
+  getItemOnce,
+  reachGoal,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
-import { crackedScreen } from "../assets/static";
-import MenuModal from "./modal/MenuModal";
+import { crackedScreen, space } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
 import { playSound } from "./utils/playSound";
-import { start, select } from "../assets/audio";
+import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
+import Header from "./components/Header";
+import Goal from "./components/Goal";
+import stage2 from "./entities/stage2";
+import entityInfo from "./entities/entitiesInfo";
+import { sheet } from "../assets/stageMaze.json";
+import makeMapInfo from "./utils/makeMap";
+import Item from "./components/Item";
+import Result from "./modal/Result";
+
+const WINDOW_HEIGHT = Dimensions.get("window").height;
+const WINDOW_WIDTH = Dimensions.get("window").width;
 
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
@@ -33,9 +48,11 @@ export default function Stage() {
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
+  const mapInfo = makeMapInfo(sheet, entityInfo);
 
   useEffect(() => {
-    dispatch(runGame());
+    dispatch(runGame(entityInfo.item.number));
+    gameEngine?.swap(entities());
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
@@ -52,6 +69,12 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "clear":
+        dispatch(reachGoal());
+        break;
+      case "get_item":
+        dispatch(getItemOnce(e.payload));
+        break;
       case "game_over":
         dispatch(collideMonster());
         gameEngine.stop();
@@ -69,39 +92,51 @@ export default function Stage() {
 
   return (
     <View style={styles.container}>
-      {isFadeIn && <FadeIn />}
-      {isFadeout && <Fadeout />}
-      <Menu
-        onIsFadeout={handleIsFadeout}
-        gameEngine={gameEngine}
-        entities={entities}
-        isModalVisible={isModalVisible}
-        pause
-      />
-      <Text style={styles.score}>{currentPoints}</Text>
-      <GameEngine
-        ref={(ref) => {
-          setGameEngine(ref);
-        }}
-        systems={[Physics]}
-        entities={entities()}
-        running={running}
-        onEvent={handleGameEngine}
-        style={styles.gameEngine}
-      >
-        <StatusBar style="auto" hidden />
-      </GameEngine>
-      {showingCrackedEffect ? (
-        <View style={styles.container}>
-          <Image source={crackedScreen} contentFit="cover" />
-          <Menu
-            onIsFadeout={handleIsFadeout}
-            gameEngine={gameEngine}
-            entities={entities}
-            isModalVisible
+      <ImageBackground source={space} style={styles.backgroundImage}>
+        {isFadeIn && <FadeIn />}
+        {isFadeout && <Fadeout />}
+        {showingCrackedEffect && (
+          <Image
+            style={styles.crackedScreen}
+            source={crackedScreen}
+            contentFit="cover"
           />
-        </View>
-      ) : null}
+        )}
+        <Menu
+          onIsFadeout={handleIsFadeout}
+          gameEngine={gameEngine}
+          entities={stage2}
+          isModalVisible={isModalVisible}
+          isGameOver={showingCrackedEffect}
+        />
+        {/* <Result/> */}
+        <Header />
+        <GameEngine
+          ref={(ref) => {
+            setGameEngine(ref);
+          }}
+          systems={[Physics]}
+          entities={stage2()}
+          running={running}
+          onEvent={handleGameEngine}
+          style={styles.gameEngine}
+        >
+          {Array.from(Array(entityInfo.item.number).keys()).map((num) => (
+            <Item
+              key={num + 1}
+              position={mapInfo.item[num + 1].position}
+              size={mapInfo.item[num + 1].size}
+              image={entityInfo.item.image}
+              num={num + 1}
+            />
+          ))}
+          <Goal
+            position={mapInfo.goal[1].position}
+            size={mapInfo.goal[1].size}
+          />
+          <StatusBar style="auto" hidden />
+        </GameEngine>
+      </ImageBackground>
     </View>
   );
 }
@@ -112,11 +147,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  score: {
-    textAlign: "center",
-    fontSize: 40,
-    fontWeight: "bold",
-    margin: 20,
+  crackedScreen: {
+    zIndex: 2,
+  },
+  backgroundImage: {
+    flex: 1,
+    height: WINDOW_HEIGHT,
+    width: WINDOW_WIDTH,
+    resizeMode: "cover",
+    justifyContent: "center",
+    alignItems: "center",
   },
   gameEngine: {
     position: "absolute",
@@ -124,6 +164,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "lightgreen",
   },
 });

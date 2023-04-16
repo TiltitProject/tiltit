@@ -8,14 +8,14 @@ import {
   resetCollision,
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
-import MenuModal from "./MenuModal";
+import Modal from "./Modal";
 
 export default function Menu({
   onIsFadeout,
   gameEngine,
   entities,
   isModalVisible,
-  pause,
+  isGameOver,
 }) {
   const dispatch = useDispatch();
 
@@ -41,8 +41,17 @@ export default function Menu({
   };
 
   return (
-    <MenuModal isVisible={isModalVisible} onClose={onModalClose}>
+    <Modal isVisible={isModalVisible} onClose={onModalClose}>
       <View style={styles.container}>
+        {isGameOver ? (
+          <View style={styles.resultContainer}>
+            <Text style={styles.title}>GAME OVER</Text>
+          </View>
+        ) : (
+          <View style={styles.resultContainer}>
+            <Text style={styles.title}>MENU</Text>
+          </View>
+        )}
         <TouchableOpacity style={styles.messageBox} onPress={restartGame}>
           <Text style={styles.message}>RESTART GAME</Text>
         </TouchableOpacity>
@@ -52,13 +61,13 @@ export default function Menu({
         >
           <Text style={styles.message}>MAIN PAGE</Text>
         </TouchableOpacity>
-        {pause && (
+        {!isGameOver && (
           <TouchableOpacity style={styles.messageBox} onPress={onModalClose}>
             <Text style={styles.message}>CONTINUE</Text>
           </TouchableOpacity>
         )}
       </View>
-    </MenuModal>
+    </Modal>
   );
 }
 
@@ -68,18 +77,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  resultContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "tan",
+    marginHorizontal: 20,
+    width: "95%",
+    borderRadius: 5,
+    borderWidth: 4,
+    borderColor: "SaddleBrown",
+    marginBottom: 40,
+  },
   messageBox: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 5,
-    paddingVertical: 20,
     zIndex: 1,
+    width: "95%",
+    borderWidth: 3,
+    marginBottom: 2,
+    borderRadius: 5,
   },
   message: {
     fontFamily: "menu-font",
+    color: "white",
+    fontSize: 20,
+  },
+  title: {
+    fontFamily: "title-font",
     fontWeight: "bold",
     color: "white",
-    fontSize: 22,
+    fontSize: 30,
   },
 });
