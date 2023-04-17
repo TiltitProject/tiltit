@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, Text, TouchableOpacity, View } from "react-native";
 import { playSound } from "../utils/playSound";
 import {
@@ -22,6 +22,51 @@ export default function Result({
   const dispatch = useDispatch();
   const stage = useSelector(selectCurrentStage);
   const stageResult = useSelector(selectStageInfo)[stage];
+  const [itemScore, setItemScore] = useState({
+    number: stageResult.itemScore / 100,
+    score: 0,
+  });
+  const [timeScore, setTimeScore] = useState({
+    number: stageResult.leftTime,
+    score: 0,
+  });
+  const [totalScore, setTotalScore] = useState(0);
+
+  useEffect(() => {
+    const countScore = setTimeout(() => {
+      if (itemScore.score < stageResult.itemScore && totalScore === 0) {
+        return setItemScore({
+          number: itemScore.number - 1,
+          score: itemScore.score + 100,
+        });
+      }
+
+      if (itemScore.score === stageResult.itemScore && timeScore.number > 0) {
+        return setTimeScore({
+          number: timeScore.number - 1,
+          score: timeScore.score + 50,
+        });
+      }
+      if (timeScore.number === 0 && timeScore.score > 0) {
+        setTotalScore((prev) => prev + 50);
+        setTimeScore({
+          ...timeScore,
+          score: timeScore.score - 50,
+        });
+      }
+      if (timeScore.number === 0 && itemScore.score > 0) {
+        setTotalScore((prev) => prev + 100);
+        setItemScore({
+          ...itemScore,
+          score: itemScore.score - 100,
+        });
+      }
+    }, 50);
+
+    return () => {
+      clearTimeout(countScore);
+    };
+  }, [itemScore, timeScore, totalScore]);
 
   const handleRestartGame = () => {
     playSound(start, 1);
@@ -48,15 +93,19 @@ export default function Result({
     <Modal isVisible={isModalVisible} onClose={onModalClose}>
       <View style={styles.resultContainer}>
         <View style={styles.scoreBox}>
-          <Image source={apple} />
-          <Text style={styles.scoreText}>{stageResult.itemScore/ 100} X 100 = {stageResult.itemScore}</Text>
+          <Image style={styles.apple} source={apple} />
+          <Text style={styles.scoreText}>
+            {itemScore.number} X 100 = {itemScore.score}
+          </Text>
         </View>
         <View style={styles.scoreBox}>
           <Image style={styles.clock} source={clock} />
-          <Text style={styles.scoreText}>50 X {stageResult.leftTime} = {stageResult.leftTime * 50}</Text>
+          <Text style={styles.scoreText}>
+            {timeScore.number} X 50 = {timeScore.score}
+          </Text>
         </View>
         <View style={styles.scoreBox}>
-          <Text style={styles.scoreText}>total = {stageResult.total}</Text>
+          <Text style={styles.scoreText}>total = {totalScore}</Text>
         </View>
       </View>
       <View style={styles.container}>
@@ -86,7 +135,12 @@ const styles = StyleSheet.create({
   clock: {
     height: 20,
     width: 20,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
+    resizeMode: "cover",
+  },
+  apple: {
+    height: 40,
+    width: 40,
     resizeMode: "cover",
   },
   resultContainer: {
@@ -98,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 4,
     borderColor: "SaddleBrown",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   scoreBox: {
     flex: 1,
@@ -114,9 +168,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,
+    width: "95%",
+    borderWidth: 3,
+    marginBottom: 2,
+    borderRadius: 5,
   },
   message: {
-    fontFamily: "title-font",
+    fontFamily: "menu-font",
     color: "white",
     fontSize: 20,
   },

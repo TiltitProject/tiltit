@@ -20,6 +20,8 @@ import {
   reachGoal,
   selectStageInfo,
   selectCurrentStage,
+  selectIsFadeIn,
+  selectIsFadeOut,
   selectStageClear,
 } from "./features/gameSlice";
 import entities from "./entities";
@@ -45,8 +47,7 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
-  const [isFadeout, setIsFadeout] = useState(false);
-  const [isFadeIn, setIsFadeIn] = useState(true);
+
   const running = useSelector(selectRunningGame);
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
@@ -56,7 +57,9 @@ export default function Stage() {
 
   useEffect(() => {
     dispatch(runGame(entityInfo.item.number));
+
     gameEngine?.swap(entities());
+
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
