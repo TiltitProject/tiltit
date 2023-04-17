@@ -6,6 +6,7 @@ import {
   backToMainPage,
   removeModal,
   restartGame,
+  changePage
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
@@ -32,6 +33,7 @@ export default function Menu({
     setTimeout(() => {
       dispatch(backToMainPage());
       gameEngine.swap(entities());
+
     }, 700);
   };
 
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: "SaddleBrown",
     marginBottom: 40,
+    backgroundColor: "gray",
   },
   messageBox: {
     flex: 1,
@@ -104,9 +107,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   title: {
-    fontFamily: "title-font",
+    fontFamily: "menu-font",
     fontWeight: "bold",
-    color: "white",
-    fontSize: 30,
+    color: "black",
+    fontSize: 28,
   },
 });

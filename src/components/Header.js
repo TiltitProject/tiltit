@@ -17,6 +17,7 @@ export default function Header() {
   const [timeStyle, setTimeStyle] = useState({
     color: "black",
     size: 25,
+    rotate: "0deg",
   });
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function Header() {
 
     if (leftTime === 10) {
       setTimeStyle({
+        ...timeStyle,
         color: "maroon",
         size: 40,
       });
@@ -45,6 +47,7 @@ export default function Header() {
       setTimeStyle({
         color: "black",
         size: 25,
+        rotate: "0deg",
       });
 
       timeAnimation.stopAnimation();
@@ -62,14 +65,16 @@ export default function Header() {
 
   return (
     <>
-      <Animated.Text
+      <Animated.View
         style={[
-          timeFontStyle(timeStyle.color, timeStyle.size),
+          timeBoxStyle(timeStyle.rotate),
           { transform: [{ rotate: rotateInterpolation }] },
         ]}
       >
-        {leftTime}
-      </Animated.Text>
+        <Text style={timeFontStyle(timeStyle.color, timeStyle.size)}>
+          {leftTime}
+        </Text>
+      </Animated.View>
       <Text style={styles.scoreMenu}>score</Text>
       <Text style={styles.score}>{currentPoint}</Text>
     </>
@@ -77,7 +82,7 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  time: {
+  timeBox: {
     position: "absolute",
     top: "3%",
     fontFamily: "title-font",
@@ -109,13 +114,21 @@ const styles = StyleSheet.create({
 
 function timeFontStyle(color, size) {
   return StyleSheet.create({
-    position: "absolute",
-    top: "3%",
     color,
     fontFamily: "title-font",
     fontSize: size,
+  });
+}
+
+function timeBoxStyle(rotate) {
+  return StyleSheet.create({
+    position: "absolute",
+    top: "3%",
+    fontFamily: "title-font",
+    fontSize: 25,
     fontWeight: "bold",
     margin: 20,
     zIndex: 1,
+    rotate,
   });
 }

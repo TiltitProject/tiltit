@@ -1,4 +1,7 @@
+import { Dimensions } from "react-native";
+
 const FLOOR_WIDTH = 32;
+const WINDOW_HEIGHT = Dimensions.get("window").height;
 
 const makeObject = (entity) => {
   const objects = {
@@ -132,7 +135,7 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
     const width =
       (object.row[propIndex] - object.row[0] + 1) * entity[type].size;
     const margin = FLOOR_WIDTH / 2;
-    const y = margin + 10 + height / 2 + object.col[0] * entity.gridSize;
+    const y = (entity.columnMultiply - 1) * WINDOW_HEIGHT + margin + 10 + height / 2 + object.col[0] * entity.gridSize;
     const x = margin + width / 2 + object.row[0] * entity.gridSize;
 
     staticObject[type][index + 1].size.height = height;

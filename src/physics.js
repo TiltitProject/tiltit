@@ -1,14 +1,15 @@
 import Matter from "matter-js";
 import entityInfo from "./entities/entitiesInfo";
 import makeMapInfo from "./utils/makeMap";
-import { sheet } from "../assets/stageMaze.json";
+import stageSheet from "../assets/stageSheet.json";
 
 export default function Physics(entities, { touches, dispatch }) {
   const { engine } = entities.physics;
   const player = entities.player.body;
-  const mapInfo = makeMapInfo(sheet, entityInfo);
+  const { stage } = player || 1;
+  const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
 
-  const itemNumber = entityInfo.item.number;
+  const itemNumber = entityInfo[stage].item.number;
   const itemArray = Array.from(Array(itemNumber).keys());
 
   const goalPosition = mapInfo.goal[1].position;
@@ -20,7 +21,7 @@ export default function Physics(entities, { touches, dispatch }) {
     player.position.y > goalPosition.y - goalWidth / 2 &&
     player.position.y < goalPosition.y + goalWidth / 2
   ) {
-    dispatch({ type: "clear"});
+    dispatch({ type: "clear" });
   }
 
   itemArray.forEach((num) => {
@@ -47,7 +48,7 @@ export default function Physics(entities, { touches, dispatch }) {
   });
 
   Matter.Events.on(engine, "collisionStart", () => {
-    const monsterNumber = entityInfo.monster.number;
+    const monsterNumber = entityInfo[stage].monster.number;
     const monsterArray = Array.from(Array(monsterNumber).keys());
     monsterArray.forEach((num) => {
       const monster = `monster${num + 1}`;
@@ -59,31 +60,6 @@ export default function Physics(entities, { touches, dispatch }) {
         dispatch({ type: "game_over" });
       }
     });
-    // const itemNumber = entityInfo.item.number;
-    // const itemArray = Array.from(Array(itemNumber).keys());
-    // itemArray.forEach((num) => {
-    //   const item = `item${num + 1}`;
-    //   if (entities[item]?.body) {
-    //     const collision = Matter.Collision.collides(
-    //       entities.player.body,
-    //       entities[item]?.body,
-    //     );
-    //     if (collision) {
-    //       delete entities[item];
-    //     }
-
-    // dispatch({ type: "game_over" });
-    //   }
-    // });
-    // const collision = Matter.Collision.collides(
-    //   entities.player.body,
-    //   entities.topMonster.body,
-    // );
-    // if (collision) {
-    //   delete entities.item;
-
-    //   dispatch({ type: "game_over" });
-    // }
   });
 
   return entities;

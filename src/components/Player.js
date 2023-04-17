@@ -5,19 +5,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
-  selectHasClear,
-  clearStage,
+  selectCurrentStage,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
 import { playSound } from "../utils/playSound";
 import adjustDegree from "../utils/adjustDegree";
-import Item from "./Goal";
 
-export default function MakePlayer(world, color, position, size) {
+export default function MakePlayer(world, color, position, size, stage) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
     label: "Player",
+    stage
   });
 
   Matter.World.add(world, initialPlayer);

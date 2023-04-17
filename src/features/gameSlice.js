@@ -13,15 +13,18 @@ const initialState = {
   hasClear: false,
   stageInfo: {
     1: {
-      itemScore: 1500,
-      leftTime: 10,
+      itemScore: 0,
+      leftTime: 0,
+      total: 0,
+    },
+    2: {
+      itemScore: 0,
+      leftTime: 0,
       total: 0,
     },
   },
   itemsVisible: {},
   currentStage: 1,
-  isFadeIn: true,
-  isFadeOut: false,
 };
 
 const gameSlice = createSlice({
@@ -129,8 +132,6 @@ export const selectLeftTime = (state) => state.game.leftTime;
 export const selectCurrentStage = (state) => state.game.currentStage;
 export const selectStageInfo = (state) => state.game.stageInfo;
 export const selectStageClear = (state) => state.game.hasClear;
-export const selectIsFadeIn = (state) => state.game.isFadeIn;
-export const selectIsFadeOut = (state) => state.game.isFadeOut;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
