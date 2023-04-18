@@ -20,6 +20,7 @@ import ironColumnThree from "./stage/blocks/iron-column-three.png";
 import goal from "./Items/goal/Goal.png";
 import apple from "./Items/apple/Apple.png";
 import clock from "./Items/clock/clock.png";
+import flag from "./Items/flag/Checkpoint.png";
 
 export {
   grayBrickColumn,
@@ -43,5 +44,6 @@ export {
   goal,
   apple,
   gold,
-  clock
+  clock,
+  flag,
 };

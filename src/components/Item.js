@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { selectItemsVisible } from "../features/gameSlice";
+import { selectItemsVisible, selectMapInfo } from "../features/gameSlice";
 
-
-export default function Item({ position, size, image, num }) {
+export default function Item({ size, image, num }) {
+  const { position } = useSelector(selectMapInfo).item[num];
   const widthBody = size.width;
   const heightBody = size.height;
   const xBody = position.x - widthBody / 2;

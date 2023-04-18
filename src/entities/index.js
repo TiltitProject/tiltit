@@ -3,7 +3,6 @@ import { Dimensions } from "react-native";
 import MakePlayer from "../components/Player";
 import MakeMonster from "../components/Monster";
 import BlockMaker from "../components/Block";
-import ItemMaker from "../components/Goal";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;

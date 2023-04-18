@@ -21,6 +21,10 @@ import {
   selectCurrentStage,
   selectStageClear,
   selectPage,
+  stopPlayer,
+  setMapInfo,
+  selectMapInfo,
+  translateUpper,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
@@ -39,6 +43,7 @@ import makeMapInfo from "./utils/makeMap";
 import Item from "./components/Item";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
+import Flag from "./components/Flag";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -48,20 +53,18 @@ export default function Stage() {
   const [currentPoints, setCurrentPoints] = useState(0);
   const [isFadeout, setIsFadeout] = useState(false);
   const [isFadeIn, setIsFadeIn] = useState(true);
-  const isStageMount = Boolean(useSelector(selectPage) === "Stage");
-  const currentStage = useSelector(selectCurrentStage);
+  const stage = useSelector(selectCurrentStage);
   const running = useSelector(selectRunningGame);
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
-  const mapInfo = makeMapInfo(
-    stageSheet[currentStage],
-    entityInfo[currentStage],
-  );
+  const mapState = useSelector(selectMapInfo);
+  const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
 
   useEffect(() => {
-    dispatch(runGame(entityInfo[currentStage].item.number));
+    dispatch(runGame(entityInfo[stage].item.number));
+    dispatch(setMapInfo(mapInfo));
 
     gameEngine?.swap(entities());
 
@@ -81,6 +84,9 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "translate_upper":
+        dispatch(translateUpper());
+        break;
       case "clear":
         dispatch(reachGoal());
         break;
@@ -117,14 +123,14 @@ export default function Stage() {
         <Menu
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={stage1}
+          entities={(stage === 1 && stage1) || (stage === 2 && stage2)}
           isModalVisible={isModalVisible}
           isGameOver={showingCrackedEffect}
         />
         <Result
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={stage1}
+          entities={(stage === 1 && stage1) || (stage === 2 && stage2)}
           isModalVisible={hasClear}
         />
         <Header />
@@ -133,26 +139,36 @@ export default function Stage() {
             setGameEngine(ref);
           }}
           systems={[Physics]}
-          entities={stage1()}
+          entities={(stage === 1 && stage1()) || (stage === 2 && stage2())}
           running={running}
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
-          {Array.from(Array(entityInfo[currentStage].item.number).keys()).map(
+          {mapState && Array.from(Array(entityInfo[stage].item.number).keys()).map(
             (num) => (
               <Item
-                key={num + 1}
-                position={mapInfo.item[num + 1].position}
+                key={`item${num + 1}`}
                 size={mapInfo.item[num + 1].size}
-                image={entityInfo[currentStage].item.image}
+                image={entityInfo[stage].item.image}
                 num={num + 1}
               />
             ),
           )}
-          <Goal
-            position={mapInfo.goal[1].position}
-            size={mapInfo.goal[1].size}
-          />
+          {Array.from(Array(entityInfo[stage].flag.number).keys()).map(
+            (num) => (
+              <Flag
+                key={`flag${num + 1}`}
+                position={mapInfo.flag[num + 1].position}
+                size={mapInfo.flag[num + 1].size}
+              />
+            ),
+          )}
+          {mapInfo.goal[1] && (
+            <Goal
+              position={mapInfo.goal[1].position}
+              size={mapInfo.goal[1].size}
+            />
+          )}
           <StatusBar style="auto" hidden />
         </GameEngine>
       </ImageBackground>

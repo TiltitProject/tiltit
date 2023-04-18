@@ -24,7 +24,9 @@ const initialState = {
     },
   },
   itemsVisible: {},
-  currentStage: 1,
+  currentStage: 2,
+  isPlayerMove: true,
+  mapInfo: null,
 };
 
 const gameSlice = createSlice({
@@ -100,6 +102,18 @@ const gameSlice = createSlice({
       state.runningGame = false;
       state.hasClear = true;
     },
+    stopPlayer: (state) => {
+      state.isPlayerMove = false;
+    },
+    setMapInfo: (state, action) => {
+      state.mapInfo = action.payload;
+    },
+    downItemPosition: (state, action) => {
+      const itemKeys = action.payload;
+      itemKeys.forEach((num) => {
+        state.mapInfo.item[num].position.y += 10;
+      });
+    }
   },
 });
 
@@ -118,6 +132,9 @@ export const {
   getItem,
   countDownLeftTime,
   setStageResult,
+  stopPlayer,
+  setMapInfo,
+  downItemPosition
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -132,6 +149,8 @@ export const selectLeftTime = (state) => state.game.leftTime;
 export const selectCurrentStage = (state) => state.game.currentStage;
 export const selectStageInfo = (state) => state.game.stageInfo;
 export const selectStageClear = (state) => state.game.hasClear;
+export const selectIsPlayerMove = (state) => state.game.isPlayerMove;
+export const selectMapInfo = (state) => state.game.mapInfo;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
@@ -164,6 +183,11 @@ export const timeCountDown = () => (dispatch, getState) => {
     return dispatch(countDownLeftTime());
   }
   dispatch(collideMonster());
+};
+
+export const translateUpper = () => (dispatch, getState) => {
+  const itemKeys = Object.keys(selectMapInfo(getState()).item);
+  dispatch(downItemPosition(itemKeys));
 };
 
 export default gameSlice.reducer;

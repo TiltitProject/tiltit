@@ -9,6 +9,7 @@ const makeObject = (entity) => {
     monster: {},
     item: {},
     goal: {},
+    flag: {},
   };
   Array.from(Array(entity.block.number).keys()).forEach((num) => {
     objects.block[`s${num + 1}`] = {
@@ -28,12 +29,19 @@ const makeObject = (entity) => {
       col: [],
     };
   });
-  Array.from(Array(entity.goal.number).keys()).forEach((num) => {
+  Array.from(Array(entity.goal?.number).keys()).forEach((num) => {
     objects.goal[`g${num + 1}`] = {
       row: [],
       col: [],
     };
   });
+  Array.from(Array(entity.flag?.number).keys()).forEach((num) => {
+    objects.flag[`f${num + 1}`] = {
+      row: [],
+      col: [],
+    };
+  });
+
   return objects;
 };
 
@@ -43,6 +51,7 @@ const makeInitialMap = (entity) => {
     monster: {},
     item: {},
     goal: {},
+    flag: {},
   };
   Array.from(Array(entity.block.number).keys()).forEach((num) => {
     objects.block[num + 1] = {
@@ -80,7 +89,7 @@ const makeInitialMap = (entity) => {
       },
     };
   });
-  Array.from(Array(entity.goal.number).keys()).forEach((num) => {
+  Array.from(Array(entity.goal?.number).keys()).forEach((num) => {
     objects.goal[num + 1] = {
       position: {
         x: 0,
@@ -92,6 +101,19 @@ const makeInitialMap = (entity) => {
       },
     };
   });
+  Array.from(Array(entity.flag?.number).keys()).forEach((num) => {
+    objects.flag[num + 1] = {
+      position: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 0,
+        height: 0,
+      },
+    };
+  });
+
   return objects;
 };
 
@@ -119,6 +141,10 @@ const makeObjectHash = (data, entity) => {
         objectHashInfo.goal[object]?.row.push(rowIndex);
         objectHashInfo.goal[object]?.col.push(columnIndex);
       }
+      if (object && [...object].includes("f")) {
+        objectHashInfo.flag[object]?.row.push(rowIndex);
+        objectHashInfo.flag[object]?.col.push(columnIndex);
+      }
     });
   });
 
@@ -126,23 +152,31 @@ const makeObjectHash = (data, entity) => {
 };
 
 const setPositionWidth = (hashInfo, type, staticObject, entity) => {
-  const hashArray = Object.values(hashInfo[type]);
+  if (entity[type].number) {
+    const hashArray = Object.values(hashInfo[type]);
 
-  hashArray.forEach((object, index) => {
-    const propIndex = object.col.length - 1;
-    const height =
-      (object.col[propIndex] - object.col[0] + 1) * entity[type].size;
-    const width =
-      (object.row[propIndex] - object.row[0] + 1) * entity[type].size;
-    const margin = FLOOR_WIDTH / 2;
-    const y = (entity.columnMultiply - 1) * WINDOW_HEIGHT + margin + 10 + height / 2 + object.col[0] * entity.gridSize;
-    const x = margin + width / 2 + object.row[0] * entity.gridSize;
+    hashArray.forEach((object, index) => {
+      const propIndex = object.col.length - 1;
+      const height =
+        (object.col[propIndex] - object.col[0] + 1) * entity[type].size;
+      const width =
+        (object.row[propIndex] - object.row[0] + 1) * entity[type].size;
+      const margin = FLOOR_WIDTH / 2;
+      const y =
+        -(entity.columnMultiply - 1) * WINDOW_HEIGHT +
+        (entity.columnMultiply - 1) * FLOOR_WIDTH +
+        margin +
+        10 +
+        height / 2 +
+        object.col[0] * entity.gridSize;
+      const x = margin + width / 2 + object.row[0] * entity.gridSize;
 
-    staticObject[type][index + 1].size.height = height;
-    staticObject[type][index + 1].size.width = width;
-    staticObject[type][index + 1].position.x = x;
-    staticObject[type][index + 1].position.y = y;
-  });
+      staticObject[type][index + 1].size.height = height;
+      staticObject[type][index + 1].size.width = width;
+      staticObject[type][index + 1].position.x = x;
+      staticObject[type][index + 1].position.y = y;
+    });
+  }
 };
 
 const makeMapInfo = (data, entity) => {
@@ -152,6 +186,7 @@ const makeMapInfo = (data, entity) => {
   setPositionWidth(mapHashInfo, "goal", staticObjects, entity);
   setPositionWidth(mapHashInfo, "item", staticObjects, entity);
   setPositionWidth(mapHashInfo, "monster", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "flag", staticObjects, entity);
 
   return staticObjects;
 };

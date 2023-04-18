@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
-  selectCurrentStage,
+  selectIsPlayerMove,
+  stopPlayer,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
@@ -16,7 +17,7 @@ import adjustDegree from "../utils/adjustDegree";
 export default function MakePlayer(world, color, position, size, stage) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
     label: "Player",
-    stage
+    stage,
   });
 
   Matter.World.add(world, initialPlayer);
@@ -39,6 +40,7 @@ function Player(props) {
   const xImage = -widthBody * 0.3;
   const yImage = -widthBody * 0.35;
   const isCollide = useSelector(selectCollideMonster);
+  const isPlayerMove = useSelector(selectIsPlayerMove);
   const [lastPosition, setLastPosition] = useState(
     JSON.parse(JSON.stringify(position)),
   );
@@ -64,8 +66,8 @@ function Player(props) {
 
   const [subscription, setSubscription] = useState(null);
 
-  const subscribe = () => {
-    setSubscription(DeviceMotion);
+  const subscribe = (motion) => {
+    setSubscription(motion);
   };
 
   const unsubscribe = () => {
@@ -76,21 +78,25 @@ function Player(props) {
   };
 
   useEffect(() => {
-    if (!isCollide) {
-      subscribe();
-      DeviceMotion.setUpdateInterval(20);
-      DeviceMotion.addListener((result) => {
-        const ratioXY = 2;
-        const adjust = adjustDegree(result);
+    if (!isCollide && isPlayerMove) {
+      subscribe(
+        DeviceMotion.addListener((result) => {
+          DeviceMotion.setUpdateInterval(20);
+          const ratioXY = 2;
+          const adjust = adjustDegree(result);
 
-        Matter.Body.setVelocity(body, {
-          x: adjust.applyGamma * adjust.responsiveNess,
-          y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
-        });
-      });
-      return () => unsubscribe();
+          Matter.Body.setVelocity(body, {
+            x: adjust.applyGamma * adjust.responsiveNess,
+            y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
+          });
+        }),
+      );
     }
-  }, [isCollide]);
+    if (!isPlayerMove) {
+      unsubscribe();
+    }
+    return () => unsubscribe();
+  }, [isCollide, isPlayerMove]);
 
   return (
     <View style={makeViewStyle(xBody, yBody, widthBody)}>

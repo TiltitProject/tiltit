@@ -15,14 +15,10 @@ const FLOOR_WIDTH = 32;
 const mapInfo2 = makeMap(stageSheet[2], entityInfo[2]);
 const mapInfo = makeMap(stageSheet[1], entityInfo[1]);
 
-export default function Restart() {
-  // const currentStage = useSelector(selectCurrentStage) || 1;
+export default function Stage1() {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;
-
-  console.log(mapInfo2.monster, "mob");
-
 
   const blocks = makeBlocks(world, mapInfo, entityInfo[1]);
   const monsters = makeMonsters(world, mapInfo, entityInfo[1]);

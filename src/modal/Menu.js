@@ -6,7 +6,6 @@ import {
   backToMainPage,
   removeModal,
   restartGame,
-  changePage
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";

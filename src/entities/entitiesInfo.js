@@ -15,6 +15,10 @@ const entityInfo = {
       number: 31,
       size: BLOCK_SIZE,
     },
+    flag: {
+      number: 0,
+      size: 50,
+    },
     goal: {
       number: 1,
       size: 72,
@@ -59,12 +63,16 @@ const entityInfo = {
     columnMultiply: 3,
     gridSize: BLOCK_SIZE,
     block: {
-      number: 25,
+      number: 27,
       size: BLOCK_SIZE,
     },
     goal: {
-      number: 1,
+      number: 0,
       size: 72,
+    },
+    flag: {
+      number: 1,
+      size: 60,
     },
     item: {
       number: 3,
