@@ -36,7 +36,13 @@ export default function MainPage() {
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
-  }, []);
+
+    return () => {
+      if (BGM) {
+        BGM.unloadAsync();
+      }
+    };
+  }, [BGM]);
 
   const gameStart = () => {
     setIsFadeout(true);

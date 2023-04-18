@@ -1,6 +1,13 @@
 import { Dimensions } from "react-native";
 import Dynamic from "../../assets/dynamicImage";
-import { apple } from "../../assets/static";
+import {
+  apple,
+  arrowUpper,
+  goldTwice,
+  blockColumnThree,
+  blockRowThree,
+  ground,
+} from "../../assets/static";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
@@ -12,12 +19,21 @@ const entityInfo = {
     columnMultiply: 1,
     gridSize: BLOCK_SIZE,
     block: {
-      number: 31,
+      number: 30,
+      renderNum: 38,
+      firstBlocks: 19,
       size: BLOCK_SIZE,
+      image: {
+        row: blockRowThree,
+        column: blockColumnThree,
+        goldTwice,
+        ground,
+      },
     },
     flag: {
       number: 0,
       size: 50,
+      image: arrowUpper,
     },
     goal: {
       number: 1,
@@ -63,20 +79,29 @@ const entityInfo = {
     columnMultiply: 3,
     gridSize: BLOCK_SIZE,
     block: {
-      number: 51,
+      number: 57,
+      renderNum: 38,
+      firstBlocks: 19,
       size: BLOCK_SIZE,
+      image: {
+        row: blockRowThree,
+        column: blockColumnThree,
+        goldTwice,
+        ground,
+      },
     },
     goal: {
       number: 0,
       size: 72,
     },
     flag: {
-      number: 1,
-      size: 60,
+      number: 2,
+      size: BLOCK_SIZE,
+      image: arrowUpper,
     },
     item: {
-      number: 3,
-      size: (BLOCK_SIZE / 3) * 2,
+      number: 12,
+      size: BLOCK_SIZE,
       image: apple,
     },
     monster: {

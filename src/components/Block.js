@@ -9,9 +9,10 @@ import {
   ironColumnThree,
   ironRowThree,
   gold,
+  ground,
 } from "../../assets/static";
 
-export default function BlockMaker(world, position, size, type) {
+export default function BlockMaker(world, position, size, image) {
   const initialFloor = Matter.Bodies.rectangle(
     position.x,
     position.y,
@@ -20,7 +21,7 @@ export default function BlockMaker(world, position, size, type) {
     {
       label: "Floor",
       isStatic: true,
-      blockType: type,
+      image,
     },
   );
 
@@ -35,7 +36,7 @@ export default function BlockMaker(world, position, size, type) {
 
 function Block(props) {
   const { body } = props;
-  const { bounds, position, blockType: type } = body;
+  const { bounds, position, image } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
@@ -43,42 +44,7 @@ function Block(props) {
 
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
-      {type === "brownRow" && (
-        <Image
-          style={floorStyle(heightBody, widthBody)}
-          source={blockRowThree}
-        />
-      )}
-      {type === "brownColumn" && (
-        <Image
-          style={floorStyle(heightBody, widthBody)}
-          source={blockColumnThree}
-        />
-      )}
-      {type === "brownBlock" && (
-        <Image style={floorStyle(heightBody, widthBody)} source={block} />
-      )}
-      {type === "goldTwice" && (
-        <Image style={floorStyle(heightBody, widthBody)} source={goldTwice} />
-      )}
-      {type === "ironRow" && (
-        <Image
-          style={floorStyle(heightBody, widthBody)}
-          source={ironRowThree}
-        />
-      )}
-      {type === "ironColumn" && (
-        <Image
-          style={floorStyle(heightBody, widthBody)}
-          source={ironColumnThree}
-        />
-      )}
-      {type === "gold" && (
-        <Image
-          style={floorStyle(heightBody, widthBody)}
-          source={gold}
-        />
-      )}
+      <Image style={floorStyle(heightBody, widthBody)} source={image} />
     </View>
   );
 }
@@ -98,5 +64,6 @@ function floorStyle(heightBody, widthBody) {
     height: heightBody,
     width: widthBody,
     resizeMode: "repeat",
+    borderWidth: 1,
   });
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import { ironRowThree, ironColumnThree } from "../../assets/static";
+import { ironColumnThree, ironRowThree } from "../../assets/static";
 
 export default function FloorMaker(world, position, size, type) {
   const initialFloor = Matter.Bodies.rectangle(
@@ -12,7 +12,7 @@ export default function FloorMaker(world, position, size, type) {
     {
       label: "Floor",
       isStatic: true,
-      type,
+      blockType: type,
     },
   );
 
@@ -27,7 +27,7 @@ export default function FloorMaker(world, position, size, type) {
 
 function Floor(props) {
   const { body } = props;
-  const { bounds, position, type } = body;
+  const { bounds, position, blockType: type } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
@@ -35,13 +35,13 @@ function Floor(props) {
 
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
-      {type === "row" && (
+      {type === "ironRow" && (
         <Image
           style={floorStyle(heightBody, widthBody)}
           source={ironRowThree}
         />
       )}
-      {type === "column" && (
+      {type === "ironColumn" && (
         <Image
           style={floorStyle(heightBody, widthBody)}
           source={ironColumnThree}
@@ -58,6 +58,7 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
     top: yBody,
     width: widthBody,
     height: heightBody,
+    zIndex : 1,
   });
 }
 

@@ -1,24 +1,26 @@
 import BlockMaker from "../components/Block";
 import MonsterMaker from "../components/Monster";
 import ItemMaker from "../components/Item";
+import FlagMaker from "../components/Flag";
+import { arrowRight } from "../../assets/static";
 
 export const makeBlocks = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.block.number).keys()).forEach((index) => {
+  Array.from(Array(entity.block.renderNum).keys()).forEach((index) => {
     const objectNum = index + 1;
     const { size } = mapInfo.block[objectNum];
-    let blockImage = "brownRow";
+    let blockImage = entity.block.image.row;
+
+    if (size.width > size.height && size.height > entity.gridSize) {
+      blockImage = entity.block.image.ground;
+    }
 
     if (size.width === size.height) {
-      if (size.width === entity.gridSize) {
-        blockImage = "gold";
-      } else {
-        blockImage = "goldTwice";
-      }
+      blockImage = entity.block.image.goldTwice;
     }
     if (size.width < size.height) {
-      blockImage = "brownColumn";
+      blockImage = entity.block.image.column;
     }
 
     objects[`block${objectNum}`] = BlockMaker(
@@ -60,6 +62,26 @@ export const makeItems = (world, mapInfo, entity) => {
       mapInfo.item[objectNum].position,
       mapInfo.item[objectNum].size,
       entity.item.image,
+      objectNum,
+    );
+  });
+
+  return objects;
+};
+
+export const makeFlags = (world, mapInfo, entity) => {
+  const objects = {};
+
+  Array.from(Array(entity.flag.number).keys()).forEach((index) => {
+    const objectNum = index + 1;
+    let { image } = entity.flag;
+    if (objectNum === 2) image = arrowRight;
+
+    objects[`flag${objectNum}`] = FlagMaker(
+      world,
+      mapInfo.flag[objectNum].position,
+      mapInfo.flag[objectNum].size,
+      image,
       objectNum,
     );
   });

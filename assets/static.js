@@ -21,6 +21,9 @@ import goal from "./Items/goal/Goal.png";
 import apple from "./Items/apple/Apple.png";
 import clock from "./Items/clock/clock.png";
 import flag from "./Items/flag/Checkpoint.png";
+import arrowRight from "./Items/flag/right-arrow.png";
+import arrowUpper from "./Items/flag/upper-arrow.png";
+import ground from "./stage/ground/ground-borderless.png";
 
 export {
   grayBrickColumn,
@@ -46,4 +49,7 @@ export {
   gold,
   clock,
   flag,
+  arrowRight,
+  arrowUpper,
+  ground
 };

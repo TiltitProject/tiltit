@@ -43,7 +43,7 @@ import makeMapInfo from "./utils/makeMap";
 // import Item from "./components/Item";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
-import Flag from "./components/Flag";
+import Flag from "./components/FlagBefore";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -157,7 +157,7 @@ export default function Stage() {
                 />
               ),
             )} */}
-          {Array.from(Array(entityInfo[stage].flag.number).keys()).map(
+          {/* {Array.from(Array(entityInfo[stage].flag.number).keys()).map(
             (num) => (
               <Flag
                 key={`flag${num + 1}`}
@@ -165,7 +165,7 @@ export default function Stage() {
                 size={mapInfo.flag[num + 1].size}
               />
             ),
-          )}
+          )} */}
           {mapInfo.goal[1] && (
             <Goal
               position={mapInfo.goal[1].position}

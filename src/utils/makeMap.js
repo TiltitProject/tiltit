@@ -154,6 +154,10 @@ const makeObjectHash = (data, entity) => {
 const setPositionWidth = (hashInfo, type, staticObject, entity) => {
   if (entity[type].number) {
     const hashArray = Object.values(hashInfo[type]);
+    let offset = 0;
+    if (type === "item" || type === "goal" || type === "flag") {
+      offset = entity.gridSize / 2;
+    }
 
     hashArray.forEach((object, index) => {
       const propIndex = object.col.length - 1;
@@ -167,9 +171,10 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
         (entity.columnMultiply - 1) * FLOOR_WIDTH +
         margin +
         10 +
+        offset +
         height / 2 +
         object.col[0] * entity.gridSize;
-      const x = margin + width / 2 + object.row[0] * entity.gridSize;
+      const x = margin + width / 2 + offset + object.row[0] * entity.gridSize;
 
       staticObject[type][index + 1].size.height = height;
       staticObject[type][index + 1].size.width = width;
