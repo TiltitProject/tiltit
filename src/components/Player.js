@@ -6,7 +6,6 @@ import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
   selectIsPlayerMove,
-  stopPlayer,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";

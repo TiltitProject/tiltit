@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import MakePlayer from "../components/Player";
 import BlockMaker from "../components/Block";
 import makeMap from "../utils/makeMap";
-import { makeBlocks, makeMonsters } from "../utils/makeEntities";
+import { makeBlocks, makeMonsters, makeItems } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
 import stageSheet from "../../assets/stageSheet.json";
 import { selectCurrentStage } from "../features/gameSlice";

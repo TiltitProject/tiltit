@@ -9,12 +9,11 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
 const GAME_HEIGHT = WINDOW_HEIGHT - FLOOR_WIDTH;
 
-let movedPositionY = false;
-let movedHeight = 0
-const movedPositionX = false;
+let translateMapY = false;
+let movedHeight = 0;
 
 export default function Physics(entities, { touches, dispatch }) {
-  const { engine } = entities.physics;
+  const { engine, world } = entities.physics;
   const player = entities.player.body;
   const { stage } = player || 1;
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
@@ -34,36 +33,27 @@ export default function Physics(entities, { touches, dispatch }) {
 
   const itemNumber = entityInfo[stage].item.number;
   const itemArray = Array.from(Array(itemNumber).keys());
+  const monsterNumber = entityInfo[stage].monster.number;
+  const monsterArray = Array.from(Array(monsterNumber).keys());
+  const blockNumber = entityInfo[stage].block.number;
+  const blockArray = Array.from(Array(blockNumber).keys());
 
-  itemArray.forEach((num) => {
-    const itemPosition = mapInfo.item[num + 1].position;
-    const itemWidth = mapInfo.item[num + 1].size.width;
+  // itemArray.forEach((num) => {
+  //   const itemPosition = mapInfo.item[num + 1].position;
+  //   const itemWidth = mapInfo.item[num + 1].size.width;
 
-    if (
-      player.position.x > itemPosition.x - itemWidth / 2 &&
-      player.position.x < itemPosition.x - itemWidth / 2 + itemWidth &&
-      player.position.y > itemPosition.y - itemWidth / 2 &&
-      player.position.y < itemPosition.y - itemWidth / 2 + itemWidth
-    ) {
-      dispatch({ type: "get_item", payload: num + 1 });
-    }
-  });
+  //   if (
+  //     player.position.x > itemPosition.x - itemWidth / 2 &&
+  //     player.position.x < itemPosition.x + itemWidth / 2 &&
+  //     player.position.y > itemPosition.y - itemWidth / 2 &&
+  //     player.position.y < itemPosition.y + itemWidth / 2
+  //   ) {
+  //     dispatch({ type: "get_item", payload: num + 1 });
+  //   }
+  // });
 
   const flagNumber = entityInfo[stage].flag.number;
   const flagArray = Array.from(Array(flagNumber).keys());
-
-  // if (player.position.y < GAME_HEIGHT / 2 && movedPositionY < GAME_HEIGHT / 2) {
-  //   const blockNumber = entityInfo[stage].block.number;
-  //   const blockArray = Array.from(Array(blockNumber).keys());
-
-  //   blockArray.forEach((entityNum) => {
-  //     Matter.Body.translate(entities[`block${entityNum + 1}`].body, {
-  //       x: 0,
-  //       y: 5,
-  //     });
-  //   });
-  //   movedPositionY += 5;
-  // }
 
   flagArray.forEach((num) => {
     const flagPosition = mapInfo.flag[num + 1].position;
@@ -75,27 +65,19 @@ export default function Physics(entities, { touches, dispatch }) {
       player.position.y > flagPosition.y - flagWidth / 2 &&
       player.position.y < flagPosition.y + flagWidth / 2
     ) {
-      movedPositionY = true;
+      translateMapY = true;
     }
   });
 
-  if (movedPositionY && movedHeight < GAME_HEIGHT) {
+  if (translateMapY && movedHeight < GAME_HEIGHT) {
     movedHeight += 10;
 
     Matter.Body.setVelocity(entities.player.body, {
       x: 0,
       y: 0,
     });
-    dispatch({type: "translate_upper"});
 
     Matter.Body.translate(entities.player.body, { x: 0, y: 10 });
-
-    flagArray.forEach((flagNum) => {
-      mapInfo.flag[flagNum + 1].position.y += 10;
-    });
-
-    const blockNumber = entityInfo[stage].block.number;
-    const blockArray = Array.from(Array(blockNumber).keys());
 
     blockArray.forEach((entityNum) => {
       Matter.Body.translate(entities[`block${entityNum + 1}`].body, {
@@ -103,9 +85,24 @@ export default function Physics(entities, { touches, dispatch }) {
         y: 10,
       });
     });
+
+    monsterArray.forEach((entityNum) => {
+      Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
+        x: 0,
+        y: 10,
+      });
+    });
+
+    itemArray.forEach((entityNum) => {
+      Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
+        x: 0,
+        y: 10,
+      });
+    });
   }
 
   Matter.Engine.update(engine);
+
   engine.timing.delta = 1 / 80;
 
   touches.filter((touch) => {
@@ -115,8 +112,17 @@ export default function Physics(entities, { touches, dispatch }) {
   });
 
   Matter.Events.on(engine, "collisionStart", () => {
-    const monsterNumber = entityInfo[stage].monster.number;
-    const monsterArray = Array.from(Array(monsterNumber).keys());
+
+    itemArray.forEach((num) => {
+      const item = entities[`item${num + 1}`].body;
+      const get = Matter.Collision.collides(entities.player.body, item);
+
+      if (get) {
+        dispatch({ type: "get_item", payload: num + 1 });
+        Matter.World.remove(world, item);
+      }
+    });
+
     monsterArray.forEach((num) => {
       const monster = `monster${num + 1}`;
       const collision = Matter.Collision.collides(

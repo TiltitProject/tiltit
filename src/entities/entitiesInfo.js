@@ -25,7 +25,7 @@ const entityInfo = {
     },
     item: {
       number: 19,
-      size: BLOCK_SIZE * 1.5,
+      size: BLOCK_SIZE,
       image: apple,
     },
     monster: {
@@ -63,7 +63,7 @@ const entityInfo = {
     columnMultiply: 3,
     gridSize: BLOCK_SIZE,
     block: {
-      number: 27,
+      number: 51,
       size: BLOCK_SIZE,
     },
     goal: {
@@ -76,7 +76,7 @@ const entityInfo = {
     },
     item: {
       number: 3,
-      size: BLOCK_SIZE * 1.5,
+      size: (BLOCK_SIZE / 3) * 2,
       image: apple,
     },
     monster: {

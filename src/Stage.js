@@ -40,7 +40,7 @@ import stage1 from "./entities/stage1";
 import stage2 from "./entities/stage2";
 import entityInfo from "./entities/entitiesInfo";
 import makeMapInfo from "./utils/makeMap";
-import Item from "./components/Item";
+// import Item from "./components/Item";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
 import Flag from "./components/Flag";
@@ -73,6 +73,8 @@ export default function Stage() {
     }, 700);
   }, []);
 
+  console.log("render");
+
   const handleIsFadeout = () => {
     setIsFadeout(true);
   };
@@ -85,7 +87,7 @@ export default function Stage() {
   const handleGameEngine = (e) => {
     switch (e.type) {
       case "translate_upper":
-        dispatch(translateUpper());
+        // dispatch(translateUpper());
         break;
       case "clear":
         dispatch(reachGoal());
@@ -144,16 +146,17 @@ export default function Stage() {
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
-          {mapState && Array.from(Array(entityInfo[stage].item.number).keys()).map(
-            (num) => (
-              <Item
-                key={`item${num + 1}`}
-                size={mapInfo.item[num + 1].size}
-                image={entityInfo[stage].item.image}
-                num={num + 1}
-              />
-            ),
-          )}
+          {/* {mapState &&
+            Array.from(Array(entityInfo[stage].item.number).keys()).map(
+              (num) => (
+                <Item
+                  key={`item${num + 1}`}
+                  size={mapInfo.item[num + 1].size}
+                  image={entityInfo[stage].item.image}
+                  num={num + 1}
+                />
+              ),
+            )} */}
           {Array.from(Array(entityInfo[stage].flag.number).keys()).map(
             (num) => (
               <Flag
