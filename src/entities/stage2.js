@@ -46,7 +46,7 @@ export default function Stage2() {
     ),
     topFloor: FloorMaker(
       world,
-      { x: WINDOW_WIDTH / 2, y: +10 },
+      { x: WINDOW_WIDTH / 2, y: +12 },
       { height: FLOOR_WIDTH, width: WINDOW_WIDTH },
       "ironRow",
     ),
@@ -58,7 +58,7 @@ export default function Stage2() {
     ),
     rightFloor: FloorMaker(
       world,
-      { x: WINDOW_WIDTH, y: WINDOW_HEIGHT / 2 },
+      { x: WINDOW_WIDTH - 3, y: WINDOW_HEIGHT / 2 },
       { height: WINDOW_HEIGHT, width: FLOOR_WIDTH },
       "ironColumn",
     ),

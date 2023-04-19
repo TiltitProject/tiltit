@@ -6,6 +6,7 @@ import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
   selectIsPlayerMove,
+  stopPlayer,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
@@ -65,8 +66,8 @@ function Player(props) {
 
   const [subscription, setSubscription] = useState(null);
 
-  const subscribe = (motion) => {
-    setSubscription(motion);
+  const subscribe = () => {
+    setSubscription(DeviceMotion);
   };
 
   const unsubscribe = () => {
@@ -75,26 +76,26 @@ function Player(props) {
     }
     setSubscription(null);
   };
+  console.log(subscription);
+  console.log(DeviceMotion.getListenerCount());
 
   useEffect(() => {
-    if (!isCollide && isPlayerMove) {
-      subscribe(
-        DeviceMotion.addListener((result) => {
-          DeviceMotion.setUpdateInterval(20);
-          const ratioXY = 2;
-          const adjust = adjustDegree(result);
-
-          Matter.Body.setVelocity(body, {
+    if (!isCollide && DeviceMotion.getListenerCount() < 1) {
+      subscribe();
+      DeviceMotion.addListener((result) => {
+        const ratioXY = 2;
+        const adjust = adjustDegree(result);
+        if (isPlayerMove) {
+          return Matter.Body.setVelocity(body, {
             x: adjust.applyGamma * adjust.responsiveNess,
             y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
           });
-        }),
-      );
+        }
+        unsubscribe();
+      });
+
+      return () => unsubscribe();
     }
-    if (!isPlayerMove) {
-      unsubscribe();
-    }
-    return () => unsubscribe();
   }, [isCollide, isPlayerMove]);
 
   return (

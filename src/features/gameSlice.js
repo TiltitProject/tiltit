@@ -27,6 +27,7 @@ const initialState = {
   currentStage: 2,
   isPlayerMove: true,
   mapInfo: null,
+  restartCount : 0,
 };
 
 const gameSlice = createSlice({
@@ -45,6 +46,7 @@ const gameSlice = createSlice({
       state.getTrophy = false;
       state.hasClear = false;
       state.leftTime = 30;
+      state.restartCount += 1;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;
@@ -108,11 +110,19 @@ const gameSlice = createSlice({
     setMapInfo: (state, action) => {
       state.mapInfo = action.payload;
     },
-    downItemPosition: (state, action) => {
-      const itemKeys = action.payload;
-      itemKeys.forEach((num) => {
-        state.mapInfo.item[num].position.y += 10;
+    pageMove: (state) => {
+      state.isPlayerMove = false;
+    },
+    completeMove: (state, action) => {
+      const items = {};
+
+      Array.from(Array(action.payload).keys()).forEach((num) => {
+        items[num + 1] = true;
       });
+
+      state.itemsVisible = items;
+      state.isPlayerMove = true;
+      state.leftTime += 30;
     }
   },
 });
@@ -134,7 +144,8 @@ export const {
   setStageResult,
   stopPlayer,
   setMapInfo,
-  downItemPosition
+  pageMove,
+  completeMove,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -151,6 +162,7 @@ export const selectStageInfo = (state) => state.game.stageInfo;
 export const selectStageClear = (state) => state.game.hasClear;
 export const selectIsPlayerMove = (state) => state.game.isPlayerMove;
 export const selectMapInfo = (state) => state.game.mapInfo;
+export const selectRestartCount = (state) => state.game.restartCount;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
@@ -185,9 +197,11 @@ export const timeCountDown = () => (dispatch, getState) => {
   dispatch(collideMonster());
 };
 
-export const translateUpper = () => (dispatch, getState) => {
-  const itemKeys = Object.keys(selectMapInfo(getState()).item);
-  dispatch(downItemPosition(itemKeys));
-};
+// export const completeMove = () => (dispatch, getState) => {
+//   const visibleItems = selectItemsVisible(getState());
+//   const
+
+//   dispatch(setStageResult({ currentStage, currentPoint, leftTime }));
+// };
 
 export default gameSlice.reducer;

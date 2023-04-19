@@ -25,19 +25,24 @@ export default function ItemMaker(world, position, size, image, number) {
 
 function Item(props) {
   const { body } = props;
-  const { bounds, position, number, image } = body;
+  const { bounds, position, number, image, render } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const widthImage = widthBody * 2.5;
   const xImage = -widthBody * 0.75;
   const yImage = -widthBody * 0.65;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - widthBody / 2;
-  const isVisible = useSelector(selectItemsVisible)[number];
+  // const isVisible = useSelector(selectItemsVisible)[number];
 
-  if (isVisible) {
+  if (render.visible) {
     return (
       <View style={viewStyle(xBody, yBody, widthBody)}>
-        <Image style={imageStyle(xImage, yImage, widthImage)} source={image} />
+        {render.visible && (
+          <Image
+            style={imageStyle(xImage, yImage, widthImage)}
+            source={image}
+          />
+        )}
       </View>
     );
   }

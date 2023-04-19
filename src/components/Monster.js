@@ -33,7 +33,7 @@ function Monster(props) {
   const yBody = position.y - heightBody / 2;
   const isGameRun = useSelector(selectRunningGame);
 
-  useMoveRow(body, initialPosition, Matter, specifics);
+  // useMoveRow(body, initialPosition, Matter, specifics);
 
   useEffect(() => {
     const changeIndex = setTimeout(() => {

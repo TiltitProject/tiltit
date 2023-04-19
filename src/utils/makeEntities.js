@@ -2,12 +2,12 @@ import BlockMaker from "../components/Block";
 import MonsterMaker from "../components/Monster";
 import ItemMaker from "../components/Item";
 import FlagMaker from "../components/Flag";
-import { arrowRight } from "../../assets/static";
+import { arrowRight, groundInner } from "../../assets/static";
 
 export const makeBlocks = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.block.renderNum).keys()).forEach((index) => {
+  Array.from(Array(entity.block.renderEntity).keys()).forEach((index) => {
     const objectNum = index + 1;
     const { size } = mapInfo.block[objectNum];
     let blockImage = entity.block.image.row;
@@ -15,12 +15,15 @@ export const makeBlocks = (world, mapInfo, entity) => {
     if (size.width > size.height && size.height > entity.gridSize) {
       blockImage = entity.block.image.ground;
     }
-
     if (size.width === size.height) {
       blockImage = entity.block.image.goldTwice;
     }
     if (size.width < size.height) {
       blockImage = entity.block.image.column;
+    }
+
+    if (objectNum === 37) {
+      blockImage = groundInner;
     }
 
     objects[`block${objectNum}`] = BlockMaker(
@@ -37,7 +40,7 @@ export const makeBlocks = (world, mapInfo, entity) => {
 export const makeMonsters = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.monster.number).keys()).forEach((index) => {
+  Array.from(Array(entity.monster.renderEntity).keys()).forEach((index) => {
     const objectNum = index + 1;
 
     objects[`monster${objectNum}`] = MonsterMaker(
@@ -54,7 +57,7 @@ export const makeMonsters = (world, mapInfo, entity) => {
 export const makeItems = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.item.number).keys()).forEach((index) => {
+  Array.from(Array(entity.item.renderEntity).keys()).forEach((index) => {
     const objectNum = index + 1;
 
     objects[`item${objectNum}`] = ItemMaker(

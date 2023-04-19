@@ -20,11 +20,10 @@ import {
   reachGoal,
   selectCurrentStage,
   selectStageClear,
-  selectPage,
-  stopPlayer,
   setMapInfo,
   selectMapInfo,
-  translateUpper,
+  stopPlayer,
+  completeMove,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
@@ -62,6 +61,9 @@ export default function Stage() {
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
 
+  console.log("check");
+  console.log("render");
+
   useEffect(() => {
     dispatch(runGame(entityInfo[stage].item.number));
     dispatch(setMapInfo(mapInfo));
@@ -72,8 +74,6 @@ export default function Stage() {
       setIsFadeIn(false);
     }, 700);
   }, []);
-
-  console.log("render");
 
   const handleIsFadeout = () => {
     setIsFadeout(true);
@@ -86,8 +86,11 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
-      case "translate_upper":
-        // dispatch(translateUpper());
+      case "complete_move":
+        dispatch(completeMove(entityInfo[stage].item.number));
+        break;
+      case "move_page":
+        dispatch(stopPlayer());
         break;
       case "clear":
         dispatch(reachGoal());
@@ -146,26 +149,6 @@ export default function Stage() {
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
-          {/* {mapState &&
-            Array.from(Array(entityInfo[stage].item.number).keys()).map(
-              (num) => (
-                <Item
-                  key={`item${num + 1}`}
-                  size={mapInfo.item[num + 1].size}
-                  image={entityInfo[stage].item.image}
-                  num={num + 1}
-                />
-              ),
-            )} */}
-          {/* {Array.from(Array(entityInfo[stage].flag.number).keys()).map(
-            (num) => (
-              <Flag
-                key={`flag${num + 1}`}
-                position={mapInfo.flag[num + 1].position}
-                size={mapInfo.flag[num + 1].size}
-              />
-            ),
-          )} */}
           {mapInfo.goal[1] && (
             <Goal
               position={mapInfo.goal[1].position}

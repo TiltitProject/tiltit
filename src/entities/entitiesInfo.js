@@ -20,8 +20,8 @@ const entityInfo = {
     gridSize: BLOCK_SIZE,
     block: {
       number: 30,
-      renderNum: 38,
-      firstBlocks: 19,
+      renderEntity: 30,
+      firstEntity: 30,
       size: BLOCK_SIZE,
       image: {
         row: blockRowThree,
@@ -41,11 +41,15 @@ const entityInfo = {
     },
     item: {
       number: 19,
+      renderEntity: 19,
+      firstEntity: 19,
       size: BLOCK_SIZE,
       image: apple,
     },
     monster: {
       number: 4,
+      renderEntity: 4,
+      firstEntity: 4,
       size: 40,
       specifics: {
         1: {
@@ -80,8 +84,8 @@ const entityInfo = {
     gridSize: BLOCK_SIZE,
     block: {
       number: 57,
-      renderNum: 38,
-      firstBlocks: 19,
+      renderEntity: 38,
+      firstEntity: 19,
       size: BLOCK_SIZE,
       image: {
         row: blockRowThree,
@@ -100,18 +104,52 @@ const entityInfo = {
       image: arrowUpper,
     },
     item: {
-      number: 12,
+      number: 27,
+      renderEntity: 18,
+      firstEntity: 9,
       size: BLOCK_SIZE,
       image: apple,
     },
     monster: {
-      number: 1,
-      size: 40,
+      number: 6,
+      renderEntity: 4,
+      firstEntity: 2,
+      size: BLOCK_SIZE * 2,
       specifics: {
         1: {
           direction: "row",
           speed: 3,
           distance: GAME_WIDTH / 5,
+          image: Dynamic.rock,
+        },
+        2: {
+          direction: "row",
+          speed: 3,
+          distance: GAME_WIDTH / 5,
+          image: Dynamic.rock,
+        },
+        3: {
+          direction: "row",
+          speed: 3,
+          distance: GAME_WIDTH / 5,
+          image: Dynamic.rock,
+        },
+        4: {
+          direction: "row",
+          speed: 3,
+          distance: GAME_WIDTH / 5,
+          image: Dynamic.rock,
+        },
+        5: {
+          direction: "row",
+          speed: 3,
+          distance: GAME_WIDTH / 10,
+          image: Dynamic.rock,
+        },
+        6: {
+          direction: "row",
+          speed: 3,
+          distance: GAME_WIDTH / 10,
           image: Dynamic.rock,
         },
       },
