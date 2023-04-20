@@ -69,7 +69,6 @@ export default function Stage() {
   const mapState = useSelector(selectMapState);
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
-  const map = stage2(stage);
 
   useEffect(() => {
     dispatch(runGame(entityInfo[stage].item.number));
@@ -91,6 +90,9 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "change_index":
+        // dispatch(applyTranslateRow(e.payload));
+        break;
       case "complete_move_row":
         dispatch(applyTranslateRow(e.payload));
         break;

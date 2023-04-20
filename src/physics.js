@@ -17,20 +17,18 @@ let translateMapY = false;
 let translateMapX = false;
 let movedHeight = 0;
 let movedWidth = 0;
-const restart = true;
-const mapInfo = {
-  1: makeMapInfo(stageSheet[1], entityInfo[1]),
-  2: makeMapInfo(stageSheet[2], entityInfo[2]),
-};
+// const mapInfo = {
+//   1: makeMapInfo(stageSheet[1], entityInfo[1]),
+//   2: makeMapInfo(stageSheet[2], entityInfo[2]),
+// };
 
 export default function usePhysics(entities, { touches, dispatch }) {
   const { engine, world } = entities.physics;
   const player = entities.player.body;
-  const { stage } = entities;
-
-  const goalPosition = mapInfo[stage].goal[1]?.position;
-  const goalWidth = mapInfo[stage].goal[1]?.size.width;
-  const monsterNumber = entityInfo[stage].monster.renderEntity;
+  const { stage, mapInfo } = entities;
+  const goalPosition = mapInfo.goal[1]?.position;
+  const goalWidth = mapInfo.goal[1]?.size.width;
+  const monsterNumber = entityInfo[stage].monster.number;
   const monsterArray = Array.from(Array(monsterNumber).keys());
   const itemNumber = entityInfo[stage].item.number;
   const itemArray = Array.from(Array(itemNumber).keys());
@@ -38,12 +36,21 @@ export default function usePhysics(entities, { touches, dispatch }) {
   const blockArray = Array.from(Array(blockNumber).keys());
   const firstBlocksNum = entityInfo[stage].block.firstEntity;
   const firstBlockArray = Array.from(Array(firstBlocksNum).keys());
-  const firstItemNum = entityInfo[stage].item.firstEntity;
-  const firstItemArray = Array.from(Array(firstItemNum).keys());
-  const firstMonsterNum = entityInfo[stage].monster.firstEntity;
-  const firstMonsterArray = Array.from(Array(firstMonsterNum).keys());
+  // const firstItemNum = entityInfo[stage].item.firstEntity;
+  // const firstItemArray = Array.from(Array(firstItemNum).keys());
+  // const firstMonsterNum = entityInfo[stage].monster.firstEntity;
+  // const firstMonsterArray = Array.from(Array(firstMonsterNum).keys());
+  // console.log(entities.lastPosition)
+  // const distance = Matter.Vector.magnitude(
+  //   Matter.Vector.sub(player.position, mapInfo.lastPosition),
+  // );
 
-  Matter.Body.set(player, player.label, "changed");
+  // if (distance > 7) {
+  //   mapInfo.lastPosition = player.position;
+  //   dispatch({ type: "change_index" });
+  // }
+
+  // Matter.Body.set(player, player.label, "changed");
 
   Matter.Engine.update(engine);
   engine.timing.delta = 1 / 80;
@@ -53,22 +60,51 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
   });
 
-  // gyroMovePlayer();
+  const moveRow = (specifics) => {
+    Object.keys(specifics).forEach((num) => {
+      const monster = entities[`monster${num}`].body;
+      const moveAxis = specifics[num].axis;
+      const stopAxis = moveAxis === "x" ? "y" : "x";
+      const moveDistance = specifics[num].distance;
+      const { round, translateMap } = specifics[num];
+      const translateInfo = translateMap[moveAxis];
+      const translatedPixel = entities.translatedInfo[moveAxis];
+      const appliedPosition = translateInfo * translatedPixel;
 
-  // DeviceMotion.addListener((result) => {
-  //   DeviceMotion.setUpdateInterval(20);
-  //   const ratioXY = 2;
-  //   const adjust = adjustDegree(result);
+      if (entities.round === round) {
+        if (
+          monster.position[moveAxis] >=
+          monster.initialPosition[moveAxis] + appliedPosition + moveDistance
+        ) {
+          specifics[num].changeMove = true;
+        } else if (
+          monster.position[moveAxis] <=
+          monster.initialPosition[moveAxis] + appliedPosition - moveDistance
+        ) {
+          specifics[num].changeMove = false;
+        }
 
-  //   Matter.Body.setVelocity(player, {
-  //     x: adjust.applyGamma * adjust.responsiveNess,
-  //     y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
-  //   });
-  // });
+        if (!specifics[num].changeMove) {
+          Matter.Body.translate(monster, {
+            [moveAxis]: specifics[num].speed,
+            [stopAxis]: 0,
+          });
+        } else {
+          Matter.Body.translate(monster, {
+            [moveAxis]: -specifics[num].speed,
+            [stopAxis]: 0,
+          });
+        }
+      }
+    });
+  };
+  if (!translateMapY && !translateMapX) {
+    moveRow(entityInfo[stage].monster.specifics);
+  }
 
   itemArray.forEach((num) => {
-    const itemPosition = mapInfo[stage].item[num + 1].position;
-    const itemWidth = mapInfo[stage].item[num + 1].size.width;
+    const itemPosition = mapInfo.item[num + 1].position;
+    const itemWidth = mapInfo.item[num + 1].size.width;
 
     if (
       player.position.x > itemPosition.x - itemWidth / 2 &&
@@ -125,16 +161,14 @@ export default function usePhysics(entities, { touches, dispatch }) {
           y: 0,
         });
       });
-
-      // itemArray.forEach((entityNum) => {
-      //   Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
-      //     x: -5,
-      //     y: 0,
-      //   });
-      // });
     } else {
       dispatch({ type: "complete_move_row", payload: movedWidth });
+      itemArray.forEach((num) => {
+        mapInfo.item[num + 1].position.x += movedWidth;
+      });
       translateMapX = false;
+      entities.round += 1;
+      entities.translatedInfo.x += movedWidth;
       movedWidth = 0;
     }
   }
@@ -171,40 +205,27 @@ export default function usePhysics(entities, { touches, dispatch }) {
           y: 10,
         });
       });
-
-      // itemArray.forEach((entityNum) => {
-      //   Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
-      //     x: 0,
-      //     y: 10,
-      //   });
-      // });
     } else {
       firstBlockArray.forEach((entityNum) => {
         Matter.Body.setPosition(entities[`block${entityNum + 1}`].body, {
-          x: mapInfo[stage].block[entityNum + 39].position.x,
-          y: mapInfo[stage].block[entityNum + 39].position.y + movedHeight,
+          x: mapInfo.block[entityNum + 39].position.x,
+          y: mapInfo.block[entityNum + 39].position.y + movedHeight,
         });
       });
-      // firstItemArray.forEach((entityNum) => {
-      //   Matter.Body.setPosition(entities[`item${entityNum + 1}`].body, {
-      //     x: mapInfo.item[entityNum + 19].position.x,
-      //     y: mapInfo.item[entityNum + 19].position.y + movedHeight,
-      //   });
-      // });
-      firstMonsterArray.forEach((entityNum) => {
-        Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
-          x: mapInfo[stage].monster[entityNum + 5].position.x,
-          y: mapInfo[stage].monster[entityNum + 5].position.y + movedHeight,
-        });
-      });
+
       dispatch({ type: "complete_move_upper", payload: movedHeight });
+      itemArray.forEach((num) => {
+        mapInfo.item[num + 1].position.y += movedHeight;
+      });
+      entities.round += 1;
       translateMapY = false;
+      entities.translatedInfo.y += movedHeight;
       movedHeight = 0;
     }
   }
 
   const movePlayer = (result) => {
-    const ratioXY = 2;
+    const ratioXY = 1.5;
     const adjust = adjustDegree(result);
     if (!translateMapX && !translateMapY) {
       Matter.Body.setVelocity(player, {

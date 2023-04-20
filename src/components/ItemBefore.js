@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import {
   selectItemsVisible,
   selectMapState,
-  selectStage,
   selectCurrentStage,
 } from "../features/gameSlice";
 
@@ -36,7 +35,6 @@ function viewStyle(xBody, yBody, widthBody) {
     top: yBody,
     width: widthBody,
     height: widthBody,
-    borderWidth: 1,
   });
 }
 

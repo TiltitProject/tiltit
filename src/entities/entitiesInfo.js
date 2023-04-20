@@ -53,28 +53,32 @@ const entityInfo = {
       size: 40,
       specifics: {
         1: {
-          direction: "row",
+          axis: "x",
           speed: 3,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
         },
         2: {
-          direction: "column",
+          axis: "y",
           speed: 4,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
         },
         3: {
-          direction: "column",
+          axis: "y",
           speed: 3,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
         },
         4: {
-          direction: "column",
+          axis: "y",
           speed: 2.5,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
         },
       },
     },
@@ -117,40 +121,76 @@ const entityInfo = {
       size: BLOCK_SIZE * 2,
       specifics: {
         1: {
-          direction: "row",
+          axis: "y",
           speed: 3,
-          distance: GAME_WIDTH / 5,
+          distance: GAME_WIDTH / 4,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 1,
+          translateMap: {
+            x: 0,
+            y: 0,
+          }
         },
         2: {
-          direction: "row",
+          axis: "x",
           speed: 3,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 1,
+          translateMap: {
+            x: 0,
+            y: 0,
+          }
         },
         3: {
-          direction: "row",
+          axis: "x",
           speed: 3,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 2,
+          translateMap: {
+            x: 0,
+            y: 1,
+          }
         },
         4: {
-          direction: "row",
+          axis: "x",
           speed: 3,
           distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 2,
+          translateMap: {
+            x: 0,
+            y: 1,
+          }
         },
         5: {
-          direction: "row",
+          axis: "y",
           speed: 3,
-          distance: GAME_WIDTH / 10,
+          distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 3,
+          translateMap: {
+            x: 1,
+            y: 1,
+          }
         },
         6: {
-          direction: "row",
+          axis: "x",
           speed: 3,
-          distance: GAME_WIDTH / 10,
+          distance: GAME_WIDTH / 5,
           image: Dynamic.rock,
+          changeMove: false,
+          round: 3,
+          translateMap: {
+            x: 1,
+            y: 1,
+          }
         },
       },
     },

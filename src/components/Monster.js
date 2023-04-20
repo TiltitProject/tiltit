@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import useMoveRow from "../utils/useMoveMonster";
 import { selectRunningGame } from "../features/gameSlice";
 
 export default function MakeMonster(world, position, size, specifics) {
@@ -32,8 +31,6 @@ function Monster(props) {
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
   const isGameRun = useSelector(selectRunningGame);
-
-  // useMoveRow(body, initialPosition, Matter, specifics);
 
   useEffect(() => {
     const changeIndex = setTimeout(() => {

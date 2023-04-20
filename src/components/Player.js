@@ -17,6 +17,7 @@ export default function MakePlayer(world, color, position, size, stage) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
     label: "Player",
     stage,
+    lastPosition: position,
   });
 
   Matter.World.add(world, initialPlayer);
@@ -99,9 +100,9 @@ function Player(props) {
   //       }),
   //     );
   //   }
-    // if (!isPlayerMove) {
-    //   unsubscribe();
-    // }
+  // if (!isPlayerMove) {
+  //   unsubscribe();
+  // }
   //   return () => unsubscribe();
   // }, [isCollide, isPlayerMove]);
   // console.log(subscription);

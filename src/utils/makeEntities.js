@@ -40,7 +40,7 @@ export const makeBlocks = (world, mapInfo, entity) => {
 export const makeMonsters = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.monster.renderEntity).keys()).forEach((index) => {
+  Array.from(Array(entity.monster.number).keys()).forEach((index) => {
     const objectNum = index + 1;
 
     objects[`monster${objectNum}`] = MonsterMaker(

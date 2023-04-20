@@ -22,7 +22,7 @@ export default function Stage2(stage) {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;
-  const mapInfo2 = makeMap(stageSheet[stage], entityInfo[stage]);
+  const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 
   return {
     physics: { engine, world },
@@ -51,9 +51,15 @@ export default function Stage2(stage) {
       { height: WINDOW_HEIGHT, width: FLOOR_WIDTH },
       "ironColumn",
     ),
-    ...makeBlocks(world, mapInfo2, entityInfo[stage]),
-    ...makeMonsters(world, mapInfo2, entityInfo[stage]),
-    ...makeFlags(world, mapInfo2, entityInfo[stage]),
+    ...makeBlocks(world, mapInfo, entityInfo[stage]),
+    ...makeMonsters(world, mapInfo, entityInfo[stage]),
+    ...makeFlags(world, mapInfo, entityInfo[stage]),
     stage,
+    mapInfo,
+    round: 1,
+    translatedInfo: {
+      x: 0,
+      y: 0,
+    }
   };
 }
