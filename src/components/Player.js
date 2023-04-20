@@ -6,7 +6,6 @@ import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
   selectIsPlayerMove,
-  stopPlayer,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
@@ -66,37 +65,66 @@ function Player(props) {
 
   const [subscription, setSubscription] = useState(null);
 
-  const subscribe = () => {
-    setSubscription(DeviceMotion);
+  const subscribe = (callBack) => {
+    setSubscription(callBack);
   };
 
   const unsubscribe = () => {
     if (subscription) {
       subscription.remove();
+      // DeviceMotion.removeAllListeners();
     }
     setSubscription(null);
   };
-  console.log(subscription);
-  console.log(DeviceMotion.getListenerCount());
 
-  useEffect(() => {
-    if (!isCollide && DeviceMotion.getListenerCount() < 1) {
-      subscribe();
-      DeviceMotion.addListener((result) => {
-        const ratioXY = 2;
-        const adjust = adjustDegree(result);
-        if (isPlayerMove) {
-          return Matter.Body.setVelocity(body, {
-            x: adjust.applyGamma * adjust.responsiveNess,
-            y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
-          });
-        }
-        unsubscribe();
+  const movePlayer = (result) => {
+    const ratioXY = 2;
+    const adjust = adjustDegree(result);
+    if (isPlayerMove) {
+      Matter.Body.setVelocity(body, {
+        x: adjust.applyGamma * adjust.responsiveNess,
+        y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
       });
-
-      return () => unsubscribe();
     }
-  }, [isCollide, isPlayerMove]);
+  };
+
+  // console.log(DeviceMotion.getListenerCount());
+
+  // useEffect(() => {
+  //   DeviceMotion?.removeAllListeners();
+  //   if (!isCollide && isPlayerMove) {
+  //     subscribe(
+  //       DeviceMotion.addListener((result) => {
+  //         movePlayer(result);
+  //       }),
+  //     );
+  //   }
+    // if (!isPlayerMove) {
+    //   unsubscribe();
+    // }
+  //   return () => unsubscribe();
+  // }, [isCollide, isPlayerMove]);
+  // console.log(subscription);
+  // console.log(DeviceMotion.getListenerCount());
+
+  // useEffect(() => {
+  //   if (!isCollide && DeviceMotion.getListenerCount() < 1) {
+  //     subscribe();
+  //     DeviceMotion.addListener((result) => {
+  //       const ratioXY = 2;
+  //       const adjust = adjustDegree(result);
+  //       if (isPlayerMove) {
+  //         return Matter.Body.setVelocity(body, {
+  //           x: adjust.applyGamma * adjust.responsiveNess,
+  //           y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
+  //         });
+  //       }
+  //       unsubscribe();
+  //     });
+
+  //     return () => unsubscribe();
+  //   }
+  // }, [isCollide, isPlayerMove]);
 
   return (
     <View style={makeViewStyle(xBody, yBody, widthBody)}>

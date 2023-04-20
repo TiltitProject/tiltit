@@ -42,6 +42,8 @@ function Block(props) {
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
 
+
+
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
       <Image style={floorStyle(heightBody, widthBody)} source={image} />

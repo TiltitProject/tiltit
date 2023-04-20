@@ -7,20 +7,26 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Audio } from "expo-av";
 import { backgroundImage } from "../assets/static";
 import { playSound } from "./utils/playSound";
-import { hopefulBGM, start } from "../assets/audio";
-import { changePage } from "./features/gameSlice";
+import { hopefulBGM, start, select } from "../assets/audio";
+import {
+  changePage,
+  selectModalVisible,
+  showModal,
+} from "./features/gameSlice";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
+import SelectStage from "./modal/SelctStage";
 
 export default function MainPage() {
   const dispatch = useDispatch();
   const [BGM, setBGM] = useState(null);
   const [isFadeout, setIsFadeout] = useState(false);
   const [isFadeIn, setIsFadeIn] = useState(true);
+  const isModalVisible = useSelector(selectModalVisible);
 
   useEffect(() => {
     const playBGM = async () => {
@@ -42,9 +48,14 @@ export default function MainPage() {
         BGM.unloadAsync();
       }
     };
-  }, [BGM]);
+  }, []);
 
-  const gameStart = () => {
+  const handleModalOpen = () => {
+    dispatch(showModal());
+    playSound(select, 1);
+  };
+
+  const handleGameStart = () => {
     setIsFadeout(true);
     playSound(start, 1);
     if (BGM) {
@@ -64,9 +75,10 @@ export default function MainPage() {
         <TouchableOpacity style={styles.messageBox}>
           <Text style={styles.textBox}>SELECT CHARACTER</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.messageBox} onPress={gameStart}>
+        <TouchableOpacity style={styles.messageBox} onPress={handleModalOpen}>
           <Text style={styles.textBox}>START GAME</Text>
         </TouchableOpacity>
+        <SelectStage isModalVisible={isModalVisible} onGameStart={handleGameStart} />
         <StatusBar style="auto" hidden />
       </ImageBackground>
     </View>

@@ -26,8 +26,13 @@ const initialState = {
   itemsVisible: {},
   currentStage: 2,
   isPlayerMove: true,
-  mapInfo: null,
-  restartCount : 0,
+  restartCount: 0,
+  mapState: {
+    0: null,
+    1: null,
+    2: null,
+  },
+  isFadeOut: false,
 };
 
 const gameSlice = createSlice({
@@ -47,6 +52,7 @@ const gameSlice = createSlice({
       state.hasClear = false;
       state.leftTime = 30;
       state.restartCount += 1;
+      state.isFadeOut = true;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;
@@ -66,6 +72,7 @@ const gameSlice = createSlice({
       state.getTrophy = false;
       state.hasClear = false;
       state.leftTime = 30;
+      state.isFadeOut = false;
     },
     stopGame: (state) => {
       state.runningGame = false;
@@ -108,22 +115,53 @@ const gameSlice = createSlice({
       state.isPlayerMove = false;
     },
     setMapInfo: (state, action) => {
-      state.mapInfo = action.payload;
+      const {stage, mapInfo} = action.payload;
+      state.mapState[stage] = mapInfo;
     },
     pageMove: (state) => {
       state.isPlayerMove = false;
     },
-    completeMove: (state, action) => {
-      const items = {};
-
-      Array.from(Array(action.payload).keys()).forEach((num) => {
-        items[num + 1] = true;
-      });
-
-      state.itemsVisible = items;
+    completeMove: (state) => {
       state.isPlayerMove = true;
       state.leftTime += 30;
-    }
+    },
+    hideItems: (state, action) => {
+      const itemKeys = action.payload;
+      itemKeys.forEach((num) => {
+        state.itemsVisible[num] = false;
+      });
+      state.isPlayerMove = false;
+    },
+    translateItemsY: (state, action) => {
+      const { itemKeys, height, currentStage } = action.payload;
+      itemKeys.forEach((num) => {
+        state.itemsVisible[num] = true;
+        state.mapState[currentStage].item[num].position.y += height;
+      });
+      state.isPlayerMove = true;
+      state.leftTime += 30;
+    },
+    translateItemsX: (state, action) => {
+      const { itemKeys, width, currentStage } = action.payload;
+      itemKeys.forEach((num) => {
+        state.itemsVisible[num] = true;
+        state.mapState[currentStage].item[num].position.x += width;
+      });
+      state.isPlayerMove = true;
+      state.leftTime += 30;
+    },
+    setStage: (state, action) => {
+      const {stage, entities} = action.payload;
+      state.stage[stage] = entities;
+    },
+    setCurrentStage: (state, action) => {
+      state.currentStage = action.payload;
+      state.restartCount += 1;
+    },
+    setIsFadeOut: (state, action) => {
+      state.isFadeOut = action.payload;
+      state.isModalVisible = false;
+    },
   },
 });
 
@@ -146,6 +184,13 @@ export const {
   setMapInfo,
   pageMove,
   completeMove,
+  hideItems,
+  translateItemsY,
+  translateItemsX,
+  setStage,
+  setCurrentStage,
+  mapState,
+  setIsFadeOut,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -161,8 +206,9 @@ export const selectCurrentStage = (state) => state.game.currentStage;
 export const selectStageInfo = (state) => state.game.stageInfo;
 export const selectStageClear = (state) => state.game.hasClear;
 export const selectIsPlayerMove = (state) => state.game.isPlayerMove;
-export const selectMapInfo = (state) => state.game.mapInfo;
 export const selectRestartCount = (state) => state.game.restartCount;
+export const selectMapState = (state) => state.game.mapState;
+export const selectIsFadeOut = (state) => state.game.isFadeOut;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
@@ -195,6 +241,24 @@ export const timeCountDown = () => (dispatch, getState) => {
     return dispatch(countDownLeftTime());
   }
   dispatch(collideMonster());
+};
+
+export const invisibleAllItems = () => (dispatch, getState) => {
+  const currentStage = selectCurrentStage(getState());
+  const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
+  dispatch(hideItems(itemKeys, currentStage));
+};
+
+export const applyTranslateUpper = (height) => (dispatch, getState) => {
+  const currentStage = selectCurrentStage(getState());
+  const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
+  dispatch(translateItemsY({ itemKeys, height, currentStage }));
+};
+
+export const applyTranslateRow = (width) => (dispatch, getState) => {
+  const currentStage = selectCurrentStage(getState());
+  const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
+  dispatch(translateItemsX({ itemKeys, width, currentStage }));
 };
 
 // export const completeMove = () => (dispatch, getState) => {

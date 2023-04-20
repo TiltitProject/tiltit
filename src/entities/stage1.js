@@ -52,5 +52,6 @@ export default function Stage1() {
     ),
     ...blocks,
     ...monsters,
+    stage: 1,
   };
 }

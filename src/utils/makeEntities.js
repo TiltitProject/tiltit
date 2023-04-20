@@ -74,22 +74,23 @@ export const makeItems = (world, mapInfo, entity) => {
 
 export const makeFlags = (world, mapInfo, entity) => {
   const objects = {};
+  if (entity.flag.number) {
+    Array.from(Array(entity.flag.number).keys()).forEach((index) => {
+      const objectNum = index + 1;
+      let { image } = entity.flag;
+      if (objectNum === 2) image = arrowRight;
 
-  Array.from(Array(entity.flag.number).keys()).forEach((index) => {
-    const objectNum = index + 1;
-    let { image } = entity.flag;
-    if (objectNum === 2) image = arrowRight;
+      objects[`flag${objectNum}`] = FlagMaker(
+        world,
+        mapInfo.flag[objectNum].position,
+        mapInfo.flag[objectNum].size,
+        image,
+        objectNum,
+      );
+    });
 
-    objects[`flag${objectNum}`] = FlagMaker(
-      world,
-      mapInfo.flag[objectNum].position,
-      mapInfo.flag[objectNum].size,
-      image,
-      objectNum,
-    );
-  });
-
-  return objects;
+    return objects;
+  }
 };
 
 export const makeMonster = (

@@ -1,3 +1,4 @@
+import React from "react";
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
 import { DeviceMotion } from "expo-sensors";
@@ -16,27 +17,33 @@ let translateMapY = false;
 let translateMapX = false;
 let movedHeight = 0;
 let movedWidth = 0;
-let restart = true;
-const stage = 2;
-const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
-const goalPosition = mapInfo.goal[1]?.position;
-const goalWidth = mapInfo.goal[1]?.size.width;
-const monsterNumber = entityInfo[stage].monster.renderEntity;
-const monsterArray = Array.from(Array(monsterNumber).keys());
-const itemNumber = entityInfo[stage].item.renderEntity;
-const itemArray = Array.from(Array(itemNumber).keys());
-const blockNumber = entityInfo[stage].block.renderEntity;
-const blockArray = Array.from(Array(blockNumber).keys());
-const firstBlocksNum = entityInfo[stage].block.firstEntity;
-const firstBlockArray = Array.from(Array(firstBlocksNum).keys());
-const firstItemNum = entityInfo[stage].item.firstEntity;
-const firstItemArray = Array.from(Array(firstItemNum).keys());
-const firstMonsterNum = entityInfo[stage].monster.firstEntity;
-const firstMonsterArray = Array.from(Array(firstMonsterNum).keys());
+const restart = true;
+const mapInfo = {
+  1: makeMapInfo(stageSheet[1], entityInfo[1]),
+  2: makeMapInfo(stageSheet[2], entityInfo[2]),
+};
 
-export default function Physics(entities, { touches, dispatch }) {
+export default function usePhysics(entities, { touches, dispatch }) {
   const { engine, world } = entities.physics;
   const player = entities.player.body;
+  const { stage } = entities;
+
+  const goalPosition = mapInfo[stage].goal[1]?.position;
+  const goalWidth = mapInfo[stage].goal[1]?.size.width;
+  const monsterNumber = entityInfo[stage].monster.renderEntity;
+  const monsterArray = Array.from(Array(monsterNumber).keys());
+  const itemNumber = entityInfo[stage].item.number;
+  const itemArray = Array.from(Array(itemNumber).keys());
+  const blockNumber = entityInfo[stage].block.renderEntity;
+  const blockArray = Array.from(Array(blockNumber).keys());
+  const firstBlocksNum = entityInfo[stage].block.firstEntity;
+  const firstBlockArray = Array.from(Array(firstBlocksNum).keys());
+  const firstItemNum = entityInfo[stage].item.firstEntity;
+  const firstItemArray = Array.from(Array(firstItemNum).keys());
+  const firstMonsterNum = entityInfo[stage].monster.firstEntity;
+  const firstMonsterArray = Array.from(Array(firstMonsterNum).keys());
+
+  Matter.Body.set(player, player.label, "changed");
 
   Matter.Engine.update(engine);
   engine.timing.delta = 1 / 80;
@@ -58,6 +65,20 @@ export default function Physics(entities, { touches, dispatch }) {
   //     y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
   //   });
   // });
+
+  itemArray.forEach((num) => {
+    const itemPosition = mapInfo[stage].item[num + 1].position;
+    const itemWidth = mapInfo[stage].item[num + 1].size.width;
+
+    if (
+      player.position.x > itemPosition.x - itemWidth / 2 &&
+      player.position.x < itemPosition.x - itemWidth / 2 + itemWidth &&
+      player.position.y > itemPosition.y - itemWidth / 2 &&
+      player.position.y < itemPosition.y - itemWidth / 2 + itemWidth
+    ) {
+      dispatch({ type: "get_item", payload: num + 1 });
+    }
+  });
 
   if (
     goalPosition &&
@@ -105,14 +126,14 @@ export default function Physics(entities, { touches, dispatch }) {
         });
       });
 
-      itemArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
-          x: -5,
-          y: 0,
-        });
-      });
+      // itemArray.forEach((entityNum) => {
+      //   Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
+      //     x: -5,
+      //     y: 0,
+      //   });
+      // });
     } else {
-      dispatch({ type: "complete_move" });
+      dispatch({ type: "complete_move_row", payload: movedWidth });
       translateMapX = false;
       movedWidth = 0;
     }
@@ -151,34 +172,34 @@ export default function Physics(entities, { touches, dispatch }) {
         });
       });
 
-      itemArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
-          x: 0,
-          y: 10,
-        });
-      });
+      // itemArray.forEach((entityNum) => {
+      //   Matter.Body.translate(entities[`item${entityNum + 1}`].body, {
+      //     x: 0,
+      //     y: 10,
+      //   });
+      // });
     } else {
       firstBlockArray.forEach((entityNum) => {
         Matter.Body.setPosition(entities[`block${entityNum + 1}`].body, {
-          x: mapInfo.block[entityNum + 39].position.x,
-          y: mapInfo.block[entityNum + 39].position.y + movedHeight,
+          x: mapInfo[stage].block[entityNum + 39].position.x,
+          y: mapInfo[stage].block[entityNum + 39].position.y + movedHeight,
         });
       });
-      firstItemArray.forEach((entityNum) => {
-        Matter.Body.setPosition(entities[`item${entityNum + 1}`].body, {
-          x: mapInfo.item[entityNum + 19].position.x,
-          y: mapInfo.item[entityNum + 19].position.y + movedHeight,
-        });
-      });
+      // firstItemArray.forEach((entityNum) => {
+      //   Matter.Body.setPosition(entities[`item${entityNum + 1}`].body, {
+      //     x: mapInfo.item[entityNum + 19].position.x,
+      //     y: mapInfo.item[entityNum + 19].position.y + movedHeight,
+      //   });
+      // });
       firstMonsterArray.forEach((entityNum) => {
         Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
-          x: mapInfo.monster[entityNum + 5].position.x,
-          y: mapInfo.monster[entityNum + 5].position.y + movedHeight,
+          x: mapInfo[stage].monster[entityNum + 5].position.x,
+          y: mapInfo[stage].monster[entityNum + 5].position.y + movedHeight,
         });
       });
+      dispatch({ type: "complete_move_upper", payload: movedHeight });
       translateMapY = false;
       movedHeight = 0;
-      dispatch({ type: "complete_move" });
     }
   }
 
@@ -192,47 +213,37 @@ export default function Physics(entities, { touches, dispatch }) {
       });
     }
   };
+  DeviceMotion.removeAllListeners();
 
-  // if (DeviceMotion.getListenerCount() < 1) {
-  //   const playerGyroLister = DeviceMotion.addListener((result) => {
-  //     console.log(DeviceMotion.getListenerCount());
-  //     movePlayer(result);
-  //   });
-
-  //   if (restart) {
-  //     playerGyroLister.remove();
-  //     restart = false;
-  //   }
-  // }
+  if (DeviceMotion.getListenerCount() < 1) {
+    DeviceMotion.addListener((result) => {
+      movePlayer(result);
+    });
+  }
 
   Matter.Events.on(engine, "collisionStart", () => {
-    itemArray.forEach((num) => {
-      const item = entities[`item${num + 1}`].body;
-      const get = Matter.Collision.collides(entities.player.body, item);
+    if (stage === 2) {
+      const flag1 = entities.flag1?.body;
+      const arrivedFlag1 = Matter.Collision.collides(
+        entities.player.body,
+        flag1,
+      );
 
-      if (get) {
-        item.render.visible = false;
-        console.log(item.render.visible);
+      const flag2 = entities.flag2?.body;
+      const arrivedFlag2 = Matter.Collision.collides(
+        entities.player.body,
+        flag2,
+      );
 
-        dispatch({ type: "get_item", payload: num + 1 });
-        Matter.World.remove(world, item);
+      if (arrivedFlag2) {
+        translateMapX = true;
+        Matter.World.remove(world, flag2);
       }
-    });
 
-    const flag1 = entities.flag1.body;
-    const arrivedFlag1 = Matter.Collision.collides(entities.player.body, flag1);
-
-    const flag2 = entities.flag2.body;
-    const arrivedFlag2 = Matter.Collision.collides(entities.player.body, flag2);
-
-    if (arrivedFlag2) {
-      translateMapX = true;
-      Matter.World.remove(world, flag2);
-    }
-
-    if (arrivedFlag1) {
-      translateMapY = true;
-      Matter.World.remove(world, flag1);
+      if (arrivedFlag1) {
+        translateMapY = true;
+        Matter.World.remove(world, flag1);
+      }
     }
 
     monsterArray.forEach((num) => {

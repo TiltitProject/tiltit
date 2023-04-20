@@ -12,28 +12,17 @@ import {
 } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
 import stageSheet from "../../assets/stageSheet.json";
-import { selectCurrentStage } from "../features/gameSlice";
-import ItemMaker from "../components/Item";
-import { apple } from "../../assets/static";
-import FlagMaker from "../components/Flag";
 import FloorMaker from "../components/Floor";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
-const GAME_HEIGHT = WINDOW_HEIGHT - FLOOR_WIDTH;
 
-const mapInfo2 = makeMap(stageSheet[2], entityInfo[2]);
-
-export default function Stage2() {
+export default function Stage2(stage) {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;
-
-  const blocks = makeBlocks(world, mapInfo2, entityInfo[2]);
-  const monsters = makeMonsters(world, mapInfo2, entityInfo[2]);
-  const items = makeItems(world, mapInfo2, entityInfo[2]);
-  const flags = makeFlags(world, mapInfo2, entityInfo[2]);
+  const mapInfo2 = makeMap(stageSheet[stage], entityInfo[stage]);
 
   return {
     physics: { engine, world },
@@ -62,9 +51,9 @@ export default function Stage2() {
       { height: WINDOW_HEIGHT, width: FLOOR_WIDTH },
       "ironColumn",
     ),
-    ...blocks,
-    ...monsters,
-    ...items,
-    ...flags,
+    ...makeBlocks(world, mapInfo2, entityInfo[stage]),
+    ...makeMonsters(world, mapInfo2, entityInfo[stage]),
+    ...makeFlags(world, mapInfo2, entityInfo[stage]),
+    stage,
   };
 }

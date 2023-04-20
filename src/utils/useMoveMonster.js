@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useMoveRow = (body, initialPosition, Matter, specifics) => {
+const useMoveRow = (body, Matter, specifics) => {
   const [moveRight, setMoveRight] = useState(true);
   const makeMoveAxis = (direction) => {
     if (direction === "row") {
@@ -14,12 +14,12 @@ const useMoveRow = (body, initialPosition, Matter, specifics) => {
   useEffect(() => {
     if (
       body.position[axis.move] >=
-      initialPosition[axis.move] + specifics.distance
+      body.initialPosition[axis.move] + specifics.distance
     ) {
       setMoveRight(false);
     } else if (
       body.position[axis.move] <=
-      initialPosition[axis.move] - specifics.distance
+      body.initialPosition[axis.move] - specifics.distance
     ) {
       setMoveRight(true);
     }

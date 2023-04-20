@@ -23,7 +23,15 @@ import {
   setMapInfo,
   selectMapInfo,
   stopPlayer,
+  applyTranslateUpper,
+  invisibleAllItems,
   completeMove,
+  setStage,
+  selectStage,
+  selectMapState,
+  applyTranslateRow,
+  selectIsFadeOut,
+  setIsFadeOut,
 } from "./features/gameSlice";
 import entities from "./entities";
 import Physics from "./physics";
@@ -43,6 +51,7 @@ import makeMapInfo from "./utils/makeMap";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
 import Flag from "./components/FlagBefore";
+import Item from "./components/ItemBefore";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -50,25 +59,21 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
   const [currentPoints, setCurrentPoints] = useState(0);
-  const [isFadeout, setIsFadeout] = useState(false);
+  const isFadeOut = useSelector(selectIsFadeOut);
   const [isFadeIn, setIsFadeIn] = useState(true);
   const stage = useSelector(selectCurrentStage);
   const running = useSelector(selectRunningGame);
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
-  const mapState = useSelector(selectMapInfo);
+  const mapState = useSelector(selectMapState);
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
-
-  console.log("check");
-  console.log("render");
+  const map = stage2(stage);
 
   useEffect(() => {
     dispatch(runGame(entityInfo[stage].item.number));
-    dispatch(setMapInfo(mapInfo));
-
-    gameEngine?.swap(entities());
+    dispatch(setMapInfo({ stage, mapInfo }));
 
     setTimeout(() => {
       setIsFadeIn(false);
@@ -76,7 +81,7 @@ export default function Stage() {
   }, []);
 
   const handleIsFadeout = () => {
-    setIsFadeout(true);
+    setIsFadeOut(true);
   };
 
   const handleModalOpen = () => {
@@ -86,11 +91,14 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
-      case "complete_move":
-        dispatch(completeMove(entityInfo[stage].item.number));
+      case "complete_move_row":
+        dispatch(applyTranslateRow(e.payload));
+        break;
+      case "complete_move_upper":
+        dispatch(applyTranslateUpper(e.payload));
         break;
       case "move_page":
-        dispatch(stopPlayer());
+        dispatch(invisibleAllItems());
         break;
       case "clear":
         dispatch(reachGoal());
@@ -117,7 +125,7 @@ export default function Stage() {
     <View style={styles.container}>
       <ImageBackground source={space} style={styles.backgroundImage}>
         {isFadeIn && <FadeIn />}
-        {isFadeout && <Fadeout />}
+        {isFadeOut && <Fadeout />}
         {showingCrackedEffect && (
           <Image
             style={styles.crackedScreen}
@@ -128,14 +136,14 @@ export default function Stage() {
         <Menu
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={(stage === 1 && stage1) || (stage === 2 && stage2)}
+          entities={stage2(stage)}
           isModalVisible={isModalVisible}
           isGameOver={showingCrackedEffect}
         />
         <Result
           onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={(stage === 1 && stage1) || (stage === 2 && stage2)}
+          entities={stage2(stage)}
           isModalVisible={hasClear}
         />
         <Header />
@@ -144,11 +152,22 @@ export default function Stage() {
             setGameEngine(ref);
           }}
           systems={[Physics]}
-          entities={(stage === 1 && stage1()) || (stage === 2 && stage2())}
+          entities={stage2(stage)}
           running={running}
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
+          {mapState[stage] &&
+            Array.from(Array(entityInfo[stage].item.number).keys()).map(
+              (num) => (
+                <Item
+                  key={`item${num + 1}`}
+                  size={mapInfo.item[num + 1].size}
+                  image={entityInfo[stage].item.image}
+                  num={num + 1}
+                />
+              ),
+            )}
           {mapInfo.goal[1] && (
             <Goal
               position={mapInfo.goal[1].position}
