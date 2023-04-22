@@ -2,16 +2,13 @@ import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { DeviceMotion } from "expo-sensors";
 import {
   selectCollideMonster,
-  selectIsPlayerMove,
 } from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
 import { playSound } from "../utils/playSound";
-import adjustDegree from "../utils/adjustDegree";
 
 export default function MakePlayer(world, color, position, size, stage) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
@@ -40,7 +37,7 @@ function Player(props) {
   const xImage = -widthBody * 0.3;
   const yImage = -widthBody * 0.35;
   const isCollide = useSelector(selectCollideMonster);
-  const isPlayerMove = useSelector(selectIsPlayerMove);
+  // const isPlayerMove = useSelector(selectIsPlayerMove);
   const [lastPosition, setLastPosition] = useState(
     JSON.parse(JSON.stringify(position)),
   );
@@ -64,30 +61,30 @@ function Player(props) {
     }
   }, [distance, runningImageIndex]);
 
-  const [subscription, setSubscription] = useState(null);
+  // const [subscription, setSubscription] = useState(null);
 
-  const subscribe = (callBack) => {
-    setSubscription(callBack);
-  };
+  // const subscribe = (callBack) => {
+  //   setSubscription(callBack);
+  // };
 
-  const unsubscribe = () => {
-    if (subscription) {
-      subscription.remove();
-      // DeviceMotion.removeAllListeners();
-    }
-    setSubscription(null);
-  };
+  // const unsubscribe = () => {
+  //   if (subscription) {
+  //     subscription.remove();
+  //     // DeviceMotion.removeAllListeners();
+  //   }
+  //   setSubscription(null);
+  // };
 
-  const movePlayer = (result) => {
-    const ratioXY = 2;
-    const adjust = adjustDegree(result);
-    if (isPlayerMove) {
-      Matter.Body.setVelocity(body, {
-        x: adjust.applyGamma * adjust.responsiveNess,
-        y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
-      });
-    }
-  };
+  // const movePlayer = (result) => {
+  //   const ratioXY = 2;
+  //   const adjust = adjustDegree(result);
+  //   if (isPlayerMove) {
+  //     Matter.Body.setVelocity(body, {
+  //       x: adjust.applyGamma * adjust.responsiveNess,
+  //       y: adjust.applyBeta * adjust.responsiveNess * ratioXY,
+  //     });
+  //   }
+  // };
 
   // console.log(DeviceMotion.getListenerCount());
 

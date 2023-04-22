@@ -19,13 +19,15 @@ import {
 } from "./features/gameSlice";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
-import SelectStage from "./modal/SelctStage";
+import SelectStage from "./modal/SelectStage";
+import ConfigGyro from "./modal/ConfigGyro";
 
 export default function MainPage() {
   const dispatch = useDispatch();
   const [BGM, setBGM] = useState(null);
   const [isFadeout, setIsFadeout] = useState(false);
   const [isFadeIn, setIsFadeIn] = useState(true);
+  const [config, setConfig] = useState(false);
   const isModalVisible = useSelector(selectModalVisible);
 
   useEffect(() => {
@@ -66,6 +68,11 @@ export default function MainPage() {
     }, 700);
   };
 
+  const handleSetConfig = (boolean) => {
+    playSound(select, 1);
+    setConfig(boolean);
+  };
+
   return (
     <View style={styles.container}>
       {isFadeIn && <FadeIn />}
@@ -73,12 +80,22 @@ export default function MainPage() {
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>
-          <Text style={styles.textBox}>SELECT CHARACTER</Text>
+          <Text style={styles.textBox}>CHARACTER</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.messageBox}>
+          <Text style={styles.textBox} onPress={() => handleSetConfig(true)}>
+            CONFIG
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.messageBox} onPress={handleModalOpen}>
           <Text style={styles.textBox}>START GAME</Text>
         </TouchableOpacity>
-        <SelectStage isModalVisible={isModalVisible} onGameStart={handleGameStart} />
+
+        {config && <ConfigGyro onSetConfig={handleSetConfig} />}
+        <SelectStage
+          isModalVisible={isModalVisible}
+          onGameStart={handleGameStart}
+        />
         <StatusBar style="auto" hidden />
       </ImageBackground>
     </View>
@@ -105,15 +122,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  messageBox: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
+    width: "90%",
+    backgroundColor: "black",
+    borderWidth: 3,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
   textBox: {
     color: "white",
     fontFamily: "menu-font",
     fontSize: 25,
     textAlign: "center",
-    backgroundColor: "#000000a0",
     paddingHorizontal: 30,
-    paddingVertical: 10,
-    marginVertical: 10,
+    paddingVertical: 5,
+    marginVertical: 5,
   },
   transition: {
     position: "absolute",

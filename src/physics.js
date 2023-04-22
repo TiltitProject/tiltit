@@ -1,10 +1,7 @@
-import React from "react";
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
 import { DeviceMotion } from "expo-sensors";
 import entityInfo from "./entities/entitiesInfo";
-import makeMapInfo from "./utils/makeMap";
-import stageSheet from "../assets/stageSheet.json";
 import adjustDegree from "./utils/adjustDegree";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -17,43 +14,32 @@ let translateMapY = false;
 let translateMapX = false;
 let movedHeight = 0;
 let movedWidth = 0;
-// const mapInfo = {
-//   1: makeMapInfo(stageSheet[1], entityInfo[1]),
-//   2: makeMapInfo(stageSheet[2], entityInfo[2]),
-// };
 
 export default function usePhysics(entities, { touches, dispatch }) {
   const { engine, world } = entities.physics;
   const player = entities.player.body;
-  const { stage, mapInfo } = entities;
+  const { stage, mapInfo, initialRotation } = entities;
   const goalPosition = mapInfo.goal[1]?.position;
   const goalWidth = mapInfo.goal[1]?.size.width;
   const monsterNumber = entityInfo[stage].monster.number;
-  const monsterArray = Array.from(Array(monsterNumber).keys());
+  const monsterArray = Array(monsterNumber)
+    .fill(0)
+    .map((_, i) => i);
   const itemNumber = entityInfo[stage].item.number;
-  const itemArray = Array.from(Array(itemNumber).keys());
+  const itemArray = Array(itemNumber)
+    .fill(0)
+    .map((_, i) => i);
   const blockNumber = entityInfo[stage].block.renderEntity;
-  const blockArray = Array.from(Array(blockNumber).keys());
+  const blockArray = Array(blockNumber)
+    .fill(0)
+    .map((_, i) => i);
   const firstBlocksNum = entityInfo[stage].block.firstEntity;
-  const firstBlockArray = Array.from(Array(firstBlocksNum).keys());
-  // const firstItemNum = entityInfo[stage].item.firstEntity;
-  // const firstItemArray = Array.from(Array(firstItemNum).keys());
-  // const firstMonsterNum = entityInfo[stage].monster.firstEntity;
-  // const firstMonsterArray = Array.from(Array(firstMonsterNum).keys());
-  // console.log(entities.lastPosition)
-  // const distance = Matter.Vector.magnitude(
-  //   Matter.Vector.sub(player.position, mapInfo.lastPosition),
-  // );
-
-  // if (distance > 7) {
-  //   mapInfo.lastPosition = player.position;
-  //   dispatch({ type: "change_index" });
-  // }
-
-  // Matter.Body.set(player, player.label, "changed");
+  const firstBlockArray = Array(firstBlocksNum)
+    .fill(0)
+    .map((_, i) => i);
 
   Matter.Engine.update(engine);
-  engine.timing.delta = 1 / 80;
+  engine.timing.delta = 1 / 60;
   touches.filter((touch) => {
     if (touch.type === "press") {
       dispatch({ type: "pause" });
@@ -62,16 +48,16 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
   const moveRow = (specifics) => {
     Object.keys(specifics).forEach((num) => {
-      const monster = entities[`monster${num}`].body;
+      const monster = entities[`monster${num}`]?.body;
       const moveAxis = specifics[num].axis;
       const stopAxis = moveAxis === "x" ? "y" : "x";
       const moveDistance = specifics[num].distance;
-      const { round, translateMap } = specifics[num];
+      const { round, translateMap, alive } = specifics[num];
       const translateInfo = translateMap[moveAxis];
       const translatedPixel = entities.translatedInfo[moveAxis];
       const appliedPosition = translateInfo * translatedPixel;
 
-      if (entities.round === round) {
+      if (alive && entities.round === round) {
         if (
           monster.position[moveAxis] >=
           monster.initialPosition[moveAxis] + appliedPosition + moveDistance
@@ -130,8 +116,11 @@ export default function usePhysics(entities, { touches, dispatch }) {
   const flagArray = Array.from(Array(flagNumber).keys());
 
   if (translateMapX) {
-    if (movedWidth > -GAME_WIDTH) {
+    if (!movedWidth) {
       dispatch({ type: "move_page" });
+    }
+
+    if (movedWidth > -GAME_WIDTH) {
       movedWidth -= 5;
 
       Matter.Body.setVelocity(entities.player.body, {
@@ -200,7 +189,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
       });
 
       monsterArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
+        Matter.Body.translate(entities[`monster${entityNum + 1}`]?.body, {
           x: 0,
           y: 10,
         });
@@ -224,9 +213,9 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
   }
 
-  const movePlayer = (result) => {
+  const movePlayer = (result, rotation) => {
     const ratioXY = 1.5;
-    const adjust = adjustDegree(result);
+    const adjust = adjustDegree(result, rotation);
     if (!translateMapX && !translateMapY) {
       Matter.Body.setVelocity(player, {
         x: adjust.applyGamma * adjust.responsiveNess,
@@ -234,11 +223,12 @@ export default function usePhysics(entities, { touches, dispatch }) {
       });
     }
   };
+
   DeviceMotion.removeAllListeners();
 
   if (DeviceMotion.getListenerCount() < 1) {
     DeviceMotion.addListener((result) => {
-      movePlayer(result);
+      movePlayer(result, initialRotation);
     });
   }
 
@@ -274,7 +264,42 @@ export default function usePhysics(entities, { touches, dispatch }) {
         entities[monster].body,
       );
       if (collision) {
-        dispatch({ type: "game_over" });
+        const direction = {
+          x: Math.cos(player.angle),
+          y: Math.sin(player.angle),
+        };
+
+        const reflection = {
+          x:
+            direction.x -
+            2 *
+              (direction.x * collision.normal.x + direction.y) *
+              collision.normal.x,
+          y:
+            direction.y -
+            2 *
+              (direction.x * collision.normal.x + direction.y) *
+              collision.normal.y,
+        };
+
+        const reflectionAngle = Math.atan2(reflection.y, reflection.x);
+        Matter.World.remove(world, entities[monster].body);
+        entityInfo[stage].monster.specifics[num + 1].alive = false;
+
+        dispatch({
+          type: "kill_monster",
+          payload: {
+            number: num + 1,
+            x:
+              Math.cos(reflectionAngle) * -player.velocity.x -
+              Math.sin(reflectionAngle) * -player.velocity.y +
+              player.velocity.x,
+            y:
+              Math.sin(reflectionAngle) * -player.velocity.x +
+              Math.cos(reflectionAngle) * -player.velocity.y +
+              player.velocity.y,
+          },
+        });
       }
     });
   });

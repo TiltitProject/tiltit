@@ -60,6 +60,11 @@ export default function Stage2(stage) {
     translatedInfo: {
       x: 0,
       y: 0,
-    }
+    },
+    initialRotation: {
+      gamma: 0,
+      beta: 0,
+    },
+    powerMode: 0,
   };
 }

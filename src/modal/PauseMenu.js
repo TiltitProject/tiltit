@@ -9,13 +9,13 @@ import {
   setIsFadeOut,
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
-import Modal from "./Modal";
 
 export default function PauseMenu({
   gameEngine,
   entities,
   onSelectStage,
   isGameOver,
+  onSetConfig
 }) {
   const dispatch = useDispatch();
 
@@ -43,6 +43,16 @@ export default function PauseMenu({
     dispatch(removeModal());
   };
 
+  const handleSelectStage = () => {
+    playSound(select, 1);
+    onSelectStage(true);
+  };
+
+  const handleSetConfig = () => {
+    playSound(select, 1);
+    onSetConfig(true);
+  };
+
   return (
     <View style={styles.container}>
       {isGameOver ? (
@@ -56,9 +66,7 @@ export default function PauseMenu({
       )}
       <TouchableOpacity
         style={styles.messageBox}
-        onPress={() => {
-          onSelectStage(true);
-        }}
+        onPress={handleSelectStage}
       >
         <Text style={styles.message}>SELECT STAGE</Text>
       </TouchableOpacity>
@@ -70,6 +78,12 @@ export default function PauseMenu({
         onPress={handleBackToMainPage}
       >
         <Text style={styles.message}>MAIN PAGE</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.messageBox}
+        onPress={handleSetConfig}
+      >
+        <Text style={styles.message}>CONFIG GYRO</Text>
       </TouchableOpacity>
       {!isGameOver && (
         <TouchableOpacity style={styles.messageBox} onPress={handleModalClose}>
@@ -95,7 +109,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 4,
     borderColor: "SaddleBrown",
-    marginBottom: 40,
+    marginBottom: 20,
     backgroundColor: "gray",
   },
   messageBox: {

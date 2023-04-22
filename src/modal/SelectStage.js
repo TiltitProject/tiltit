@@ -3,15 +3,12 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { playSound } from "../utils/playSound";
 import {
-  backToMainPage,
   removeModal,
   restartGame,
-  gameEngine,
-  entities,
   setIsFadeOut,
   setCurrentStage,
 } from "../features/gameSlice";
-import { start, select } from "../../assets/audio";
+import { select } from "../../assets/audio";
 import Modal from "./Modal";
 
 export default function SelectStage({

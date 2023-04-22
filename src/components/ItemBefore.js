@@ -5,9 +5,10 @@ import {
   selectItemsVisible,
   selectMapState,
   selectCurrentStage,
+  selectCurrentRound,
 } from "../features/gameSlice";
 
-export default function Item({ size, image, num }) {
+export default function Item({ size, specifics, num }) {
   const currentStage = useSelector(selectCurrentStage);
   const { position } = useSelector(selectMapState)[currentStage].item[num];
 
@@ -18,11 +19,15 @@ export default function Item({ size, image, num }) {
   const xImage = -widthBody * 0.5;
   const yImage = -widthBody * 0.5;
   const isVisible = useSelector(selectItemsVisible)[num];
+  const currentRound = useSelector(selectCurrentRound);
 
-  if (isVisible) {
+  if (isVisible && currentRound === specifics.round) {
     return (
       <View style={viewStyle(xBody, yBody, widthBody)}>
-        <Image style={imageStyle(xImage, yImage, widthImage)} source={image} />
+        <Image
+          style={imageStyle(xImage, yImage, widthImage)}
+          source={specifics.image}
+        />
       </View>
     );
   }

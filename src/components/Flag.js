@@ -44,7 +44,6 @@ function viewStyle(xBody, yBody, widthBody) {
     top: yBody,
     width: widthBody,
     height: widthBody,
-    borderWidth: 1,
   });
 }
 

@@ -10,35 +10,46 @@ import {
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
 import PauseMenu from "./PauseMenu";
-import SelectStage from "./SelctStage";
+import SelectStage from "./SelectStage";
+import ConfigGyro from "./ConfigGyro";
+
 
 export default function Menu({
-  onIsFadeout,
   gameEngine,
   entities,
   isModalVisible,
   isGameOver,
 }) {
   const [selectStage, setSelectStage] = useState(false);
-  const dispatch = useDispatch();
+  const [config, setConfig] = useState(false);
   const handleSelectStage = (boolean) => {
     setSelectStage(boolean);
+  };
+  const handleSetConfig = (boolean) => {
+    setConfig(boolean);
   };
 
   return (
     <Modal isVisible={isModalVisible}>
-      {!selectStage ? (
+      {!selectStage && !config && (
         <PauseMenu
           gameEngine={gameEngine}
           entities={entities}
           onSelectStage={handleSelectStage}
+          onSetConfig={handleSetConfig}
           isGameOver={isGameOver}
         />
-      ) : (
+      )}
+      {selectStage && (
         <SelectStage
           gameEngine={gameEngine}
           entities={entities}
           onSelectStage={handleSelectStage}
+        />
+      )}
+      {config && (
+        <ConfigGyro
+          onSetConfig={handleSetConfig}
         />
       )}
     </Modal>

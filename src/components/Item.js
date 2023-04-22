@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
-import { apple } from "../../assets/static";
+
 import { selectItemsVisible } from "../features/gameSlice";
 
-export default function ItemMaker(world, position, size, image, number) {
+export default function ItemMaker(world, position, size, specifics, number) {
   const initialObstacle = Matter.Bodies.rectangle(
     position.x,
     position.y,
     size.width,
     size.height,
-    { isStatic: true, number, image },
+    { isStatic: true, number, specifics },
   );
 
   Matter.World.add(world, initialObstacle);
@@ -25,7 +24,7 @@ export default function ItemMaker(world, position, size, image, number) {
 
 function Item(props) {
   const { body } = props;
-  const { bounds, position, image, render } = body;
+  const { bounds, position, render, specifics } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const widthImage = widthBody * 2.5;
   const xImage = -widthBody * 0.75;
@@ -39,7 +38,7 @@ function Item(props) {
         {render.visible && (
           <Image
             style={imageStyle(xImage, yImage, widthImage)}
-            source={image}
+            source={specifics.image}
           />
         )}
       </View>

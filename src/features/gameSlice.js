@@ -33,6 +33,16 @@ const initialState = {
     2: null,
   },
   isFadeOut: false,
+  initialRotation: {
+    beta: 0,
+    gamma: 0,
+  },
+  aliveMonsters: {},
+  monsterFlyingVector: {
+    x: 0,
+    y: 0,
+  },
+  currentRound: 1,
 };
 
 const gameSlice = createSlice({
@@ -61,13 +71,20 @@ const gameSlice = createSlice({
       state.currentPage = action.payload;
     },
     runGame: (state, action) => {
+      const monsterNumber = action.payload.monster.number;
+      const itemNumber = action.payload.item.number;
       const items = {};
+      const monsters = {};
 
-      Array.from(Array(action.payload).keys()).forEach((num) => {
+      Array.from(Array(itemNumber).keys()).forEach((num) => {
         items[num + 1] = true;
+      });
+      Array.from(Array(monsterNumber).keys()).forEach((num) => {
+        monsters[num + 1] = true;
       });
 
       state.itemsVisible = items;
+      state.aliveMonsters = monsters;
       state.runningGame = true;
       state.getTrophy = false;
       state.hasClear = false;
@@ -115,7 +132,7 @@ const gameSlice = createSlice({
       state.isPlayerMove = false;
     },
     setMapInfo: (state, action) => {
-      const {stage, mapInfo} = action.payload;
+      const { stage, mapInfo } = action.payload;
       state.mapState[stage] = mapInfo;
     },
     pageMove: (state) => {
@@ -140,6 +157,7 @@ const gameSlice = createSlice({
       });
       state.isPlayerMove = true;
       state.leftTime += 30;
+      state.currentRound += 1;
     },
     translateItemsX: (state, action) => {
       const { itemKeys, width, currentStage } = action.payload;
@@ -149,9 +167,10 @@ const gameSlice = createSlice({
       });
       state.isPlayerMove = true;
       state.leftTime += 30;
+      state.currentRound += 1;
     },
     setStage: (state, action) => {
-      const {stage, entities} = action.payload;
+      const { stage, entities } = action.payload;
       state.stage[stage] = entities;
     },
     setCurrentStage: (state, action) => {
@@ -161,6 +180,17 @@ const gameSlice = createSlice({
     setIsFadeOut: (state, action) => {
       state.isFadeOut = action.payload;
       state.isModalVisible = false;
+    },
+    setInitialRotation: (state, action) => {
+      const { beta, gamma } = action.payload;
+      state.initialRotation.beta = beta;
+      state.initialRotation.gamma = gamma;
+    },
+    killMonster: (state, action) => {
+      const { x, y, number } = action.payload;
+      state.aliveMonsters[number] = false;
+      state.monsterFlyingVector.x = x;
+      state.monsterFlyingVector.y = y;
     },
   },
 });
@@ -191,6 +221,8 @@ export const {
   setCurrentStage,
   mapState,
   setIsFadeOut,
+  setInitialRotation,
+  killMonster,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -209,6 +241,11 @@ export const selectIsPlayerMove = (state) => state.game.isPlayerMove;
 export const selectRestartCount = (state) => state.game.restartCount;
 export const selectMapState = (state) => state.game.mapState;
 export const selectIsFadeOut = (state) => state.game.isFadeOut;
+export const selectInitialRotation = (state) => state.game.initialRotation;
+export const selectAliveMonsters = (state) => state.game.aliveMonsters;
+export const selectMonsterFlyingVector = (state) =>
+  state.game.monsterFlyingVector;
+export const selectCurrentRound = (state) => state.game.currentRound;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];

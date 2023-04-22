@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Image, StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import { flag } from "../../assets/static";
 
 export default function Flag({ position, size }) {

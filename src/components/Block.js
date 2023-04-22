@@ -1,16 +1,6 @@
 import React from "react";
 import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
-import {
-  block,
-  blockColumnThree,
-  blockRowThree,
-  goldTwice,
-  ironColumnThree,
-  ironRowThree,
-  gold,
-  ground,
-} from "../../assets/static";
 
 export default function BlockMaker(world, position, size, image) {
   const initialFloor = Matter.Bodies.rectangle(

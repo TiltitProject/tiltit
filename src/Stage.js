@@ -21,19 +21,14 @@ import {
   selectCurrentStage,
   selectStageClear,
   setMapInfo,
-  selectMapInfo,
-  stopPlayer,
   applyTranslateUpper,
   invisibleAllItems,
-  completeMove,
-  setStage,
-  selectStage,
   selectMapState,
   applyTranslateRow,
   selectIsFadeOut,
-  setIsFadeOut,
+  selectInitialRotation,
+  killMonster,
 } from "./features/gameSlice";
-import entities from "./entities";
 import Physics from "./physics";
 import { crackedScreen, space } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
@@ -43,14 +38,11 @@ import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
 import Goal from "./components/Goal";
-import stage1 from "./entities/stage1";
 import stage2 from "./entities/stage2";
 import entityInfo from "./entities/entitiesInfo";
 import makeMapInfo from "./utils/makeMap";
-// import Item from "./components/Item";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
-import Flag from "./components/FlagBefore";
 import Item from "./components/ItemBefore";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -58,7 +50,6 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 
 export default function Stage() {
   const [gameEngine, setGameEngine] = useState(null);
-  const [currentPoints, setCurrentPoints] = useState(0);
   const isFadeOut = useSelector(selectIsFadeOut);
   const [isFadeIn, setIsFadeIn] = useState(true);
   const stage = useSelector(selectCurrentStage);
@@ -69,19 +60,17 @@ export default function Stage() {
   const mapState = useSelector(selectMapState);
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
+  const entities = stage2(stage);
+  entities.initialRotation = useSelector(selectInitialRotation);
 
   useEffect(() => {
-    dispatch(runGame(entityInfo[stage].item.number));
+    dispatch(runGame(entityInfo[stage]));
     dispatch(setMapInfo({ stage, mapInfo }));
 
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
   }, []);
-
-  const handleIsFadeout = () => {
-    setIsFadeOut(true);
-  };
 
   const handleModalOpen = () => {
     dispatch(showModal());
@@ -90,8 +79,8 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
-      case "change_index":
-        // dispatch(applyTranslateRow(e.payload));
+      case "kill_monster":
+        dispatch(killMonster(e.payload));
         break;
       case "complete_move_row":
         dispatch(applyTranslateRow(e.payload));
@@ -111,9 +100,6 @@ export default function Stage() {
       case "game_over":
         dispatch(collideMonster());
         gameEngine.stop();
-        break;
-      case "new_point":
-        setCurrentPoints(currentPoints + 1);
         break;
       case "pause":
         handleModalOpen();
@@ -136,16 +122,14 @@ export default function Stage() {
           />
         )}
         <Menu
-          onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={stage2(stage)}
+          entities={entities}
           isModalVisible={isModalVisible}
           isGameOver={showingCrackedEffect}
         />
         <Result
-          onIsFadeout={handleIsFadeout}
           gameEngine={gameEngine}
-          entities={stage2(stage)}
+          entities={entities}
           isModalVisible={hasClear}
         />
         <Header />
@@ -154,7 +138,7 @@ export default function Stage() {
             setGameEngine(ref);
           }}
           systems={[Physics]}
-          entities={stage2(stage)}
+          entities={entities}
           running={running}
           onEvent={handleGameEngine}
           style={styles.gameEngine}
@@ -165,7 +149,7 @@ export default function Stage() {
                 <Item
                   key={`item${num + 1}`}
                   size={mapInfo.item[num + 1].size}
-                  image={entityInfo[stage].item.image}
+                  specifics={entityInfo[stage].item.specifics[num + 1]}
                   num={num + 1}
                 />
               ),

@@ -48,6 +48,7 @@ export const makeMonsters = (world, mapInfo, entity) => {
       mapInfo.monster[objectNum].position,
       mapInfo.monster[objectNum].size,
       entity.monster.specifics[objectNum],
+      objectNum,
     );
   });
 
@@ -64,7 +65,7 @@ export const makeItems = (world, mapInfo, entity) => {
       world,
       mapInfo.item[objectNum].position,
       mapInfo.item[objectNum].size,
-      entity.item.image,
+      entity.specifics[objectNum],
       objectNum,
     );
   });
