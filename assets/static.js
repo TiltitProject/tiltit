@@ -25,6 +25,8 @@ import arrowRight from "./Items/flag/right-arrow.png";
 import arrowUpper from "./Items/flag/upper-arrow.png";
 import ground from "./stage/ground/ground-borderless.png";
 import groundInner from "./stage/ground/ground-inner.png";
+import star from "./effect/star/star.png";
+import starEffect from "./effect/star/starEffect.png";
 
 export {
   grayBrickColumn,
@@ -53,5 +55,7 @@ export {
   arrowRight,
   arrowUpper,
   ground,
-  groundInner
+  groundInner,
+  star,
+  starEffect
 };

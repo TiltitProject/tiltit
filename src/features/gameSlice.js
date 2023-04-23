@@ -38,11 +38,13 @@ const initialState = {
     gamma: 0,
   },
   aliveMonsters: {},
+  specialItems: {},
   monsterFlyingVector: {
     x: 0,
     y: 0,
   },
   currentRound: 1,
+  isSpecialMode: false,
 };
 
 const gameSlice = createSlice({
@@ -73,8 +75,10 @@ const gameSlice = createSlice({
     runGame: (state, action) => {
       const monsterNumber = action.payload.monster.number;
       const itemNumber = action.payload.item.number;
+      const specialItemNumber = action.payload.special.number;
       const items = {};
       const monsters = {};
+      const specials = {};
 
       Array.from(Array(itemNumber).keys()).forEach((num) => {
         items[num + 1] = true;
@@ -82,9 +86,13 @@ const gameSlice = createSlice({
       Array.from(Array(monsterNumber).keys()).forEach((num) => {
         monsters[num + 1] = true;
       });
+      Array.from(Array(specialItemNumber).keys()).forEach((num) => {
+        specials[num + 1] = true;
+      });
 
       state.itemsVisible = items;
       state.aliveMonsters = monsters;
+      state.specialItems = specials;
       state.runningGame = true;
       state.getTrophy = false;
       state.hasClear = false;
@@ -143,28 +151,46 @@ const gameSlice = createSlice({
       state.leftTime += 30;
     },
     hideItems: (state, action) => {
-      const itemKeys = action.payload;
+      const { specialItemKeys, itemKeys } = action.payload;
       itemKeys.forEach((num) => {
         state.itemsVisible[num] = false;
+      });
+      specialItemKeys.forEach((num) => {
+        state.specialItems[num] = false;
       });
       state.isPlayerMove = false;
     },
     translateItemsY: (state, action) => {
-      const { itemKeys, height, currentStage } = action.payload;
+      const { specialItemKeys, itemKeys, height, currentStage } =
+        action.payload;
+
       itemKeys.forEach((num) => {
         state.itemsVisible[num] = true;
         state.mapState[currentStage].item[num].position.y += height;
       });
+
+      specialItemKeys.forEach((num) => {
+        state.specialItems[num] = true;
+        state.mapState[currentStage].special[num].position.y += height;
+      });
+
       state.isPlayerMove = true;
       state.leftTime += 30;
       state.currentRound += 1;
     },
     translateItemsX: (state, action) => {
-      const { itemKeys, width, currentStage } = action.payload;
+      const { specialItemKeys, itemKeys, width, currentStage } = action.payload;
+
       itemKeys.forEach((num) => {
         state.itemsVisible[num] = true;
         state.mapState[currentStage].item[num].position.x += width;
       });
+
+      specialItemKeys.forEach((num) => {
+        state.specialItems[num] = true;
+        state.mapState[currentStage].special[num].position.x += width;
+      });
+
       state.isPlayerMove = true;
       state.leftTime += 30;
       state.currentRound += 1;
@@ -191,6 +217,13 @@ const gameSlice = createSlice({
       state.aliveMonsters[number] = false;
       state.monsterFlyingVector.x = x;
       state.monsterFlyingVector.y = y;
+    },
+    getSpecialItem: (state, action) => {
+      state.specialItems[action.payload] = false;
+      state.isSpecialMode = true;
+    },
+    offSpecialMode: (state) => {
+      state.isSpecialMode = false;
     },
   },
 });
@@ -223,6 +256,8 @@ export const {
   setIsFadeOut,
   setInitialRotation,
   killMonster,
+  getSpecialItem,
+  offSpecialMode,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -246,12 +281,22 @@ export const selectAliveMonsters = (state) => state.game.aliveMonsters;
 export const selectMonsterFlyingVector = (state) =>
   state.game.monsterFlyingVector;
 export const selectCurrentRound = (state) => state.game.currentRound;
+export const selectSpecialItem = (state) => state.game.specialItems;
+export const selectIsSpecialMode = (state) => state.game.isSpecialMode;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
 
   if (canGetItem) {
     dispatch(getItem(num));
+  }
+};
+
+export const getSpecialItemOnce = (num) => (dispatch, getState) => {
+  const canGetSpecialItem = selectSpecialItem(getState())[num];
+
+  if (canGetSpecialItem) {
+    dispatch(getSpecialItem(num));
   }
 };
 
@@ -283,26 +328,33 @@ export const timeCountDown = () => (dispatch, getState) => {
 export const invisibleAllItems = () => (dispatch, getState) => {
   const currentStage = selectCurrentStage(getState());
   const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
-  dispatch(hideItems(itemKeys, currentStage));
+  const specialItemKeys = Object.keys(
+    selectMapState(getState())[currentStage].special,
+  );
+
+  dispatch(hideItems({ specialItemKeys, itemKeys }));
 };
 
 export const applyTranslateUpper = (height) => (dispatch, getState) => {
   const currentStage = selectCurrentStage(getState());
   const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
-  dispatch(translateItemsY({ itemKeys, height, currentStage }));
+  const specialItemKeys = Object.keys(
+    selectMapState(getState())[currentStage].special,
+  );
+
+  dispatch(
+    translateItemsY({ specialItemKeys, itemKeys, height, currentStage }),
+  );
 };
 
 export const applyTranslateRow = (width) => (dispatch, getState) => {
   const currentStage = selectCurrentStage(getState());
   const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
-  dispatch(translateItemsX({ itemKeys, width, currentStage }));
+  const specialItemKeys = Object.keys(
+    selectMapState(getState())[currentStage].special,
+  );
+
+  dispatch(translateItemsX({ specialItemKeys, itemKeys, width, currentStage }));
 };
-
-// export const completeMove = () => (dispatch, getState) => {
-//   const visibleItems = selectItemsVisible(getState());
-//   const
-
-//   dispatch(setStageResult({ currentStage, currentPoint, leftTime }));
-// };
 
 export default gameSlice.reducer;

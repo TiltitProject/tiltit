@@ -7,6 +7,7 @@ import {
   blockColumnThree,
   blockRowThree,
   ground,
+  star,
 } from "../../assets/static";
 
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -38,6 +39,20 @@ const entityInfo = {
     goal: {
       number: 1,
       size: 72,
+    },
+    special: {
+      number: 0,
+      size: BLOCK_SIZE,
+      specifics: {
+        1: {
+          image: star,
+          round: 1,
+        },
+        2: {
+          image: star,
+          round: 1,
+        },
+      },
     },
     item: {
       number: 19,
@@ -83,7 +98,7 @@ const entityInfo = {
         },
         10: {
           image: apple,
-          round: 1
+          round: 1,
         },
         11: {
           image: apple,
@@ -204,6 +219,20 @@ const entityInfo = {
       size: BLOCK_SIZE,
       image: arrowUpper,
     },
+    special: {
+      number: 2,
+      size: BLOCK_SIZE,
+      specifics: {
+        1: {
+          image: star,
+          round: 2,
+        },
+        2: {
+          image: star,
+          round: 3,
+        },
+      },
+    },
     item: {
       number: 27,
       renderEntity: 18,
@@ -320,6 +349,20 @@ const entityInfo = {
         },
       },
     },
+    boss: {
+      number: 1,
+      size: BLOCK_SIZE * 6,
+      specifics: {
+        1: {
+          image: Dynamic.rock,
+          round: 1,
+          translateMap: {
+            x: 0,
+            y: 0,
+          },
+        },
+      },
+    },
     monster: {
       number: 6,
       renderEntity: 4,
@@ -327,9 +370,9 @@ const entityInfo = {
       size: BLOCK_SIZE * 2,
       specifics: {
         1: {
-          axis: "y",
-          speed: 3,
-          distance: GAME_WIDTH / 5,
+          axis: "x",
+          speed: 2,
+          distance: GAME_WIDTH / 7,
           image: Dynamic.rock,
           changeMove: false,
           alive: true,

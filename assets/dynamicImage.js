@@ -39,6 +39,19 @@ import goal5 from "./Items/goal/Goal_Pressed_5.png";
 import goal6 from "./Items/goal/Goal_Pressed_6.png";
 import goal7 from "./Items/goal/Goal_Pressed_7.png";
 import goal8 from "./Items/goal/Goal_Pressed_8.png";
+import special1 from "./characters/virtualGuy/special/virtual_special_1.png";
+import special2 from "./characters/virtualGuy/special/virtual_special_2.png";
+import special3 from "./characters/virtualGuy/special/virtual_special_3.png";
+import special4 from "./characters/virtualGuy/special/virtual_special_4.png";
+import special5 from "./characters/virtualGuy/special/virtual_special_5.png";
+import special6 from "./characters/virtualGuy/special/virtual_special_6.png";
+import special7 from "./characters/virtualGuy/special/virtual_special_7.png";
+import special8 from "./characters/virtualGuy/special/virtual_special_8.png";
+import special9 from "./characters/virtualGuy/special/virtual_special_9.png";
+import special10 from "./characters/virtualGuy/special/virtual_special_10.png";
+import special11 from "./characters/virtualGuy/special/virtual_special_11.png";
+import special12 from "./characters/virtualGuy/special/virtual_special_12.png";
+
 
 export default {
   runningVirtualGuy: [
@@ -54,6 +67,20 @@ export default {
     run10,
     run11,
     run12,
+  ],
+  specialVirtualGuy: [
+    special1,
+    special2,
+    special3,
+    special4,
+    special5,
+    special6,
+    special7,
+    special8,
+    special9,
+    special10,
+    special11,
+    special12,
   ],
   hitVirtualGuy: [hit1, hit2, hit3, hit4, hit5, hit6, hit7, hit5],
   rock: [

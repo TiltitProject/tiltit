@@ -37,6 +37,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
   const firstBlockArray = Array(firstBlocksNum)
     .fill(0)
     .map((_, i) => i);
+  const specialItemNumber = entityInfo[stage].special.number;
+  const specialItemArray = Array(specialItemNumber)
+    .fill(0)
+    .map((_, i) => i);
 
   Matter.Engine.update(engine);
   engine.timing.delta = 1 / 60;
@@ -94,11 +98,26 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
     if (
       player.position.x > itemPosition.x - itemWidth / 2 &&
-      player.position.x < itemPosition.x - itemWidth / 2 + itemWidth &&
+      player.position.x < itemPosition.x + itemWidth / 2 &&
       player.position.y > itemPosition.y - itemWidth / 2 &&
-      player.position.y < itemPosition.y - itemWidth / 2 + itemWidth
+      player.position.y < itemPosition.y + itemWidth / 2
     ) {
       dispatch({ type: "get_item", payload: num + 1 });
+    }
+  });
+
+  specialItemArray.forEach((num) => {
+    const itemPosition = mapInfo.special[num + 1].position;
+    const itemWidth = mapInfo.special[num + 1].size.width;
+
+    if (
+      player.position.x > itemPosition.x - itemWidth / 2 &&
+      player.position.x < itemPosition.x + itemWidth / 2 &&
+      player.position.y > itemPosition.y - itemWidth / 2 &&
+      player.position.y < itemPosition.y + itemWidth / 2
+    ) {
+      dispatch({ type: "get_specialItem", payload: num + 1 });
+      entities.specialMode = true;
     }
   });
 
@@ -152,9 +171,15 @@ export default function usePhysics(entities, { touches, dispatch }) {
       });
     } else {
       dispatch({ type: "complete_move_row", payload: movedWidth });
+
       itemArray.forEach((num) => {
         mapInfo.item[num + 1].position.x += movedWidth;
       });
+
+      specialItemArray.forEach((num) => {
+        mapInfo.special[num + 1].position.x += movedWidth;
+      });
+
       translateMapX = false;
       entities.round += 1;
       entities.translatedInfo.x += movedWidth;
@@ -203,9 +228,15 @@ export default function usePhysics(entities, { touches, dispatch }) {
       });
 
       dispatch({ type: "complete_move_upper", payload: movedHeight });
+
       itemArray.forEach((num) => {
         mapInfo.item[num + 1].position.y += movedHeight;
       });
+
+      specialItemArray.forEach((num) => {
+        mapInfo.special[num + 1].position.y += movedHeight;
+      });
+
       entities.round += 1;
       translateMapY = false;
       entities.translatedInfo.y += movedHeight;
@@ -230,6 +261,15 @@ export default function usePhysics(entities, { touches, dispatch }) {
     DeviceMotion.addListener((result) => {
       movePlayer(result, initialRotation);
     });
+  }
+
+  if (entities.specialMode) {
+    entities.specialTime += 1;
+    if (entities.specialTime >= 200) {
+      entities.specialTime = 0;
+      entities.specialMode = false;
+      dispatch({ type: "off_specialItem" });
+    }
   }
 
   Matter.Events.on(engine, "collisionStart", () => {
@@ -264,42 +304,47 @@ export default function usePhysics(entities, { touches, dispatch }) {
         entities[monster].body,
       );
       if (collision) {
-        const direction = {
-          x: Math.cos(player.angle),
-          y: Math.sin(player.angle),
-        };
+        if (entities.specialMode) {
+          const direction = {
+            x: Math.cos(player.angle),
+            y: Math.sin(player.angle),
+          };
 
-        const reflection = {
-          x:
-            direction.x -
-            2 *
-              (direction.x * collision.normal.x + direction.y) *
-              collision.normal.x,
-          y:
-            direction.y -
-            2 *
-              (direction.x * collision.normal.x + direction.y) *
-              collision.normal.y,
-        };
-
-        const reflectionAngle = Math.atan2(reflection.y, reflection.x);
-        Matter.World.remove(world, entities[monster].body);
-        entityInfo[stage].monster.specifics[num + 1].alive = false;
-
-        dispatch({
-          type: "kill_monster",
-          payload: {
-            number: num + 1,
+          const reflection = {
             x:
-              Math.cos(reflectionAngle) * -player.velocity.x -
-              Math.sin(reflectionAngle) * -player.velocity.y +
-              player.velocity.x,
+              direction.x -
+              2 *
+                (direction.x * collision.normal.x + direction.y) *
+                collision.normal.x,
             y:
-              Math.sin(reflectionAngle) * -player.velocity.x +
-              Math.cos(reflectionAngle) * -player.velocity.y +
-              player.velocity.y,
-          },
-        });
+              direction.y -
+              2 *
+                (direction.x * collision.normal.x + direction.y) *
+                collision.normal.y,
+          };
+
+          const reflectionAngle = Math.atan2(reflection.y, reflection.x);
+
+          Matter.World.remove(world, entities[monster].body);
+          entityInfo[stage].monster.specifics[num + 1].alive = false;
+
+          dispatch({
+            type: "kill_monster",
+            payload: {
+              number: num + 1,
+              x:
+                Math.cos(reflectionAngle) * -player.velocity.x -
+                Math.sin(reflectionAngle) * -player.velocity.y +
+                player.velocity.x,
+              y:
+                Math.sin(reflectionAngle) * -player.velocity.x +
+                Math.cos(reflectionAngle) * -player.velocity.y +
+                player.velocity.y,
+            },
+          });
+        } else {
+          dispatch({ type: "game_over" });
+        }
       }
     });
   });

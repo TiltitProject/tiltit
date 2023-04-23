@@ -1,13 +1,4 @@
-import { useDispatch } from "react-redux";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { playSound } from "../utils/playSound";
-import {
-  backToMainPage,
-  removeModal,
-  restartGame,
-} from "../features/gameSlice";
-import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
 import PauseMenu from "./PauseMenu";
 import SelectStage from "./SelectStage";

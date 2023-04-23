@@ -28,6 +28,8 @@ import {
   selectIsFadeOut,
   selectInitialRotation,
   killMonster,
+  getSpecialItemOnce,
+  offSpecialMode,
 } from "./features/gameSlice";
 import Physics from "./physics";
 import { crackedScreen, space } from "../assets/static";
@@ -44,6 +46,7 @@ import makeMapInfo from "./utils/makeMap";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
 import Item from "./components/ItemBefore";
+import Special from "./components/Special";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -79,6 +82,12 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "off_specialItem":
+        dispatch(offSpecialMode());
+        break;
+      case "get_specialItem":
+        dispatch(getSpecialItemOnce(e.payload));
+        break;
       case "kill_monster":
         dispatch(killMonster(e.payload));
         break;
@@ -150,6 +159,17 @@ export default function Stage() {
                   key={`item${num + 1}`}
                   size={mapInfo.item[num + 1].size}
                   specifics={entityInfo[stage].item.specifics[num + 1]}
+                  num={num + 1}
+                />
+              ),
+            )}
+          {mapState[stage] &&
+            Array.from(Array(entityInfo[stage].special.number).keys()).map(
+              (num) => (
+                <Special
+                  key={`special${num + 1}`}
+                  size={mapInfo.special[num + 1].size}
+                  specifics={entityInfo[stage].special.specifics[num + 1]}
                   num={num + 1}
                 />
               ),

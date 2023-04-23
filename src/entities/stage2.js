@@ -1,13 +1,10 @@
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
-import { useSelector } from "react-redux";
 import MakePlayer from "../components/Player";
-import BlockMaker from "../components/Block";
 import makeMap from "../utils/makeMap";
 import {
   makeBlocks,
   makeMonsters,
-  makeItems,
   makeFlags,
 } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
@@ -65,6 +62,7 @@ export default function Stage2(stage) {
       gamma: 0,
       beta: 0,
     },
-    powerMode: 0,
+    specialMode: false,
+    specialTime: 0,
   };
 }

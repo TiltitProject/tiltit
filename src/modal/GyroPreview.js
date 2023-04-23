@@ -1,13 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { playSound } from "../utils/playSound";
 import {
-  removeModal,
-  restartGame,
-  setIsFadeOut,
-  setCurrentStage,
   showModal,
   selectInitialRotation,
 } from "../features/gameSlice";
