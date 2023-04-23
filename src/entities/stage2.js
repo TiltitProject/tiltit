@@ -6,13 +6,18 @@ import {
   makeBlocks,
   makeMonsters,
   makeFlags,
+  makeBossMonster,
+  makeAttacks,
 } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
 import stageSheet from "../../assets/stageSheet.json";
 import FloorMaker from "../components/Floor";
+import ItemMaker from "../components/Item";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
+const GAME_WIDTH = WINDOW_WIDTH - FLOOR_WIDTH;
+const BLOCK_SIZE = GAME_WIDTH / 16;
 const FLOOR_WIDTH = 32;
 
 export default function Stage2(stage) {
@@ -51,6 +56,8 @@ export default function Stage2(stage) {
     ...makeBlocks(world, mapInfo, entityInfo[stage]),
     ...makeMonsters(world, mapInfo, entityInfo[stage]),
     ...makeFlags(world, mapInfo, entityInfo[stage]),
+    ...makeBossMonster(world, mapInfo, entityInfo[stage]),
+    ...makeAttacks(world, mapInfo, entityInfo[stage]),
     stage,
     mapInfo,
     round: 1,

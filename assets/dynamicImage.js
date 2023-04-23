@@ -51,7 +51,21 @@ import special9 from "./characters/virtualGuy/special/virtual_special_9.png";
 import special10 from "./characters/virtualGuy/special/virtual_special_10.png";
 import special11 from "./characters/virtualGuy/special/virtual_special_11.png";
 import special12 from "./characters/virtualGuy/special/virtual_special_12.png";
-
+import skullIdle1 from "./monsters/scull/Idle_1.png";
+import skullIdle2 from "./monsters/scull/Idle_2.png";
+import skullIdle3 from "./monsters/scull/Idle_3.png";
+import skullIdle4 from "./monsters/scull/Idle_4.png";
+import skullIdle5 from "./monsters/scull/Idle_5.png";
+import skullIdle6 from "./monsters/scull/Idle_6.png";
+import skullIdle7 from "./monsters/scull/Idle_7.png";
+import skullIdle8 from "./monsters/scull/Idle_8.png";
+import skullHit1 from "./monsters/scull/Hit_1.png";
+import skullHit2 from "./monsters/scull/Hit_2.png";
+import skullHit3 from "./monsters/scull/Hit_3.png";
+import skullHit4 from "./monsters/scull/Hit_4.png";
+import skullHit5 from "./monsters/scull/Hit_5.png";
+import skullHit6 from "./monsters/scull/Hit_6.png";
+import skullHit7 from "./monsters/scull/Hit_7.png";
 
 export default {
   runningVirtualGuy: [
@@ -100,4 +114,23 @@ export default {
     rock14,
   ],
   goal: [goal1, goal2, goal3, goal4, goal5, goal6, goal7, goal8],
+  skullIdle: [
+    skullIdle1,
+    skullIdle2,
+    skullIdle3,
+    skullIdle4,
+    skullIdle5,
+    skullIdle6,
+    skullIdle7,
+    skullIdle8,
+  ],
+  skullHit: [
+    skullHit1,
+    skullHit2,
+    skullHit3,
+    skullHit4,
+    skullHit5,
+    skullHit6,
+    skullHit7,
+  ],
 };

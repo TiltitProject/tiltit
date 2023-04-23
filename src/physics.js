@@ -41,6 +41,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
   const specialItemArray = Array(specialItemNumber)
     .fill(0)
     .map((_, i) => i);
+  const attackNumber = entityInfo[stage].attack.number;
+  const attackArray = Array(attackNumber)
+    .fill(0)
+    .map((_, i) => i);
 
   Matter.Engine.update(engine);
   engine.timing.delta = 1 / 60;
@@ -50,9 +54,9 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
   });
 
-  const moveRow = (specifics) => {
+  const moveRow = (specifics, type) => {
     Object.keys(specifics).forEach((num) => {
-      const monster = entities[`monster${num}`]?.body;
+      const monster = entities[`${type}${num}`]?.body;
       const moveAxis = specifics[num].axis;
       const stopAxis = moveAxis === "x" ? "y" : "x";
       const moveDistance = specifics[num].distance;
@@ -89,7 +93,8 @@ export default function usePhysics(entities, { touches, dispatch }) {
     });
   };
   if (!translateMapY && !translateMapX) {
-    moveRow(entityInfo[stage].monster.specifics);
+    moveRow(entityInfo[stage].monster.specifics, "monster");
+    moveRow(entityInfo[stage].boss.specifics, "boss");
   }
 
   itemArray.forEach((num) => {
@@ -163,6 +168,11 @@ export default function usePhysics(entities, { touches, dispatch }) {
         });
       });
 
+      Matter.Body.translate(entities.boss1.body, {
+        x: -5,
+        y: 0,
+      });
+
       monsterArray.forEach((entityNum) => {
         Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
           x: -5,
@@ -188,8 +198,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
   }
 
   if (translateMapY) {
-    if (movedHeight < GAME_HEIGHT) {
+    if (!movedHeight) {
       dispatch({ type: "move_page" });
+    }
+    if (movedHeight < GAME_HEIGHT) {
       movedHeight += 10;
 
       Matter.Body.setVelocity(entities.player.body, {
@@ -213,6 +225,11 @@ export default function usePhysics(entities, { touches, dispatch }) {
         });
       });
 
+      Matter.Body.translate(entities.boss1.body, {
+        x: 0,
+        y: 10,
+      });
+
       monsterArray.forEach((entityNum) => {
         Matter.Body.translate(entities[`monster${entityNum + 1}`]?.body, {
           x: 0,
@@ -226,6 +243,8 @@ export default function usePhysics(entities, { touches, dispatch }) {
           y: mapInfo.block[entityNum + 39].position.y + movedHeight,
         });
       });
+
+      Matter.Body.translate(entities.player.body, { x: 0, y: 10 });
 
       dispatch({ type: "complete_move_upper", payload: movedHeight });
 
@@ -241,7 +260,131 @@ export default function usePhysics(entities, { touches, dispatch }) {
       translateMapY = false;
       entities.translatedInfo.y += movedHeight;
       movedHeight = 0;
+
+      if (entities.round === 4) {
+        entityInfo[stage].attack.specifics[1].onPosition = true;
+        Matter.Body.setPosition(entities.attack1.body, {
+          x: player.position.x,
+          y: player.position.y - player.circleRadius,
+        });
+        entityInfo[stage].monster.specifics[1].onPosition = true;
+        Matter.Body.setPosition(entities.monster1.body, {
+          x: entities.boss1.body.position.x,
+          y: entities.boss1.body.bounds.max.y,
+        });
+      }
     }
+  }
+
+  if (entities.round === 4) {
+    const bossHP = entityInfo[stage].boss.specifics[1].HP;
+    const monsterSpecific = entityInfo[stage].monster.specifics;
+    entityInfo[stage].boss.specifics[1].HP -= 1;
+    if (bossHP === 15) {
+      Matter.Body.setPosition(entities.monster4.body, {
+        x: entities.boss1.body.position.x,
+        y: entities.boss1.body.bounds.max.y,
+      });
+      entityInfo[stage].monster.specifics[4].guideMissile = {
+        x: player.position.x - entities.boss1.body.position.x / 10,
+        y: player.position.y - entities.boss1.body.position.y / 10,
+      };
+    }
+
+    const MonsterPositionTimer = entityInfo[stage].monster.specifics[1].moved;
+
+    if (
+      MonsterPositionTimer > (GAME_HEIGHT / 3) * 1 &&
+      monsterSpecific[2].onPosition === false
+    ) {
+      monsterSpecific[2].onPosition = true;
+      Matter.Body.setPosition(entities.monster2.body, {
+        x: entities.boss1.body.bounds.min.x,
+        y: entities.boss1.body.bounds.max.y,
+      });
+    }
+
+    if (
+      MonsterPositionTimer > (GAME_HEIGHT / 3) * 2 &&
+      monsterSpecific[3].onPosition === false
+    ) {
+      monsterSpecific[3].onPosition = true;
+      Matter.Body.setPosition(entities.monster2.body, {
+        x: entities.boss1.body.bounds.max.x,
+        y: entities.boss1.body.bounds.max.y,
+      });
+    }
+
+    monsterArray.forEach((entityNum) => {
+      const specifics = entityInfo[stage].monster.specifics[entityNum + 1];
+
+      if (specifics.onPosition) {
+        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
+          x: 0,
+          y: 7,
+        });
+
+        specifics.moved += 7;
+
+        if (specifics.moved > GAME_HEIGHT) {
+          specifics.moved = 0;
+          Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
+            x: entities.boss1.body.position.x,
+            y: entities.boss1.body.bounds.max.y,
+          });
+        }
+      }
+      if (specifics.guideMissile) {
+        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
+          x: specifics.guideMissile.x,
+          y: specifics.guideMissile.y,
+        });
+      }
+    });
+
+    const positionTimer = entityInfo[stage].attack.specifics[1].moved;
+
+    if (
+      positionTimer > (GAME_HEIGHT / 3) * 1 &&
+      entityInfo[stage].attack.specifics[2].onPosition === false
+    ) {
+      entityInfo[stage].attack.specifics[2].onPosition = true;
+      Matter.Body.setPosition(entities.attack2.body, {
+        x: player.position.x,
+        y: player.position.y - player.circleRadius,
+      });
+    }
+
+    if (
+      positionTimer > (GAME_HEIGHT / 3) * 2 &&
+      entityInfo[stage].attack.specifics[3].onPosition === false
+    ) {
+      entityInfo[stage].attack.specifics[3].onPosition = true;
+      Matter.Body.setPosition(entities.attack2.body, {
+        x: player.position.x,
+        y: player.position.y - player.circleRadius,
+      });
+    }
+
+    attackArray.forEach((entityNum) => {
+      const specifics = entityInfo[stage].attack.specifics[entityNum + 1];
+
+      if (specifics.onPosition) {
+        Matter.Body.translate(entities[`attack${entityNum + 1}`].body, {
+          x: 0,
+          y: -20,
+        });
+        specifics.moved += 20;
+
+        if (specifics.moved > GAME_HEIGHT) {
+          specifics.moved = 0;
+          Matter.Body.setPosition(entities[`attack${entityNum + 1}`].body, {
+            x: player.position.x,
+            y: player.position.y - player.circleRadius,
+          });
+        }
+      }
+    });
   }
 
   const movePlayer = (result, rotation) => {
@@ -265,7 +408,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
   if (entities.specialMode) {
     entities.specialTime += 1;
-    if (entities.specialTime >= 200) {
+    if (entities.specialTime >= 100) {
       entities.specialTime = 0;
       entities.specialMode = false;
       dispatch({ type: "off_specialItem" });
@@ -274,10 +417,32 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
   Matter.Events.on(engine, "collisionStart", () => {
     if (stage === 2) {
+      const boss = entities.boss1?.body;
+
+      attackArray.forEach((entityNum) => {
+        const attack = entities[`attack${entityNum + 1}`].body;
+        const hit = Matter.Collision.collides(boss, attack);
+
+        if (hit) {
+          dispatch({ type: "hit_boss", payload: entityNum + 1 });
+          Matter.Body.setPosition(attack, {
+            x: player.position.x,
+            y: -WINDOW_HEIGHT,
+          });
+          entityInfo[stage].boss.specifics[1].HP -= 1;
+        }
+      });
+
       const flag1 = entities.flag1?.body;
       const arrivedFlag1 = Matter.Collision.collides(
         entities.player.body,
         flag1,
+      );
+
+      const flag3 = entities.flag3?.body;
+      const arrivedFlag3 = Matter.Collision.collides(
+        entities.player.body,
+        flag3,
       );
 
       const flag2 = entities.flag2?.body;
@@ -294,6 +459,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
       if (arrivedFlag1) {
         translateMapY = true;
         Matter.World.remove(world, flag1);
+      }
+      if (arrivedFlag3) {
+        translateMapY = true;
+        Matter.World.remove(world, flag3);
       }
     }
 

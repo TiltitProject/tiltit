@@ -45,6 +45,8 @@ const initialState = {
   },
   currentRound: 1,
   isSpecialMode: false,
+  bossHP: 20,
+  attackId : null,
 };
 
 const gameSlice = createSlice({
@@ -225,6 +227,10 @@ const gameSlice = createSlice({
     offSpecialMode: (state) => {
       state.isSpecialMode = false;
     },
+    attackBoss: (state, action) => {
+      state.bossHP -= 1;
+      state.attackId = action.payload;
+    },
   },
 });
 
@@ -258,6 +264,7 @@ export const {
   killMonster,
   getSpecialItem,
   offSpecialMode,
+  attackBoss,
 } = gameSlice.actions;
 
 export const selectCollideMonster = (state) => state.game.hasCollideMonster;
@@ -283,12 +290,23 @@ export const selectMonsterFlyingVector = (state) =>
 export const selectCurrentRound = (state) => state.game.currentRound;
 export const selectSpecialItem = (state) => state.game.specialItems;
 export const selectIsSpecialMode = (state) => state.game.isSpecialMode;
+export const selectBossHP = (state) => state.game.bossHP;
+export const selectAttackId = (state) => state.game.attackId;
 
 export const getItemOnce = (num) => (dispatch, getState) => {
   const canGetItem = selectItemsVisible(getState())[num];
 
   if (canGetItem) {
     dispatch(getItem(num));
+  }
+};
+
+export const attackOnce = (num) => (dispatch, getState) => {
+  const alreadyAttack = selectAttackId(getState());
+  const bossAlive = selectBossHP(getState());
+
+  if (alreadyAttack !== num && bossAlive) {
+    dispatch(attackBoss(num));
   }
 };
 

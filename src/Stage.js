@@ -30,6 +30,8 @@ import {
   killMonster,
   getSpecialItemOnce,
   offSpecialMode,
+  attackOnce,
+  selectRestartCount,
 } from "./features/gameSlice";
 import Physics from "./physics";
 import { crackedScreen, space } from "../assets/static";
@@ -64,6 +66,7 @@ export default function Stage() {
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
   const entities = stage2(stage);
+  const restartCount = useSelector(selectRestartCount);
   entities.initialRotation = useSelector(selectInitialRotation);
 
   useEffect(() => {
@@ -73,7 +76,7 @@ export default function Stage() {
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
-  }, []);
+  }, [restartCount]);
 
   const handleModalOpen = () => {
     dispatch(showModal());
@@ -82,6 +85,9 @@ export default function Stage() {
 
   const handleGameEngine = (e) => {
     switch (e.type) {
+      case "hit_boss":
+        dispatch(attackOnce(e.payload));
+        break;
       case "off_specialItem":
         dispatch(offSpecialMode());
         break;
@@ -141,8 +147,9 @@ export default function Stage() {
           entities={entities}
           isModalVisible={hasClear}
         />
-        <Header />
+        <Header key={`header${restartCount}`} />
         <GameEngine
+          key={`game${restartCount}`}
           ref={(ref) => {
             setGameEngine(ref);
           }}

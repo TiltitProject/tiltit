@@ -1,8 +1,9 @@
 import BlockMaker from "../components/Block";
 import MonsterMaker from "../components/Monster";
-import ItemMaker from "../components/Item";
 import FlagMaker from "../components/Flag";
 import { arrowRight, groundInner } from "../../assets/static";
+import MakeBoss from "../components/BossMonster";
+import AttackMaker from "../components/Item";
 
 export const makeBlocks = (world, mapInfo, entity) => {
   const objects = {};
@@ -37,6 +38,24 @@ export const makeBlocks = (world, mapInfo, entity) => {
   return objects;
 };
 
+export const makeBossMonster = (world, mapInfo, entity) => {
+  const objects = {};
+
+  Array.from(Array(entity.boss.number).keys()).forEach((index) => {
+    const objectNum = index + 1;
+
+    objects[`boss${objectNum}`] = MakeBoss(
+      world,
+      mapInfo.boss[objectNum].position,
+      mapInfo.boss[objectNum].size,
+      entity.boss.specifics[objectNum],
+      objectNum,
+    );
+  });
+
+  return objects;
+};
+
 export const makeMonsters = (world, mapInfo, entity) => {
   const objects = {};
 
@@ -55,23 +74,41 @@ export const makeMonsters = (world, mapInfo, entity) => {
   return objects;
 };
 
-export const makeItems = (world, mapInfo, entity) => {
+export const makeAttacks = (world, mapInfo, entity) => {
   const objects = {};
 
-  Array.from(Array(entity.item.renderEntity).keys()).forEach((index) => {
+  Array.from(Array(entity.attack.number).keys()).forEach((index) => {
     const objectNum = index + 1;
 
-    objects[`item${objectNum}`] = ItemMaker(
+    objects[`attack${objectNum}`] = AttackMaker(
       world,
-      mapInfo.item[objectNum].position,
-      mapInfo.item[objectNum].size,
-      entity.specifics[objectNum],
+      mapInfo.attack[objectNum].position,
+      mapInfo.attack[objectNum].size,
+      entity.attack.specifics[objectNum],
       objectNum,
     );
   });
 
   return objects;
 };
+
+// export const makeItems = (world, mapInfo, entity) => {
+//   const objects = {};
+
+//   Array.from(Array(entity.item.renderEntity).keys()).forEach((index) => {
+//     const objectNum = index + 1;
+
+//     objects[`item${objectNum}`] = ItemMaker(
+//       world,
+//       mapInfo.item[objectNum].position,
+//       mapInfo.item[objectNum].size,
+//       entity.specifics[objectNum],
+//       objectNum,
+//     );
+//   });
+
+//   return objects;
+// };
 
 export const makeFlags = (world, mapInfo, entity) => {
   const objects = {};

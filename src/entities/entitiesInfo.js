@@ -36,6 +36,35 @@ const entityInfo = {
       size: 50,
       image: arrowUpper,
     },
+    attack: {
+      number: 0,
+      size: BLOCK_SIZE,
+      specifics: {
+        1: {
+          image: apple,
+          round: 4,
+        },
+        2: {
+          image: apple,
+          round: 4,
+        },
+      },
+    },
+    boss: {
+      number: 0,
+      size: BLOCK_SIZE * 2,
+      specifics: {
+        1: {
+          idleImage: Dynamic.skullIdle,
+          deathImage: Dynamic.skullHit,
+          round: 1,
+          translateMap: {
+            x: 0,
+            y: 0,
+          },
+        },
+      },
+    },
     goal: {
       number: 1,
       size: 72,
@@ -215,7 +244,7 @@ const entityInfo = {
       size: 72,
     },
     flag: {
-      number: 2,
+      number: 3,
       size: BLOCK_SIZE,
       image: arrowUpper,
     },
@@ -230,6 +259,30 @@ const entityInfo = {
         2: {
           image: star,
           round: 3,
+        },
+      },
+    },
+    attack: {
+      number: 3,
+      size: BLOCK_SIZE,
+      specifics: {
+        1: {
+          image: apple,
+          round: 4,
+          onPosition: false,
+          moved: 0,
+        },
+        2: {
+          image: apple,
+          round: 4,
+          onPosition: false,
+          moved: 0,
+        },
+        3: {
+          image: apple,
+          round: 4,
+          onPosition: false,
+          moved: 0,
         },
       },
     },
@@ -351,15 +404,22 @@ const entityInfo = {
     },
     boss: {
       number: 1,
-      size: BLOCK_SIZE * 6,
+      size: BLOCK_SIZE,
       specifics: {
         1: {
-          image: Dynamic.rock,
-          round: 1,
+          idleImage: Dynamic.skullIdle,
+          deathImage: Dynamic.skullHit,
+          round: 4,
+          axis: "x",
+          speed: 2,
+          distance: GAME_WIDTH / 5,
+          changeMove: false,
+          alive: true,
           translateMap: {
-            x: 0,
-            y: 0,
+            x: 1,
+            y: 2,
           },
+          HP: 20,
         },
       },
     },
@@ -381,6 +441,8 @@ const entityInfo = {
             x: 0,
             y: 0,
           },
+          onPosition: false,
+          moved: 0,
         },
         2: {
           axis: "x",
@@ -394,6 +456,8 @@ const entityInfo = {
             x: 0,
             y: 0,
           },
+          onPosition: false,
+          moved: 0,
         },
         3: {
           axis: "x",
@@ -407,6 +471,8 @@ const entityInfo = {
             x: 0,
             y: 1,
           },
+          onPosition: false,
+          moved: 0,
         },
         4: {
           axis: "x",
@@ -420,6 +486,9 @@ const entityInfo = {
             x: 0,
             y: 1,
           },
+          onPosition: false,
+          guideMissile: false,
+          moved: 0,
         },
         5: {
           axis: "x",
@@ -433,6 +502,9 @@ const entityInfo = {
             x: 1,
             y: 1,
           },
+          onPosition: false,
+          guideMissile: false,
+          moved: 0,
         },
         6: {
           axis: "x",
@@ -446,6 +518,9 @@ const entityInfo = {
             x: 1,
             y: 1,
           },
+          onPosition: false,
+          guideMissile: false,
+          moved: 0,
         },
       },
     },

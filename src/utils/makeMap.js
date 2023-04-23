@@ -12,6 +12,7 @@ const makeObject = (entity) => {
     flag: {},
     special: {},
     boss: {},
+    attack: {},
   };
   Array.from(Array(entity.block.number).keys()).forEach((num) => {
     objects.block[`s${num + 1}`] = {
@@ -49,8 +50,14 @@ const makeObject = (entity) => {
       col: [],
     };
   });
-  Array.from(Array(entity.special?.number).keys()).forEach((num) => {
+  Array.from(Array(entity.boss?.number).keys()).forEach((num) => {
     objects.boss[`b${num + 1}`] = {
+      row: [],
+      col: [],
+    };
+  });
+  Array.from(Array(entity.attack?.number).keys()).forEach((num) => {
+    objects.attack[`a${num + 1}`] = {
       row: [],
       col: [],
     };
@@ -68,6 +75,7 @@ const makeInitialMap = (entity) => {
     flag: {},
     special: {},
     boss: {},
+    attack: {},
   };
   Array.from(Array(entity.block.number).keys()).forEach((num) => {
     objects.block[num + 1] = {
@@ -141,6 +149,30 @@ const makeInitialMap = (entity) => {
       },
     };
   });
+  Array.from(Array(entity.boss?.number).keys()).forEach((num) => {
+    objects.boss[num + 1] = {
+      position: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 0,
+        height: 0,
+      },
+    };
+  });
+  Array.from(Array(entity.attack?.number).keys()).forEach((num) => {
+    objects.attack[num + 1] = {
+      position: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 0,
+        height: 0,
+      },
+    };
+  });
 
   return objects;
 };
@@ -176,6 +208,14 @@ const makeObjectHash = (data, entity) => {
       if (object && [...object].includes("n")) {
         objectHashInfo.special[object]?.row.push(rowIndex);
         objectHashInfo.special[object]?.col.push(columnIndex);
+      }
+      if (object && [...object].includes("b")) {
+        objectHashInfo.boss[object]?.row.push(rowIndex);
+        objectHashInfo.boss[object]?.col.push(columnIndex);
+      }
+      if (object && [...object].includes("a")) {
+        objectHashInfo.attack[object]?.row.push(rowIndex);
+        objectHashInfo.attack[object]?.col.push(columnIndex);
       }
     });
   });
@@ -231,6 +271,9 @@ const makeMapInfo = (data, entity) => {
   setPositionWidth(mapHashInfo, "monster", staticObjects, entity);
   setPositionWidth(mapHashInfo, "flag", staticObjects, entity);
   setPositionWidth(mapHashInfo, "special", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "boss", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "attack", staticObjects, entity);
+
 
   return staticObjects;
 };
