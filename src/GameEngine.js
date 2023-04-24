@@ -23,7 +23,6 @@ import {
   setMapInfo,
   applyTranslateUpper,
   invisibleAllItems,
-  selectMapState,
   applyTranslateRow,
   selectIsFadeOut,
   selectInitialRotation,
@@ -42,7 +41,7 @@ import { select } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
 import Goal from "./components/Goal";
-import stage2 from "./entities/stage2";
+import stages from "./entities/stage";
 import entityInfo from "./entities/entitiesInfo";
 import makeMapInfo from "./utils/makeMap";
 import Result from "./modal/Result";
@@ -64,7 +63,7 @@ export default function Stage() {
   const showingCrackedEffect = useSelector(selectCrackEffect);
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
-  const entities = stage2(stage);
+  const entities = stages(stage);
   const restartCount = useSelector(selectRestartCount);
   entities.initialRotation = useSelector(selectInitialRotation);
 

@@ -273,7 +273,6 @@ const makeMapInfo = (data, entity) => {
   setPositionWidth(mapHashInfo, "boss", staticObjects, entity);
   setPositionWidth(mapHashInfo, "attack", staticObjects, entity);
 
-
   return staticObjects;
 };
 

@@ -80,9 +80,6 @@ export default function MainPage() {
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>
-          <Text style={styles.textBox}>CHARACTER</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.messageBox}>
           <Text style={styles.textBox} onPress={() => handleSetConfig(true)}>
             CONFIG
           </Text>
@@ -126,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,
-    width: "90%",
+    width: "85%",
     backgroundColor: "black",
     borderWidth: 3,
     marginBottom: 10,

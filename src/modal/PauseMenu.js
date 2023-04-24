@@ -15,7 +15,6 @@ export default function PauseMenu({
   entities,
   onSelectStage,
   isGameOver,
-  onSetConfig
 }) {
   const dispatch = useDispatch();
 
@@ -48,11 +47,6 @@ export default function PauseMenu({
     onSelectStage(true);
   };
 
-  const handleSetConfig = () => {
-    playSound(select, 1);
-    onSetConfig(true);
-  };
-
   return (
     <View style={styles.container}>
       {isGameOver ? (
@@ -78,12 +72,6 @@ export default function PauseMenu({
         onPress={handleBackToMainPage}
       >
         <Text style={styles.message}>MAIN PAGE</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.messageBox}
-        onPress={handleSetConfig}
-      >
-        <Text style={styles.message}>CONFIG GYRO</Text>
       </TouchableOpacity>
       {!isGameOver && (
         <TouchableOpacity style={styles.messageBox} onPress={handleModalClose}>

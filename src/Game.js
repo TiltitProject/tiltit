@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { selectPage, selectRestartCount } from "./features/gameSlice";
 import MainPage from "./MainPage";
-import Stage from "./Stage";
+import Stage from "./GameEngine";
 
 export default function Game() {
   const currentPage = useSelector(selectPage);

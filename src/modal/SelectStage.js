@@ -42,11 +42,6 @@ export default function SelectStage({
         <View style={styles.resultContainer}>
           <Text style={styles.title}>STAGE</Text>
         </View>
-        <TouchableOpacity style={styles.messageBox}>
-          <Text style={styles.message} onPress={() => selectStage(0)}>
-            TUTORIAL
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.messageBox}
           onPress={() => selectStage(1)}

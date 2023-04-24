@@ -175,8 +175,8 @@ const entityInfo = {
       specifics: {
         1: {
           axis: "x",
-          speed: 3,
-          distance: GAME_WIDTH / 5,
+          speed: 2,
+          distance: GAME_WIDTH / 7,
           image: Dynamic.rock,
           changeMove: false,
           round: 1,
