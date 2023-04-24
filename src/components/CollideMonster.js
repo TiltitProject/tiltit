@@ -13,34 +13,36 @@ export default function CollideMonster({
   useEffect(() => {
     Animated.timing(deathAnimation, {
       toValue: 4,
-      duration: 400,
+      duration: 500,
       useNativeDriver: true,
     }).start();
 
     setTimeout(() => {
       setVisible(false);
-    }, 1000);
+    }, 2000);
   }, []);
+
+
 
   const interpolateX = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4],
     outputRange: [
-      flyingVector.x * 7,
-      flyingVector.x * 14,
-      flyingVector.x * 28,
-      flyingVector.x * 56,
-      flyingVector.x * 102,
+      flyingVector.x * 5,
+      flyingVector.x * 10,
+      flyingVector.x * 15,
+      flyingVector.x * 20,
+      flyingVector.x * 25,
     ],
   });
 
   const interpolateY = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4],
     outputRange: [
-      flyingVector.y * 7,
-      flyingVector.y * 14,
-      flyingVector.y * 28,
-      flyingVector.y * 56,
-      flyingVector.y * 102,
+      flyingVector.y * 5,
+      flyingVector.y * 10,
+      flyingVector.y * 15,
+      flyingVector.y * 20,
+      flyingVector.y * 25,
     ],
   });
 
@@ -72,5 +74,6 @@ function imageStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,
+    borderWidth:1,
   });
 }

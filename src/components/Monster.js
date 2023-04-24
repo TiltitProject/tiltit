@@ -90,6 +90,7 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
     top: yBody,
     width: widthBody,
     height: heightBody,
+    borderWidth: 1,
   });
 }
 

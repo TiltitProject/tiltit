@@ -456,7 +456,6 @@ export default function usePhysics(entities, { touches, dispatch }) {
         translateMapX = true;
         Matter.World.remove(world, flag2);
       }
-
       if (arrivedFlag1) {
         translateMapY = true;
         Matter.World.remove(world, flag1);
@@ -468,10 +467,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
 
     monsterArray.forEach((num) => {
-      const monster = `monster${num + 1}`;
+      const monsterEntity = entities[`monster${num + 1}`].body;
       const collision = Matter.Collision.collides(
         entities.player.body,
-        entities[monster].body,
+        monsterEntity,
       );
       if (collision) {
         if (entities.specialMode) {
@@ -479,6 +478,11 @@ export default function usePhysics(entities, { touches, dispatch }) {
             x: Math.cos(player.angle),
             y: Math.sin(player.angle),
           };
+
+          Matter.Body.setPosition(monsterEntity, {
+            x: monsterEntity.position.x + player.velocity.x * 2,
+            y: monsterEntity.position.y + player.velocity.y * 2,
+          });
 
           const reflection = {
             x:
@@ -495,7 +499,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
           const reflectionAngle = Math.atan2(reflection.y, reflection.x);
 
-          Matter.World.remove(world, entities[monster].body);
+          Matter.World.remove(world, monsterEntity);
           entityInfo[stage].monster.specifics[num + 1].alive = false;
 
           dispatch({
@@ -512,7 +516,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
                 player.velocity.y,
             },
           });
-        } else {
+        } else if (entityInfo[stage].monster.specifics[num + 1].alive) {
           dispatch({ type: "game_over" });
         }
       }
