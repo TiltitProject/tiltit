@@ -50,7 +50,7 @@ function Monster(props) {
   const isPlayerMove = useSelector(selectIsPlayerMove);
 
   useEffect(() => {
-    if (isPlayerMove && currentRound === specifics.round) {
+    if (isPlayerMove) {
       const changeIndex = setTimeout(() => {
         if (isGameRun && imageIndex < specifics.image.length - 1) {
           return setImageIndex(imageIndex + 1);
@@ -90,7 +90,6 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
     top: yBody,
     width: widthBody,
     height: heightBody,
-    borderWidth: 1,
   });
 }
 

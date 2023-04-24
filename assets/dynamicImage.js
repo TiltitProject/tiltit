@@ -66,6 +66,50 @@ import skullHit4 from "./monsters/scull/Hit_4.png";
 import skullHit5 from "./monsters/scull/Hit_5.png";
 import skullHit6 from "./monsters/scull/Hit_6.png";
 import skullHit7 from "./monsters/scull/Hit_7.png";
+import blueBird1 from "./monsters/blueBird/Flying_1.png";
+import blueBird2 from "./monsters/blueBird/Flying_2.png";
+import blueBird3 from "./monsters/blueBird/Flying_3.png";
+import blueBird4 from "./monsters/blueBird/Flying_4.png";
+import blueBird5 from "./monsters/blueBird/Flying_5.png";
+import blueBird6 from "./monsters/blueBird/Flying_6.png";
+import blueBird7 from "./monsters/blueBird/Flying_7.png";
+import blueBird8 from "./monsters/blueBird/Flying_8.png";
+import blueBird9 from "./monsters/blueBird/Flying_9.png";
+import mushroom1 from "./monsters/mushRoom/Run_1.png";
+import mushroom2 from "./monsters/mushRoom/Run_2.png";
+import mushroom3 from "./monsters/mushRoom/Run_3.png";
+import mushroom4 from "./monsters/mushRoom/Run_4.png";
+import mushroom5 from "./monsters/mushRoom/Run_5.png";
+import mushroom6 from "./monsters/mushRoom/Run_6.png";
+import mushroom7 from "./monsters/mushRoom/Run_7.png";
+import mushroom8 from "./monsters/mushRoom/Run_8.png";
+import mushroom9 from "./monsters/mushRoom/Run_9.png";
+import mushroom10 from "./monsters/mushRoom/Run_10.png";
+import mushroom11 from "./monsters/mushRoom/Run_11.png";
+import radish1 from "./monsters/radish/Run_1.png";
+import radish2 from "./monsters/radish/Run_2.png";
+import radish3 from "./monsters/radish/Run_3.png";
+import radish4 from "./monsters/radish/Run_4.png";
+import radish5 from "./monsters/radish/Run_5.png";
+import radish6 from "./monsters/radish/Run_6.png";
+import radish7 from "./monsters/radish/Run_7.png";
+import radish8 from "./monsters/radish/Run_8.png";
+import radish9 from "./monsters/radish/Run_9.png";
+import radish10 from "./monsters/radish/Run_10.png";
+import radish11 from "./monsters/radish/Run_11.png";
+import radish12 from "./monsters/radish/Run_12.png";
+import rabbit1 from "./monsters/rabbit/Run_1.png";
+import rabbit2 from "./monsters/rabbit/Run_2.png";
+import rabbit3 from "./monsters/rabbit/Run_3.png";
+import rabbit4 from "./monsters/rabbit/Run_4.png";
+import rabbit5 from "./monsters/rabbit/Run_5.png";
+import rabbit6 from "./monsters/rabbit/Run_6.png";
+import rabbit7 from "./monsters/rabbit/Run_7.png";
+import rabbit8 from "./monsters/rabbit/Run_8.png";
+import rabbit9 from "./monsters/rabbit/Run_9.png";
+import rabbit10 from "./monsters/rabbit/Run_10.png";
+import rabbit11 from "./monsters/rabbit/Run_11.png";
+import rabbit12 from "./monsters/rabbit/Run_12.png";
 
 export default {
   runningVirtualGuy: [
@@ -132,5 +176,57 @@ export default {
     skullHit5,
     skullHit6,
     skullHit7,
+  ],
+  blueBird: [
+    blueBird1,
+    blueBird2,
+    blueBird3,
+    blueBird4,
+    blueBird5,
+    blueBird6,
+    blueBird7,
+    blueBird8,
+    blueBird9,
+  ],
+  mushroom: [
+    mushroom1,
+    mushroom2,
+    mushroom3,
+    mushroom4,
+    mushroom5,
+    mushroom6,
+    mushroom7,
+    mushroom8,
+    mushroom9,
+    mushroom10,
+    mushroom11,
+  ],
+  radish: [
+    radish1,
+    radish2,
+    radish3,
+    radish4,
+    radish5,
+    radish6,
+    radish7,
+    radish8,
+    radish9,
+    radish10,
+    radish11,
+    radish12,
+  ],
+  rabbit: [
+    rabbit1,
+    rabbit2,
+    rabbit3,
+    rabbit4,
+    rabbit5,
+    rabbit6,
+    rabbit7,
+    rabbit8,
+    rabbit9,
+    rabbit10,
+    rabbit11,
+    rabbit12,
   ],
 };

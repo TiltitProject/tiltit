@@ -239,8 +239,8 @@ export default function usePhysics(entities, { touches, dispatch }) {
     } else {
       firstBlockArray.forEach((entityNum) => {
         Matter.Body.setPosition(entities[`block${entityNum + 1}`].body, {
-          x: mapInfo.block[entityNum + 39].position.x,
-          y: mapInfo.block[entityNum + 39].position.y + movedHeight,
+          x: mapInfo.block[entityNum + 38].position.x,
+          y: mapInfo.block[entityNum + 38].position.y + movedHeight,
         });
       });
 
@@ -272,6 +272,9 @@ export default function usePhysics(entities, { touches, dispatch }) {
           x: entities.boss1.body.position.x,
           y: entities.boss1.body.bounds.max.y,
         });
+        blockArray.forEach((entityNum) => {
+          Matter.World.remove(world, entities[`block${entityNum + 1}`].body);
+        });
       }
     }
   }
@@ -279,16 +282,15 @@ export default function usePhysics(entities, { touches, dispatch }) {
   if (entities.round === 4) {
     const bossHP = entityInfo[stage].boss.specifics[1].HP;
     const monsterSpecific = entityInfo[stage].monster.specifics;
-    entityInfo[stage].boss.specifics[1].HP -= 1;
 
-    if (bossHP === 15) {
-      Matter.Body.setPosition(entities.monster4.body, {
+    if (bossHP === 10) {
+      Matter.Body.setPosition(entities.monster3.body, {
         x: entities.boss1.body.position.x,
         y: entities.boss1.body.bounds.max.y,
       });
-      entityInfo[stage].monster.specifics[4].guideMissile = {
-        x: player.position.x - entities.boss1.body.position.x / 10,
-        y: player.position.y - entities.boss1.body.position.y / 10,
+      entityInfo[stage].monster.specifics[3].guideMissile = {
+        x: (player.position.x - entities.boss1.body.position.x) / 40,
+        y: (player.position.y - entities.boss1.body.position.y) / 40,
       };
     }
 
@@ -307,10 +309,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
     if (
       MonsterPositionTimer > (GAME_HEIGHT / 3) * 2 &&
-      monsterSpecific[3].onPosition === false
+      monsterSpecific[5].onPosition === false
     ) {
-      monsterSpecific[3].onPosition = true;
-      Matter.Body.setPosition(entities.monster2.body, {
+      monsterSpecific[5].onPosition = true;
+      Matter.Body.setPosition(entities.monster5.body, {
         x: entities.boss1.body.bounds.max.x,
         y: entities.boss1.body.bounds.max.y,
       });
@@ -340,6 +342,15 @@ export default function usePhysics(entities, { touches, dispatch }) {
           x: specifics.guideMissile.x,
           y: specifics.guideMissile.y,
         });
+        specifics.moved += specifics.guideMissile.y;
+
+        if (specifics.moved > GAME_HEIGHT) {
+          specifics.moved = 0;
+          Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
+            x: entities.boss1.body.position.x,
+            y: entities.boss1.body.bounds.max.y,
+          });
+        }
       }
     });
 

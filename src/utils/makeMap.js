@@ -264,7 +264,6 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
 const makeMapInfo = (data, entity) => {
   const mapHashInfo = makeObjectHash(data, entity);
   const staticObjects = makeInitialMap(entity);
-
   setPositionWidth(mapHashInfo, "block", staticObjects, entity);
   setPositionWidth(mapHashInfo, "goal", staticObjects, entity);
   setPositionWidth(mapHashInfo, "item", staticObjects, entity);
