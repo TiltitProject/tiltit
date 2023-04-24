@@ -1,50 +1,36 @@
-import React, { useState, useEffect } from "react";
-import Matter from "matter-js";
+import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { apple } from "../../assets/static";
-import { selectItemsVisible } from "../features/gameSlice";
+import {
+  selectItemsVisible,
+  selectMapState,
+  selectCurrentStage,
+  selectCurrentRound,
+  selectRestartCount
+} from "../features/gameSlice";
 
-export default function AttackMaker(world, position, size, specifics, number) {
-  const initialObstacle = Matter.Bodies.rectangle(
-    position.x,
-    position.y,
-    size.width,
-    size.height,
-    { number, specifics },
-  );
-
-  Matter.World.add(world, initialObstacle);
-
-  return {
-    body: initialObstacle,
-    position,
-    renderer: <Attack />,
-  };
-}
-
-function Attack(props) {
-  const { body } = props;
-  const { bounds, position, specifics } = body;
-  const widthBody = bounds.max.x - bounds.min.x;
-  const widthImage = widthBody * 2.5;
-  const xImage = -widthBody * 0.75;
-  const yImage = -widthBody * 0.65;
+export default function Item({ size, specifics, num }) {
+  const currentStage = useSelector(selectCurrentStage);
+  const { position } = useSelector(selectMapState)[currentStage].item[num];
+  const widthBody = size.width;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - widthBody / 2;
+  const widthImage = widthBody * 2;
+  const xImage = -widthBody * 0.5;
+  const yImage = -widthBody * 0.5;
+  const isVisible = useSelector(selectItemsVisible)[num];
+  const currentRound = useSelector(selectCurrentRound);
 
-  // if (render.visible) {
-  return (
-    <View style={viewStyle(xBody, yBody, widthBody)}>
-      {/* {render.visible && ( */}
-      <Image
-        style={imageStyle(xImage, yImage, widthImage)}
-        source={specifics.image}
-      />
-      {/* )} */}
-    </View>
-  );
-  // }
+  if (isVisible && currentRound === specifics.round) {
+    return (
+      <View key={selectRestartCount} style={viewStyle(xBody, yBody, widthBody)}>
+        <Image
+          style={imageStyle(xImage, yImage, widthImage)}
+          source={specifics.image}
+        />
+      </View>
+    );
+  }
 }
 
 function viewStyle(xBody, yBody, widthBody) {
@@ -54,6 +40,7 @@ function viewStyle(xBody, yBody, widthBody) {
     top: yBody,
     width: widthBody,
     height: widthBody,
+    zIndex: 1,
   });
 }
 

@@ -46,7 +46,7 @@ const initialState = {
   currentRound: 1,
   isSpecialMode: false,
   bossHP: 20,
-  attackId : null,
+  attackId: null,
 };
 
 const gameSlice = createSlice({
@@ -67,6 +67,10 @@ const gameSlice = createSlice({
       state.leftTime = 30;
       state.restartCount += 1;
       state.isFadeOut = true;
+      state.currentRound = 1;
+      state.isSpecialMode = false;
+      state.bossHP = 20;
+      state.attackId = null;
     },
     showCrackEffect: (state) => {
       state.crackEffect = true;
@@ -100,6 +104,10 @@ const gameSlice = createSlice({
       state.hasClear = false;
       state.leftTime = 30;
       state.isFadeOut = false;
+      state.currentRound = 1;
+      state.isSpecialMode = false;
+      state.bossHP = 20;
+      state.attackId = null;
     },
     stopGame: (state) => {
       state.runningGame = false;

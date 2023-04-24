@@ -3,7 +3,7 @@ import MonsterMaker from "../components/Monster";
 import FlagMaker from "../components/Flag";
 import { arrowRight, groundInner } from "../../assets/static";
 import MakeBoss from "../components/BossMonster";
-import AttackMaker from "../components/Item";
+import AttackMaker from "../components/Attack";
 
 export const makeBlocks = (world, mapInfo, entity) => {
   const objects = {};

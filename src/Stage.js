@@ -47,7 +47,7 @@ import entityInfo from "./entities/entitiesInfo";
 import makeMapInfo from "./utils/makeMap";
 import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
-import Item from "./components/ItemBefore";
+import Item from "./components/Item";
 import Special from "./components/Special";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -62,7 +62,6 @@ export default function Stage() {
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
-  const mapState = useSelector(selectMapState);
   const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
   const hasClear = useSelector(selectStageClear);
   const entities = stage2(stage);
@@ -142,11 +141,13 @@ export default function Stage() {
           isModalVisible={isModalVisible}
           isGameOver={showingCrackedEffect}
         />
-        <Result
-          gameEngine={gameEngine}
-          entities={entities}
-          isModalVisible={hasClear}
-        />
+        {hasClear && (
+          <Result
+            gameEngine={gameEngine}
+            entities={entities}
+            isModalVisible={hasClear}
+          />
+        )}
         <Header key={`header${restartCount}`} />
         <GameEngine
           key={`game${restartCount}`}
@@ -159,36 +160,34 @@ export default function Stage() {
           onEvent={handleGameEngine}
           style={styles.gameEngine}
         >
-          {mapState[stage] &&
-            Array.from(Array(entityInfo[stage].item.number).keys()).map(
-              (num) => (
-                <Item
-                  key={`item${num + 1}`}
-                  size={mapInfo.item[num + 1].size}
-                  specifics={entityInfo[stage].item.specifics[num + 1]}
-                  num={num + 1}
-                />
-              ),
-            )}
-          {mapState[stage] &&
-            Array.from(Array(entityInfo[stage].special.number).keys()).map(
-              (num) => (
-                <Special
-                  key={`special${num + 1}`}
-                  size={mapInfo.special[num + 1].size}
-                  specifics={entityInfo[stage].special.specifics[num + 1]}
-                  num={num + 1}
-                />
-              ),
-            )}
-          {mapInfo.goal[1] && (
-            <Goal
-              position={mapInfo.goal[1].position}
-              size={mapInfo.goal[1].size}
-            />
-          )}
           <StatusBar style="auto" hidden />
         </GameEngine>
+        {!isFadeIn &&
+          Array.from(Array(entityInfo[stage].item.number).keys()).map((num) => (
+            <Item
+              key={`item${restartCount + num + 1}`}
+              size={mapInfo.item[num + 1].size}
+              specifics={entityInfo[stage].item.specifics[num + 1]}
+              num={num + 1}
+            />
+          ))}
+        {!isFadeIn &&
+          Array.from(Array(entityInfo[stage].special.number).keys()).map(
+            (num) => (
+              <Special
+                key={`special${restartCount + num + 1}`}
+                size={mapInfo.special[num + 1].size}
+                specifics={entityInfo[stage].special.specifics[num + 1]}
+                num={num + 1}
+              />
+            ),
+          )}
+        {!isFadeIn && mapInfo.goal[1] && (
+          <Goal
+            position={mapInfo.goal[1]?.position}
+            size={mapInfo.goal[1]?.size}
+          />
+        )}
       </ImageBackground>
     </View>
   );

@@ -8,17 +8,14 @@ import {
   restartGame,
   selectStageInfo,
   selectCurrentStage,
+  setIsFadeOut,
 } from "../features/gameSlice";
 import { start, select } from "../../assets/audio";
 import Modal from "./Modal";
 import { apple, clock } from "../../assets/static";
+import SelectStage from "./SelectStage";
 
-export default function Result({
-  onIsFadeout,
-  gameEngine,
-  entities,
-  isModalVisible,
-}) {
+export default function Result({ gameEngine, entities, isModalVisible }) {
   const dispatch = useDispatch();
   const stage = useSelector(selectCurrentStage);
   const stageResult = useSelector(selectStageInfo)[stage];
@@ -31,7 +28,7 @@ export default function Result({
     score: 0,
   });
   const [totalScore, setTotalScore] = useState(0);
-
+  const [selectStage, setSelectStage] = useState(false);
   useEffect(() => {
     const countScore = setTimeout(() => {
       if (itemScore.score < stageResult.itemScore && totalScore === 0) {
@@ -69,19 +66,26 @@ export default function Result({
   }, [itemScore, timeScore, totalScore]);
 
   const handleRestartGame = () => {
+    dispatch(setIsFadeOut(true));
     playSound(start, 1);
-    dispatch(restartGame());
-    gameEngine.swap(entities());
+    setTimeout(() => {
+      gameEngine.swap(entities);
+      dispatch(restartGame());
+    }, 700);
   };
 
   const handleBackToMainPage = () => {
-    onIsFadeout();
+    dispatch(setIsFadeOut(true));
     playSound(select, 1);
     dispatch(removeModal());
     setTimeout(() => {
-      dispatch(backToMainPage());
       gameEngine.swap(entities());
+      dispatch(backToMainPage());
     }, 700);
+  };
+
+  const handleSelectStage = (boolean) => {
+    setSelectStage(boolean);
   };
 
   const onModalClose = () => {
@@ -89,8 +93,20 @@ export default function Result({
     dispatch(removeModal());
   };
 
+  const openSelectStage = () => {
+    playSound(select, 1);
+    setSelectStage(true);
+  };
+
   return (
     <Modal isVisible={isModalVisible} onClose={onModalClose}>
+      {selectStage && (
+        <SelectStage
+          gameEngine={gameEngine}
+          entities={entities}
+          onSelectStage={handleSelectStage}
+        />
+      )}
       <View style={styles.resultContainer}>
         <View style={styles.scoreBox}>
           <Image style={styles.apple} source={apple} />
@@ -109,8 +125,8 @@ export default function Result({
         </View>
       </View>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.messageBox} onPress={handleRestartGame}>
-          <Text style={styles.message}>Next Stage</Text>
+        <TouchableOpacity style={styles.messageBox} onPress={openSelectStage}>
+          <Text style={styles.message}>SELECT STAGE</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.messageBox} onPress={handleRestartGame}>
           <Text style={styles.message}>RESTART GAME</Text>

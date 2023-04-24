@@ -57,5 +57,5 @@ export {
   ground,
   groundInner,
   star,
-  starEffect
+  starEffect,
 };

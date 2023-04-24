@@ -12,7 +12,7 @@ import {
 import entityInfo from "./entitiesInfo";
 import stageSheet from "../../assets/stageSheet.json";
 import FloorMaker from "../components/Floor";
-import ItemMaker from "../components/Item";
+import ItemMaker from "../components/Attack";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;

@@ -43,7 +43,7 @@ export default function Header() {
       ).start();
     }
 
-    if (leftTime === 30) {
+    if (leftTime > 30) {
       setTimeStyle({
         color: "black",
         size: 25,

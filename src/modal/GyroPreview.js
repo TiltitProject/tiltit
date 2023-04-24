@@ -1,12 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { playSound } from "../utils/playSound";
-import {
-  showModal,
-  selectInitialRotation,
-} from "../features/gameSlice";
+import { showModal, selectInitialRotation } from "../features/gameSlice";
 import { select } from "../../assets/audio";
 import configPhysics from "../ConfigPhysics";
 import ConfigStage from "../entities/configStage";
@@ -17,8 +14,6 @@ export default function PreviewConfig({
   onSetConfig,
 }) {
   const dispatch = useDispatch();
-  const [running, setRunning] = useState(true);
-  const [gameEngine, setGameEngine] = useState(null);
   const initialRotation = useSelector(selectInitialRotation);
   const entities = ConfigStage();
   entities.initialRotation = initialRotation;
@@ -40,19 +35,22 @@ export default function PreviewConfig({
       <View style={styles.modalContent}>
         <View style={styles.container}>
           <GameEngine
-            ref={(ref) => {
-              setGameEngine(ref);
-            }}
             systems={[configPhysics]}
             entities={entities}
-            running={running}
+            running
             style={styles.gameEngine}
           ></GameEngine>
           <View style={styles.configButton}>
-            <TouchableOpacity style={styles.messageBox} onPress={handleModalClose}>
+            <TouchableOpacity
+              style={styles.messageBox}
+              onPress={handleModalClose}
+            >
               <Text style={styles.message}>CONFIRM</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.messageBox} onPress={handleOpenPreview}>
+            <TouchableOpacity
+              style={styles.messageBox}
+              onPress={handleOpenPreview}
+            >
               <Text style={styles.message}>CANCEL</Text>
             </TouchableOpacity>
           </View>

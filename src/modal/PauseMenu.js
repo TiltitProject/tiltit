@@ -23,8 +23,8 @@ export default function PauseMenu({
     dispatch(setIsFadeOut(true));
     playSound(start, 1);
     setTimeout(() => {
-      dispatch(restartGame());
       gameEngine.swap(entities);
+      dispatch(restartGame());
     }, 700);
   };
 
@@ -33,8 +33,8 @@ export default function PauseMenu({
     playSound(select, 1);
     dispatch(removeModal());
     setTimeout(() => {
-      dispatch(backToMainPage());
       gameEngine.swap(entities);
+      dispatch(backToMainPage());
     }, 700);
   };
 

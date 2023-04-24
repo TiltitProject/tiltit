@@ -280,6 +280,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
     const bossHP = entityInfo[stage].boss.specifics[1].HP;
     const monsterSpecific = entityInfo[stage].monster.specifics;
     entityInfo[stage].boss.specifics[1].HP -= 1;
+
     if (bossHP === 15) {
       Matter.Body.setPosition(entities.monster4.body, {
         x: entities.boss1.body.position.x,
