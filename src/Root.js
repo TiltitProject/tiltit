@@ -4,7 +4,7 @@ import { selectPage, selectRestartCount } from "./features/gameSlice";
 import MainPage from "./MainPage";
 import Stage from "./GameEngine";
 
-export default function Game() {
+export default function Root() {
   const currentPage = useSelector(selectPage);
   const restartCount = useSelector(selectRestartCount);
 
