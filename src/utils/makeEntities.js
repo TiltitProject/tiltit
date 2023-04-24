@@ -92,24 +92,6 @@ export const makeAttacks = (world, mapInfo, entity) => {
   return objects;
 };
 
-// export const makeItems = (world, mapInfo, entity) => {
-//   const objects = {};
-
-//   Array.from(Array(entity.item.renderEntity).keys()).forEach((index) => {
-//     const objectNum = index + 1;
-
-//     objects[`item${objectNum}`] = ItemMaker(
-//       world,
-//       mapInfo.item[objectNum].position,
-//       mapInfo.item[objectNum].size,
-//       entity.specifics[objectNum],
-//       objectNum,
-//     );
-//   });
-
-//   return objects;
-// };
-
 export const makeFlags = (world, mapInfo, entity) => {
   const objects = {};
   if (entity.flag.number) {
@@ -130,23 +112,3 @@ export const makeFlags = (world, mapInfo, entity) => {
     return objects;
   }
 };
-
-export const makeMonster = (
-  world,
-  mapInfo,
-  id,
-  image,
-  direction,
-  speed,
-  distance,
-) =>
-  MonsterMaker(
-    world,
-    mapInfo.monster[id].position,
-    mapInfo.monster[id].size,
-    image,
-    direction,
-    speed,
-    distance,
-    mapInfo.monster[id].position,
-  );
