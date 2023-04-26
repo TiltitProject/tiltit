@@ -3,6 +3,9 @@ import { Dimensions } from "react-native";
 import { DeviceMotion } from "expo-sensors";
 import entityInfo from "./entities/entitiesInfo";
 import adjustDegree from "./utils/adjustDegree";
+import moveMonster from "./utils/moveMonster";
+import makeReflectionAngle from "./utils/makeReflectionAngle";
+import { translateEntitiesX, translateEntitiesY } from "./utils/translateEntity";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -54,47 +57,14 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
   });
 
-  const moveRow = (specifics, type) => {
-    Object.keys(specifics).forEach((num) => {
-      const monster = entities[`${type}${num}`]?.body;
-      const moveAxis = specifics[num].axis;
-      const stopAxis = moveAxis === "x" ? "y" : "x";
-      const moveDistance = specifics[num].distance;
-      const { round, translateMap, alive } = specifics[num];
-      const translateInfo = translateMap[moveAxis];
-      const translatedPixel = entities.translatedInfo[moveAxis];
-      const appliedPosition = translateInfo * translatedPixel;
-
-      if (alive && entities.round === round) {
-        if (
-          monster.position[moveAxis] >=
-          monster.initialPosition[moveAxis] + appliedPosition + moveDistance
-        ) {
-          specifics[num].changeMove = true;
-        } else if (
-          monster.position[moveAxis] <=
-          monster.initialPosition[moveAxis] + appliedPosition - moveDistance
-        ) {
-          specifics[num].changeMove = false;
-        }
-
-        if (!specifics[num].changeMove) {
-          Matter.Body.translate(monster, {
-            [moveAxis]: specifics[num].speed,
-            [stopAxis]: 0,
-          });
-        } else {
-          Matter.Body.translate(monster, {
-            [moveAxis]: -specifics[num].speed,
-            [stopAxis]: 0,
-          });
-        }
-      }
-    });
-  };
   if (!translateMapY && !translateMapX) {
-    moveRow(entityInfo[stage].monster.specifics, "monster");
-    moveRow(entityInfo[stage].boss.specifics, "boss");
+    moveMonster(
+      Matter,
+      entities,
+      entityInfo[stage].monster.specifics,
+      "monster",
+    );
+    moveMonster(Matter, entities, entityInfo[stage].boss.specifics, "boss");
   }
 
   itemArray.forEach((num) => {
@@ -102,10 +72,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
     const itemWidth = mapInfo.item[num + 1].size.width;
 
     if (
-      player.position.x > itemPosition.x - itemWidth / 2 &&
-      player.position.x < itemPosition.x + itemWidth / 2 &&
-      player.position.y > itemPosition.y - itemWidth / 2 &&
-      player.position.y < itemPosition.y + itemWidth / 2
+      player.position.x > itemPosition.x - itemWidth &&
+      player.position.x < itemPosition.x + itemWidth &&
+      player.position.y > itemPosition.y - itemWidth &&
+      player.position.y < itemPosition.y + itemWidth
     ) {
       dispatch({ type: "get_item", payload: num + 1 });
     }
@@ -137,7 +107,6 @@ export default function usePhysics(entities, { touches, dispatch }) {
   }
 
   const flagNumber = entityInfo[stage].flag.number;
-  const flagArray = Array.from(Array(flagNumber).keys());
 
   if (translateMapX) {
     if (!movedWidth) {
@@ -154,30 +123,13 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
       Matter.Body.translate(entities.player.body, { x: -5, y: 0 });
 
-      blockArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`block${entityNum + 1}`].body, {
-          x: -5,
-          y: 0,
-        });
-      });
-
-      flagArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`flag${entityNum + 1}`].body, {
-          x: -5,
-          y: 0,
-        });
-      });
+      translateEntitiesX(blockNumber, -5, "block", entities, Matter);
+      translateEntitiesX(flagNumber, -5, "flag", entities, Matter);
+      translateEntitiesX(monsterNumber, -5, "monster", entities, Matter);
 
       Matter.Body.translate(entities.boss1.body, {
         x: -5,
         y: 0,
-      });
-
-      monsterArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
-          x: -5,
-          y: 0,
-        });
       });
     } else {
       dispatch({ type: "complete_move_row", payload: movedWidth });
@@ -211,30 +163,13 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
       Matter.Body.translate(entities.player.body, { x: 0, y: 10 });
 
-      blockArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`block${entityNum + 1}`].body, {
-          x: 0,
-          y: 10,
-        });
-      });
-
-      flagArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`flag${entityNum + 1}`].body, {
-          x: 0,
-          y: 10,
-        });
-      });
+      translateEntitiesY(blockNumber, 10, "block", entities, Matter);
+      translateEntitiesY(flagNumber, 10, "flag", entities, Matter);
+      translateEntitiesY(monsterNumber, 10, "monster", entities, Matter);
 
       Matter.Body.translate(entities.boss1.body, {
         x: 0,
         y: 10,
-      });
-
-      monsterArray.forEach((entityNum) => {
-        Matter.Body.translate(entities[`monster${entityNum + 1}`]?.body, {
-          x: 0,
-          y: 10,
-        });
       });
     } else {
       firstBlockArray.forEach((entityNum) => {
@@ -286,7 +221,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
     if (bossHP === 10) {
       Matter.Body.setPosition(entities.monster3.body, {
         x: entities.boss1.body.position.x,
-        y: entities.boss1.body.bounds.max.y,
+        y: entities.boss1.body.position.y,
       });
       entityInfo[stage].monster.specifics[3].guideMissile = {
         x: (player.position.x - entities.boss1.body.position.x) / 40,
@@ -485,30 +420,12 @@ export default function usePhysics(entities, { touches, dispatch }) {
       );
       if (collision) {
         if (entities.specialMode) {
-          const direction = {
-            x: Math.cos(player.angle),
-            y: Math.sin(player.angle),
-          };
-
           Matter.Body.setPosition(monsterEntity, {
             x: monsterEntity.position.x + player.velocity.x * 2,
             y: monsterEntity.position.y + player.velocity.y * 2,
           });
 
-          const reflection = {
-            x:
-              direction.x -
-              2 *
-                (direction.x * collision.normal.x + direction.y) *
-                collision.normal.x,
-            y:
-              direction.y -
-              2 *
-                (direction.x * collision.normal.x + direction.y) *
-                collision.normal.y,
-          };
-
-          const reflectionAngle = Math.atan2(reflection.y, reflection.x);
+          const reflectionAngle = makeReflectionAngle(collision, player);
 
           Matter.World.remove(world, monsterEntity);
           entityInfo[stage].monster.specifics[num + 1].alive = false;

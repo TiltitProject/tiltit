@@ -67,10 +67,10 @@ export default function Config({ onSetConfig, isModalVisible }) {
         </View>
         <TouchableOpacity style={styles.messageBox}>
           <Text style={subscription ? styles.axisInfo : styles.axisDone}>
-            Y: {Math.round(beta * 57.29)}
+            Y: {Math.round(beta * 57.29)} °
           </Text>
           <Text style={subscription ? styles.axisInfo : styles.axisDone}>
-            X: {Math.round(gamma * 57.29)}
+            X: {Math.round(gamma * 57.29)} °
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.messageBox}>

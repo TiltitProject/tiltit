@@ -22,8 +22,6 @@ export default function CollideMonster({
     }, 2000);
   }, []);
 
-
-
   const interpolateX = deathAnimation.interpolate({
     inputRange: [0, 1, 2, 3, 4],
     outputRange: [
@@ -74,6 +72,5 @@ function imageStyle(heightBody, widthBody) {
   return StyleSheet.create({
     height: heightBody,
     width: widthBody,
-    borderWidth:1,
   });
 }

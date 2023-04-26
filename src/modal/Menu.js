@@ -3,7 +3,6 @@ import Modal from "./Modal";
 import PauseMenu from "./PauseMenu";
 import SelectStage from "./SelectStage";
 
-
 export default function Menu({
   gameEngine,
   entities,
@@ -19,6 +18,7 @@ export default function Menu({
     <Modal isVisible={isModalVisible}>
       {!selectStage && (
         <PauseMenu
+          testID="pause_menu"
           gameEngine={gameEngine}
           entities={entities}
           onSelectStage={handleSelectStage}
@@ -27,6 +27,7 @@ export default function Menu({
       )}
       {selectStage && (
         <SelectStage
+          testID="select_stage_menu"
           gameEngine={gameEngine}
           entities={entities}
           onSelectStage={handleSelectStage}

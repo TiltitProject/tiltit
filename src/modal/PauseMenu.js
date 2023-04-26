@@ -30,7 +30,6 @@ export default function PauseMenu({
   const handleBackToMainPage = () => {
     dispatch(setIsFadeOut(true));
     playSound(select, 1);
-    dispatch(removeModal());
     setTimeout(() => {
       gameEngine.swap(entities);
       dispatch(backToMainPage());
@@ -59,6 +58,7 @@ export default function PauseMenu({
         </View>
       )}
       <TouchableOpacity
+        testID="select_stage"
         style={styles.messageBox}
         onPress={handleSelectStage}
       >

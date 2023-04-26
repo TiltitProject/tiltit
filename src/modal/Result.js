@@ -29,6 +29,7 @@ export default function Result({ gameEngine, entities, isModalVisible }) {
   });
   const [totalScore, setTotalScore] = useState(0);
   const [selectStage, setSelectStage] = useState(false);
+
   useEffect(() => {
     const countScore = setTimeout(() => {
       if (itemScore.score < stageResult.itemScore && totalScore === 0) {

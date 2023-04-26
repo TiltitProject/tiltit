@@ -17,7 +17,7 @@ const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
 const FLOOR_WIDTH = 32;
 
-export default function Stage2(stage) {
+export default function Stage(stage) {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;

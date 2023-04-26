@@ -245,7 +245,7 @@ const entityInfo = {
     gridSize: BLOCK_SIZE,
     block: {
       number: 55,
-      renderEntity: 38,
+      renderEntity: 37,
       firstEntity: 18,
       size: BLOCK_SIZE,
       image: {

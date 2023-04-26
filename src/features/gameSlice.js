@@ -109,9 +109,6 @@ const gameSlice = createSlice({
       state.bossHP = 20;
       state.attackId = null;
     },
-    stopGame: (state) => {
-      state.runningGame = false;
-    },
     backToMainPage: (state) => {
       state.currentPage = "MainPage";
       state.isModalVisible = false;
