@@ -1,7 +1,7 @@
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
 import MakePlayer from "../components/Player";
-import MakeMonster from "../components/Monster";
+import MakeMonster from "./utils/makeMonster";
 import BlockMaker from "../components/Block";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;

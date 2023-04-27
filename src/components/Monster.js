@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -10,68 +9,54 @@ import {
   selectIsPlayerMove,
 } from "../features/gameSlice";
 import CollideMonster from "./CollideMonster";
+import useChangeIndex from "../utils/changeIndex";
 
-export default function MakeMonster(
-  world,
-  position,
-  size,
-  specifics,
-  objectNum,
-) {
-  const initialObstacle = Matter.Bodies.rectangle(
-    position.x,
-    position.y,
-    size.width,
-    size.height,
-    { isStatic: true, specifics, initialPosition: position, label: objectNum },
-  );
-
-  Matter.World.add(world, initialObstacle);
-
-  return {
-    body: initialObstacle,
-    position,
-    renderer: <Monster />,
-  };
-}
-
-function Monster(props) {
+export default function Monster(props) {
   const [imageIndex, setImageIndex] = useState(0);
+  const [visibleFlying, setVisibleFlying] = useState(true);
   const { body } = props;
   const { bounds, position, specifics, label } = body;
   const widthBody = bounds.max.x - bounds.min.x;
   const heightBody = bounds.max.y - bounds.min.y;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
-  const isGameRun = useSelector(selectRunningGame);
   const isAlive = useSelector(selectAliveMonsters)[label];
+  const isGameRun = useSelector(selectRunningGame);
   const flyingVector = useSelector(selectMonsterFlyingVector);
   const currentRound = useSelector(selectCurrentRound);
   const isPlayerMove = useSelector(selectIsPlayerMove);
 
+  useChangeIndex(
+    isPlayerMove,
+    currentRound,
+    specifics,
+    isGameRun,
+    imageIndex,
+    setImageIndex,
+  );
+
   useEffect(() => {
-    if (isPlayerMove) {
-      const changeIndex = setTimeout(() => {
-        if (isGameRun && imageIndex < specifics.image.length - 1) {
-          return setImageIndex(imageIndex + 1);
-        }
-        setImageIndex(0);
-      }, 100);
+    if (!isAlive && visibleFlying) {
+      const setInvisibleFlying = setTimeout(
+        () => setVisibleFlying(false),
+        1200,
+      );
 
       return () => {
-        clearInterval(changeIndex);
+        clearInterval(setInvisibleFlying);
       };
     }
-  }, [imageIndex, currentRound]);
+  }, [visibleFlying, isAlive]);
 
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>
-      {isAlive ? (
+      {isAlive && (
         <Image
           style={imageStyle(heightBody, widthBody)}
           source={specifics.image[imageIndex]}
         />
-      ) : (
+      )}
+      {!isAlive && visibleFlying && (
         <CollideMonster
           heightBody={heightBody}
           widthBody={widthBody}

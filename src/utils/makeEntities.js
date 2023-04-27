@@ -1,5 +1,5 @@
 import BlockMaker from "../components/Block";
-import MonsterMaker from "../components/Monster";
+import MonsterMaker from "../entities/utils/makeMonster";
 import FlagMaker from "../components/Flag";
 import { arrowRight, groundInner } from "../../assets/static";
 import MakeBoss from "../components/BossMonster";

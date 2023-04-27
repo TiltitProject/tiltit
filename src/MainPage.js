@@ -69,8 +69,12 @@ export default function MainPage() {
   };
 
   const handleSetConfig = (boolean) => {
-    playSound(select, 1);
     setConfig(boolean);
+  };
+
+  const openConfig = () => {
+    playSound(select, 1);
+    setConfig(true);
   };
 
   return (
@@ -80,7 +84,7 @@ export default function MainPage() {
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <Text style={styles.title}>Tiltit!</Text>
         <TouchableOpacity style={styles.messageBox}>
-          <Text style={styles.textBox} onPress={() => handleSetConfig(true)}>
+          <Text style={styles.textBox} onPress={openConfig}>
             CONFIG
           </Text>
         </TouchableOpacity>

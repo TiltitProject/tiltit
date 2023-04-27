@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet } from "react-native";
 
 export default function CollideMonster({
@@ -8,18 +8,12 @@ export default function CollideMonster({
   flyingVector,
 }) {
   const deathAnimation = useRef(new Animated.Value(0)).current;
-  const [visible, setVisible] = useState(true);
-
   useEffect(() => {
     Animated.timing(deathAnimation, {
       toValue: 4,
       duration: 500,
       useNativeDriver: true,
     }).start();
-
-    setTimeout(() => {
-      setVisible(false);
-    }, 2000);
   }, []);
 
   const interpolateX = deathAnimation.interpolate({
@@ -49,23 +43,21 @@ export default function CollideMonster({
     outputRange: ["0deg", "180deg", "360deg", "540deg", "720deg"],
   });
 
-  if (visible) {
-    return (
-      <Animated.Image
-        style={[
-          imageStyle(heightBody, widthBody),
-          {
-            transform: [
-              { translateX: interpolateX },
-              { translateY: interpolateY },
-              { rotate: rotateInterpolation },
-            ],
-          },
-        ]}
-        source={image}
-      />
-    );
-  }
+  return (
+    <Animated.Image
+      style={[
+        imageStyle(heightBody, widthBody),
+        {
+          transform: [
+            { translateX: interpolateX },
+            { translateY: interpolateY },
+            { rotate: rotateInterpolation },
+          ],
+        },
+      ]}
+      source={image}
+    />
+  );
 }
 
 function imageStyle(heightBody, widthBody) {

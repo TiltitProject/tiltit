@@ -5,7 +5,10 @@ import entityInfo from "./entities/entitiesInfo";
 import adjustDegree from "./utils/adjustDegree";
 import moveMonster from "./utils/moveMonster";
 import makeReflectionAngle from "./utils/makeReflectionAngle";
-import { translateEntitiesX, translateEntitiesY } from "./utils/translateEntity";
+import {
+  translateEntitiesX,
+  translateEntitiesY,
+} from "./utils/translateEntity";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -202,11 +205,13 @@ export default function usePhysics(entities, { touches, dispatch }) {
           x: player.position.x,
           y: player.position.y - player.circleRadius,
         });
+
         entityInfo[stage].monster.specifics[1].onPosition = true;
         Matter.Body.setPosition(entities.monster1.body, {
           x: entities.boss1.body.position.x,
           y: entities.boss1.body.bounds.max.y,
         });
+
         blockArray.forEach((entityNum) => {
           Matter.World.remove(world, entities[`block${entityNum + 1}`].body);
         });
@@ -273,6 +278,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
         }
       }
       if (specifics.guideMissile) {
+        console.log(specifics.guideMissile);
         Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
           x: specifics.guideMissile.x,
           y: specifics.guideMissile.y,

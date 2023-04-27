@@ -17,11 +17,6 @@ export default function Config({ onSetConfig, isModalVisible }) {
   const [openPreview, setOpenPreview] = useState(false);
   const dispatch = useDispatch();
 
-  const handleInitialRotation = () => {
-    dispatch(setInitialRotation({ beta, gamma }));
-    unsubscribe();
-  };
-
   const subscribe = () => {
     setSubscription(
       DeviceMotion.addListener((result) => {
@@ -30,11 +25,22 @@ export default function Config({ onSetConfig, isModalVisible }) {
     );
   };
 
+  const handleSubscribe = () => {
+    playSound(select, 1);
+    subscribe();
+  };
+
   const unsubscribe = () => {
     if (subscription) {
       subscription.remove();
     }
     setSubscription(null);
+  };
+
+  const handleInitialRotation = () => {
+    playSound(select, 1);
+    dispatch(setInitialRotation({ beta, gamma }));
+    unsubscribe();
   };
 
   useEffect(() => {
@@ -58,7 +64,7 @@ export default function Config({ onSetConfig, isModalVisible }) {
         <PreviewConfig
           isModalVisible={openPreview}
           onOpenPreview={handleOpenPreview}
-          onSetConfig={handleSetConfig}
+          onSetConfig={onSetConfig}
         />
       )}
       <View style={styles.container}>
@@ -86,7 +92,7 @@ export default function Config({ onSetConfig, isModalVisible }) {
             <Text style={styles.message}>CONFIRM</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.messageBox} onPress={subscribe}>
+          <TouchableOpacity style={styles.messageBox} onPress={handleSubscribe}>
             <Text style={styles.message}>RESET</Text>
           </TouchableOpacity>
         )}

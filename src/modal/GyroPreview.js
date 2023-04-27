@@ -19,13 +19,11 @@ export default function PreviewConfig({
   entities.initialRotation = initialRotation;
 
   const handleOpenPreview = () => {
-    playSound(select, 1);
     onOpenPreview(false);
     dispatch(showModal());
   };
 
   const handleModalClose = () => {
-    playSound(select, 1);
     onOpenPreview(false);
     onSetConfig();
   };

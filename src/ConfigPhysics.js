@@ -5,7 +5,6 @@ import adjustDegree from "./utils/adjustDegree";
 const translateMapY = false;
 const translateMapX = false;
 
-
 export default function configPhysics(entities, { touches, dispatch }) {
   const { engine } = entities.physics;
   const player = entities.player.body;
@@ -30,7 +29,10 @@ export default function configPhysics(entities, { touches, dispatch }) {
       });
     }
   };
-  DeviceMotion.removeAllListeners();
+
+  if (DeviceMotion.getListenerCount() > 1) {
+    DeviceMotion.removeAllListeners();
+  }
 
   if (DeviceMotion.getListenerCount() < 1) {
     DeviceMotion.addListener((result) => {
