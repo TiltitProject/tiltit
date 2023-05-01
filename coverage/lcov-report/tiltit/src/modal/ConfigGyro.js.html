@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/31</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/26</span>
+                <span class='fraction'>0/30</span>
             </div>
         
             
@@ -222,7 +222,19 @@
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
 <a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,23 +246,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,6 +253,29 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -385,13 +403,16 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { DeviceMotion } from "expo-sensors";
-import { playSound } from "../utils/playSound";
 import { setInitialRotation } from "../features/gameSlice";
 import { select } from "../../assets/audio";
 import Modal from "./Modal";
 import PreviewConfig from "./GyroPreview";
+import playAudio from "../utils/playAudio";
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >Config(</span>{ onSetConfig, isModalVisible }) {
+export default function <span class="fstat-no" title="function not covered" >Config(</span>{
+  onSetConfig,
+  isModalVisible,
+}) {
   const [{ beta, gamma }, setData] = <span class="cstat-no" title="statement not covered" >useState({</span>
     beta: 0,
     gamma: 0,
@@ -399,11 +420,6 @@ export default function <span class="fstat-no" title="function not covered" >Con
   const [subscription, setSubscription] = <span class="cstat-no" title="statement not covered" >useState(null);</span>
   const [openPreview, setOpenPreview] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const dispatch = <span class="cstat-no" title="statement not covered" >useDispatch();</span>
-&nbsp;
-  const handleInitialRotation = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    dispatch(setInitialRotation({ beta, gamma }));</span>
-<span class="cstat-no" title="statement not covered" >    unsubscribe();</span>
-  };
 &nbsp;
   const subscribe = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    setSubscription(</span>
@@ -413,11 +429,22 @@ export default function <span class="fstat-no" title="function not covered" >Con
     );
   };
 &nbsp;
+  const handleSubscribe = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    playAudio(select);</span>
+<span class="cstat-no" title="statement not covered" >    subscribe();</span>
+  };
+&nbsp;
   const unsubscribe = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (subscription) {</span>
 <span class="cstat-no" title="statement not covered" >      subscription.remove();</span>
     }
 <span class="cstat-no" title="statement not covered" >    setSubscription(null);</span>
+  };
+&nbsp;
+  const handleInitialRotation = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    playAudio(select);</span>
+<span class="cstat-no" title="statement not covered" >    dispatch(setInitialRotation({ beta, gamma }));</span>
+<span class="cstat-no" title="statement not covered" >    unsubscribe();</span>
   };
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
@@ -426,12 +453,12 @@ export default function <span class="fstat-no" title="function not covered" >Con
   }, []);
 &nbsp;
   const handleOpenPreview = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(b</span>oolean) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    playSound(select, 1);</span>
+<span class="cstat-no" title="statement not covered" >    playAudio(select);</span>
 <span class="cstat-no" title="statement not covered" >    setOpenPreview(boolean);</span>
   };
 &nbsp;
   const handleSetConfig = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    playSound(select, 1);</span>
+<span class="cstat-no" title="statement not covered" >    playAudio(select);</span>
 <span class="cstat-no" title="statement not covered" >    onSetConfig(false);</span>
   };
 &nbsp;
@@ -441,7 +468,7 @@ export default function <span class="fstat-no" title="function not covered" >Con
         &lt;PreviewConfig
           isModalVisible={openPreview}
           onOpenPreview={handleOpenPreview}
-          onSetConfig={handleSetConfig}
+          onSetConfig={onSetConfig}
         /&gt;
       )}
       &lt;View style={styles.container}&gt;
@@ -469,7 +496,7 @@ export default function <span class="fstat-no" title="function not covered" >Con
             &lt;Text style={styles.message}&gt;CONFIRM&lt;/Text&gt;
           &lt;/TouchableOpacity&gt;
         ) : (
-          &lt;TouchableOpacity style={styles.messageBox} onPress={subscribe}&gt;
+          &lt;TouchableOpacity style={styles.messageBox} onPress={handleSubscribe}&gt;
             &lt;Text style={styles.message}&gt;RESET&lt;/Text&gt;
           &lt;/TouchableOpacity&gt;
         )}
@@ -547,7 +574,7 @@ const styles = <span class="cstat-no" title="statement not covered" >StyleSheet.
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T19:18:35.107Z
+                at 2023-05-01T15:43:37.921Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

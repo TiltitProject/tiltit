@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.53% </span>
+                <span class="strong">10.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/26</span>
+                <span class='fraction'>3/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.53% </span>
+                <span class="strong">10.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/26</span>
+                <span class='fraction'>3/28</span>
             </div>
         
             
@@ -154,7 +154,16 @@
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,17 +201,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -249,11 +261,14 @@
 import Matter from "matter-js";
 import { View, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
-import { selectCollideMonster } from "../features/gameSlice";
+import {
+  selectCollideMonster,
+  selectIsPlayerMove,
+} from "../features/gameSlice";
 import MovingPlayer from "./MovingPlayer";
 import CollidePlayer from "./CollidePlayer";
 import { walking } from "../../assets/audio";
-import { playSound } from "../utils/playSound";
+import playAudio from "../utils/playAudio";
 &nbsp;
 export default function MakePlayer(world, color, position, size, stage) {
   const initialPlayer = Matter.Bodies.circle(position.x, position.y, size / 2, {
@@ -282,6 +297,7 @@ function <span class="fstat-no" title="function not covered" >Player(</span>prop
   const xImage = <span class="cstat-no" title="statement not covered" >-widthBody * 0.3;</span>
   const yImage = <span class="cstat-no" title="statement not covered" >-widthBody * 0.35;</span>
   const isCollide = <span class="cstat-no" title="statement not covered" >useSelector(selectCollideMonster);</span>
+  const isPlayerMove = <span class="cstat-no" title="statement not covered" >useSelector(selectIsPlayerMove);</span>
   const [lastPosition, setLastPosition] = <span class="cstat-no" title="statement not covered" >useState(</span>
     JSON.parse(JSON.stringify(position)),
   );
@@ -291,9 +307,11 @@ function <span class="fstat-no" title="function not covered" >Player(</span>prop
   );
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (distance &gt; 7) {</span>
+<span class="cstat-no" title="statement not covered" >    if (distance &gt; 9) {</span>
 <span class="cstat-no" title="statement not covered" >      if (runningImageIndex === 5 || runningImageIndex === 11) {</span>
-<span class="cstat-no" title="statement not covered" >        playSound(walking, 0.4);</span>
+<span class="cstat-no" title="statement not covered" >        if (isPlayerMove) {</span>
+<span class="cstat-no" title="statement not covered" >          playAudio(walking);</span>
+        }
       }
 <span class="cstat-no" title="statement not covered" >      if (runningImageIndex &lt; 11) {</span>
 <span class="cstat-no" title="statement not covered" >        setLastPosition(JSON.parse(JSON.stringify(position)));</span>
@@ -303,7 +321,7 @@ function <span class="fstat-no" title="function not covered" >Player(</span>prop
 <span class="cstat-no" title="statement not covered" >        setRunningImageIndex(0);</span>
       }
     }
-  }, [distance, runningImageIndex]);
+  }, [distance]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;View style={makeViewStyle(xBody, yBody, widthBody)}&gt;
@@ -343,7 +361,7 @@ function <span class="fstat-no" title="function not covered" >makeViewStyle(</sp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T19:18:35.107Z
+                at 2023-05-01T15:43:37.921Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -26,7 +26,7 @@ describe("useChangeIndex", () => {
       ),
     );
 
-    jest.advanceTimersByTime(100);
+    jest.advanceTimersByTime(200);
     expect(setImageIndex).toHaveBeenCalledWith(1);
   });
 
@@ -52,7 +52,7 @@ describe("useChangeIndex", () => {
       ),
     );
 
-    jest.advanceTimersByTime(100);
+    jest.advanceTimersByTime(200);
     expect(setImageIndex).not.toHaveBeenCalled();
   });
 
@@ -78,7 +78,7 @@ describe("useChangeIndex", () => {
       ),
     );
 
-    jest.advanceTimersByTime(100);
+    jest.advanceTimersByTime(200);
     expect(setImageIndex).not.toHaveBeenCalled();
   });
 });

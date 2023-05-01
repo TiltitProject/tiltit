@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.89% </span>
+                <span class="strong">7.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/38</span>
+                <span class='fraction'>3/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">8.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>1/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.89% </span>
+                <span class="strong">7.31% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/38</span>
+                <span class='fraction'>3/41</span>
             </div>
         
             
@@ -191,7 +191,16 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -252,7 +261,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -328,8 +342,10 @@ import {
   selectCurrentRound,
   selectIsPlayerMove,
   selectBossHP,
-  applyStageResult
+  applyStageResult,
 } from "../features/gameSlice";
+import playAudio from "../utils/playAudio";
+import { monsterDead } from "../../assets/audio";
 &nbsp;
 export default function MakeBoss(world, position, size, specifics) {
   const initialObstacle = Matter.Bodies.rectangle(
@@ -373,26 +389,31 @@ function <span class="fstat-no" title="function not covered" >Boss(</span>props)
 <span class="cstat-no" title="statement not covered" >          return setImageIndex(imageIndex + 1);</span>
         }
 <span class="cstat-no" title="statement not covered" >        setImageIndex(0);</span>
+      }, 200);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        clearInterval(changeIndex);</span>
+      };
+    }
+  }, [imageIndex, currentRound, bossHP, isGameRun]);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  useEffect(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!bossHP &amp;&amp; isGameRun) {</span>
+<span class="cstat-no" title="statement not covered" >      if (deathImageIndex === 0) {</span>
+<span class="cstat-no" title="statement not covered" >        playAudio(monsterDead);</span>
+      }
+      const changeIndex = <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        if (deathImageIndex &lt; specifics.deathImage.length - 1) {</span>
+<span class="cstat-no" title="statement not covered" >          return setDeathImageIndex(deathImageIndex + 1);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        dispatch(applyStageResult());</span>
       }, 100);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        clearInterval(changeIndex);</span>
       };
     }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    if (!bossHP) {</span>
-      const changeIndex = <span class="cstat-no" title="statement not covered" >setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        if (isGameRun &amp;&amp; deathImageIndex &lt; specifics.deathImage.length - 1) {</span>
-<span class="cstat-no" title="statement not covered" >          return setDeathImageIndex(deathImageIndex + 1);</span>
-        }
-<span class="cstat-no" title="statement not covered" >        dispatch(applyStageResult());</span>
-      }, 50);
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      return <span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        clearInterval(changeIndex);</span>
-      };
-    }
-  }, [imageIndex, currentRound, bossHP, deathImageIndex]);
+  }, [bossHP, deathImageIndex, isGameRun]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;View style={viewStyle(xBody, yBody, widthBody, heightBody)}&gt;
@@ -454,7 +475,7 @@ function <span class="fstat-no" title="function not covered" >restHP(</span>HPba
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T19:18:35.107Z
+                at 2023-05-01T15:43:37.921Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
