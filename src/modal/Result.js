@@ -10,10 +10,11 @@ import {
   selectCurrentStage,
   setIsFadeOut,
 } from "../features/gameSlice";
-import { start, select } from "../../assets/audio";
+import { select, start } from "../../assets/audio";
 import Modal from "./Modal";
 import { apple, clock } from "../../assets/static";
 import SelectStage from "./SelectStage";
+import playAudio from "../utils/playAudio";
 
 export default function Result({ gameEngine, entities, isModalVisible }) {
   const dispatch = useDispatch();
@@ -29,6 +30,20 @@ export default function Result({ gameEngine, entities, isModalVisible }) {
   });
   const [totalScore, setTotalScore] = useState(0);
   const [selectStage, setSelectStage] = useState(false);
+  const [selectEffect, setSelectEffect] = useState(null);
+
+  const handleSelectSound = () => {
+    playSound(selectEffect, setSelectEffect, select, 1);
+  };
+
+  useEffect(
+    () => () => {
+      if (selectEffect) {
+        selectEffect.unloadAsync();
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const countScore = setTimeout(() => {
@@ -59,7 +74,11 @@ export default function Result({ gameEngine, entities, isModalVisible }) {
           score: itemScore.score - 100,
         });
       }
-    }, 50);
+
+      if (timeScore.score === 0 && itemScore.score === 0) {
+        playAudio(start);
+      }
+    }, 30);
 
     return () => {
       clearTimeout(countScore);
@@ -68,19 +87,17 @@ export default function Result({ gameEngine, entities, isModalVisible }) {
 
   const handleRestartGame = () => {
     dispatch(setIsFadeOut(true));
-    playSound(start, 1);
+    handleSelectSound();
     setTimeout(() => {
-      gameEngine.swap(entities);
       dispatch(restartGame());
     }, 700);
   };
 
   const handleBackToMainPage = () => {
     dispatch(setIsFadeOut(true));
-    playSound(select, 1);
+    handleSelectSound();
     dispatch(removeModal());
     setTimeout(() => {
-      gameEngine.swap(entities());
       dispatch(backToMainPage());
     }, 700);
   };
@@ -90,12 +107,12 @@ export default function Result({ gameEngine, entities, isModalVisible }) {
   };
 
   const onModalClose = () => {
-    playSound(select, 1);
+    handleSelectSound();
     dispatch(removeModal());
   };
 
   const openSelectStage = () => {
-    playSound(select, 1);
+    handleSelectSound();
     setSelectStage(true);
   };
 

@@ -9,6 +9,8 @@ import {
   translateEntitiesX,
   translateEntitiesY,
 } from "./utils/translateEntity";
+import playAudio from "./utils/playAudio";
+import { swipe } from "../assets/audio";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -278,7 +280,6 @@ export default function usePhysics(entities, { touches, dispatch }) {
         }
       }
       if (specifics.guideMissile) {
-        console.log(specifics.guideMissile);
         Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
           x: specifics.guideMissile.x,
           y: specifics.guideMissile.y,
@@ -291,6 +292,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
             x: entities.boss1.body.position.x,
             y: entities.boss1.body.bounds.max.y,
           });
+          specifics.guideMissile = {
+            x: (player.position.x - entities.boss1.body.position.x) / 40,
+            y: (player.position.y - entities.boss1.body.position.y) / 40,
+          };
         }
       }
     });
@@ -323,6 +328,9 @@ export default function usePhysics(entities, { touches, dispatch }) {
       const specifics = entityInfo[stage].attack.specifics[entityNum + 1];
 
       if (specifics.onPosition) {
+        if (specifics.moved === 0) {
+          playAudio(swipe);
+        }
         Matter.Body.translate(entities[`attack${entityNum + 1}`].body, {
           x: 0,
           y: -20,
@@ -351,7 +359,9 @@ export default function usePhysics(entities, { touches, dispatch }) {
     }
   };
 
-  DeviceMotion.removeAllListeners();
+  if (DeviceMotion.getListenerCount()) {
+    DeviceMotion.removeAllListeners();
+  }
 
   if (DeviceMotion.getListenerCount() < 1) {
     DeviceMotion.addListener((result) => {

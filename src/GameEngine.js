@@ -33,11 +33,10 @@ import {
   selectRestartCount,
 } from "./features/gameSlice";
 import Physics from "./physics";
-import { crackedScreen, space } from "../assets/static";
+import { crackedScreen, space, forest } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
-import { playSound } from "./utils/playSound";
-import { select } from "../assets/audio";
+import { select, swipe, hit } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
 import Goal from "./components/Goal";
@@ -48,6 +47,7 @@ import Result from "./modal/Result";
 import stageSheet from "../assets/stageSheet.json";
 import Item from "./components/Item";
 import Special from "./components/Special";
+import playAudio from "./utils/playAudio";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -70,20 +70,22 @@ export default function Stage() {
   useEffect(() => {
     dispatch(runGame(entityInfo[stage]));
     dispatch(setMapInfo({ stage, mapInfo }));
+    playAudio(swipe);
 
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
-  }, [restartCount]);
+  }, []);
 
   const handleModalOpen = () => {
     dispatch(showModal());
-    playSound(select, 1);
+    playAudio(select);
   };
 
   const handleGameEngine = (e) => {
     switch (e.type) {
       case "hit_boss":
+        playAudio(hit);
         dispatch(attackOnce(e.payload));
         break;
       case "off_specialItem":
@@ -124,7 +126,10 @@ export default function Stage() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={space} style={styles.backgroundImage}>
+      <ImageBackground
+        source={(stage === 1 && space) || (stage === 2 && forest)}
+        style={styles.backgroundImage}
+      >
         {isFadeIn && <FadeIn />}
         {isFadeOut && <Fadeout />}
         {showingCrackedEffect && (

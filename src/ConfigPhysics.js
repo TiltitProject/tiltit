@@ -30,15 +30,9 @@ export default function configPhysics(entities, { touches, dispatch }) {
     }
   };
 
-  if (DeviceMotion.getListenerCount() > 1) {
-    DeviceMotion.removeAllListeners();
-  }
-
-  if (DeviceMotion.getListenerCount() < 1) {
-    DeviceMotion.addListener((result) => {
-      movePlayer(result, initialRotation);
-    });
-  }
+  DeviceMotion.addListener((result) => {
+    movePlayer(result, initialRotation);
+  });
 
   return entities;
 }

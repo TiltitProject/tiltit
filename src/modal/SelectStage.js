@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
-import React from "react";
+import React  from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { playSound } from "../utils/playSound";
 import {
   removeModal,
   restartGame,
@@ -10,6 +9,7 @@ import {
 } from "../features/gameSlice";
 import { select } from "../../assets/audio";
 import Modal from "./Modal";
+import playAudio from "../utils/playAudio";
 
 export default function SelectStage({
   isModalVisible,
@@ -17,10 +17,24 @@ export default function SelectStage({
   onSelectStage,
 }) {
   const dispatch = useDispatch();
+  // const [selectEffect, setSelectEffect] = useState(null);
+
+  // const handleSelectSound = () => {
+  //   playSound(selectEffect, setSelectEffect, select, 1);
+  // };
+
+  // useEffect(
+  //   () => () => {
+  //     if (selectEffect) {
+  //       selectEffect.unloadAsync();
+  //     }
+  //   },
+  //   [],
+  // );
 
   const selectStage = (stage) => {
     dispatch(setIsFadeOut(true));
-    playSound(select, 1);
+    playAudio(select);
     setTimeout(() => {
       if (onSelectStage) {
         dispatch(restartGame());
@@ -32,8 +46,13 @@ export default function SelectStage({
   };
 
   const handleModalClose = () => {
-    playSound(select, 1);
+    playAudio(select);
     dispatch(removeModal());
+  };
+
+  const handleSelectStage = () => {
+    playAudio(select);
+    onSelectStage(false);
   };
 
   return (
@@ -56,7 +75,7 @@ export default function SelectStage({
         </TouchableOpacity>
         {onSelectStage ? (
           <TouchableOpacity style={styles.messageBox}>
-            <Text style={styles.message} onPress={() => onSelectStage(false)}>
+            <Text style={styles.message} onPress={handleSelectStage}>
               BACK TO MENU
             </Text>
           </TouchableOpacity>

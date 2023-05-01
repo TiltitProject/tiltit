@@ -15,9 +15,9 @@ export default function Monster(props) {
   const [imageIndex, setImageIndex] = useState(0);
   const [visibleFlying, setVisibleFlying] = useState(true);
   const { body } = props;
-  const { bounds, position, specifics, label } = body;
-  const widthBody = bounds.max.x - bounds.min.x;
-  const heightBody = bounds.max.y - bounds.min.y;
+  const { position, specifics, label, circleRadius } = body;
+  const widthBody = circleRadius * 2;
+  const heightBody = circleRadius * 2;
   const xBody = position.x - widthBody / 2;
   const yBody = position.y - heightBody / 2;
   const isAlive = useSelector(selectAliveMonsters)[label];
@@ -39,7 +39,7 @@ export default function Monster(props) {
     if (!isAlive && visibleFlying) {
       const setInvisibleFlying = setTimeout(
         () => setVisibleFlying(false),
-        1200,
+        1500,
       );
 
       return () => {

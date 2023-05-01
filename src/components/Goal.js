@@ -24,7 +24,7 @@ export default function Goal({ position, size }) {
     if (golImageIndex === 8) {
       setTimeout(() => {
         dispatch(applyStageResult());
-      }, 500);
+      }, 300);
     }
 
     return () => {
@@ -53,7 +53,7 @@ function viewStyle(xBody, yBody, widthBody, heightBody) {
     top: yBody,
     width: widthBody,
     height: heightBody,
-    zIndex: 10,
+    zIndex: 1,
   });
 }
 

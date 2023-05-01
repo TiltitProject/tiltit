@@ -20,6 +20,24 @@ export default function CollidePlayer({
   const xCenter = lastPosition.x - widthImage / 2;
   const yCenter = lastPosition.y - widthImage / 2;
   const dispatch = useDispatch();
+  const [breakEffect, setBreakEffect] = useState(null);
+  const [hitEffect, setHitEffect] = useState(null);
+  const [fallEffect, setFallEffect] = useState(null);
+
+  useEffect(
+    () => () => {
+      if (breakEffect) {
+        breakEffect.unloadAsync();
+      }
+      if (hitEffect) {
+        hitEffect.unloadAsync();
+      }
+      if (fallEffect) {
+        fallEffect.unloadAsync();
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const changeIndex = setTimeout(() => {
@@ -27,7 +45,7 @@ export default function CollidePlayer({
         return setCollideImageIndex(collideImageIndex + 1);
       }
       setTimeout(() => {
-        playSound(breakScreen, 0.7);
+        playSound(breakEffect, setBreakEffect, breakScreen, 0.7);
       }, 100);
 
       setTimeout(() => {
@@ -40,10 +58,10 @@ export default function CollidePlayer({
     }, 100);
 
     if (collideImageIndex === 0) {
-      playSound(hit, 1);
+      playSound(hitEffect, setHitEffect, hit, 1);
     }
     if (collideImageIndex === 2) {
-      playSound(falling, 0.7);
+      playSound(fallEffect, setFallEffect, falling, 0.7);
     }
 
     return () => {

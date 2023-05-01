@@ -1,10 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { playSound } from "../utils/playSound";
-import { showModal, selectInitialRotation } from "../features/gameSlice";
-import { select } from "../../assets/audio";
+import { selectInitialRotation } from "../features/gameSlice";
 import configPhysics from "../ConfigPhysics";
 import ConfigStage from "../entities/configStage";
 
@@ -13,14 +11,12 @@ export default function PreviewConfig({
   onOpenPreview,
   onSetConfig,
 }) {
-  const dispatch = useDispatch();
   const initialRotation = useSelector(selectInitialRotation);
   const entities = ConfigStage();
   entities.initialRotation = initialRotation;
 
   const handleOpenPreview = () => {
     onOpenPreview(false);
-    dispatch(showModal());
   };
 
   const handleModalClose = () => {

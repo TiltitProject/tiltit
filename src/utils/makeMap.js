@@ -229,7 +229,6 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
     let offset = 0;
     if (
       type === "item" ||
-      type === "goal" ||
       type === "flag" ||
       type === "special"
     ) {

@@ -98,18 +98,18 @@ import radish9 from "./monsters/radish/Run_9.png";
 import radish10 from "./monsters/radish/Run_10.png";
 import radish11 from "./monsters/radish/Run_11.png";
 import radish12 from "./monsters/radish/Run_12.png";
-import rabbit1 from "./monsters/rabbit/Run_1.png";
-import rabbit2 from "./monsters/rabbit/Run_2.png";
-import rabbit3 from "./monsters/rabbit/Run_3.png";
-import rabbit4 from "./monsters/rabbit/Run_4.png";
-import rabbit5 from "./monsters/rabbit/Run_5.png";
-import rabbit6 from "./monsters/rabbit/Run_6.png";
-import rabbit7 from "./monsters/rabbit/Run_7.png";
-import rabbit8 from "./monsters/rabbit/Run_8.png";
-import rabbit9 from "./monsters/rabbit/Run_9.png";
-import rabbit10 from "./monsters/rabbit/Run_10.png";
-import rabbit11 from "./monsters/rabbit/Run_11.png";
-import rabbit12 from "./monsters/rabbit/Run_12.png";
+import rabbit1 from "./monsters/rabbit/Walk_1.png";
+import rabbit2 from "./monsters/rabbit/Walk_2.png";
+import rabbit3 from "./monsters/rabbit/Walk_3.png";
+import rabbit4 from "./monsters/rabbit/Walk_4.png";
+import rabbit5 from "./monsters/rabbit/Walk_5.png";
+import rabbit6 from "./monsters/rabbit/Walk_6.png";
+import rabbit7 from "./monsters/rabbit/Walk_7.png";
+import rabbit8 from "./monsters/rabbit/Walk_8.png";
+import rabbit9 from "./monsters/rabbit/Walk_9.png";
+import rabbit10 from "./monsters/rabbit/Walk_10.png";
+import rabbit11 from "./monsters/rabbit/Walk_11.png";
+import rabbit12 from "./monsters/rabbit/Walk_12.png";
 
 export default {
   runningVirtualGuy: [

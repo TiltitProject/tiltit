@@ -7,8 +7,10 @@ import {
   selectCurrentRound,
   selectIsPlayerMove,
   selectBossHP,
-  applyStageResult
+  applyStageResult,
 } from "../features/gameSlice";
+import playAudio from "../utils/playAudio";
+import { monsterDead } from "../../assets/audio";
 
 export default function MakeBoss(world, position, size, specifics) {
   const initialObstacle = Matter.Bodies.rectangle(
@@ -52,26 +54,31 @@ function Boss(props) {
           return setImageIndex(imageIndex + 1);
         }
         setImageIndex(0);
+      }, 200);
+
+      return () => {
+        clearInterval(changeIndex);
+      };
+    }
+  }, [imageIndex, currentRound, bossHP, isGameRun]);
+
+  useEffect(() => {
+    if (!bossHP && isGameRun) {
+      if (deathImageIndex === 0) {
+        playAudio(monsterDead);
+      }
+      const changeIndex = setTimeout(() => {
+        if (deathImageIndex < specifics.deathImage.length - 1) {
+          return setDeathImageIndex(deathImageIndex + 1);
+        }
+        dispatch(applyStageResult());
       }, 100);
 
       return () => {
         clearInterval(changeIndex);
       };
     }
-
-    if (!bossHP) {
-      const changeIndex = setTimeout(() => {
-        if (isGameRun && deathImageIndex < specifics.deathImage.length - 1) {
-          return setDeathImageIndex(deathImageIndex + 1);
-        }
-        dispatch(applyStageResult());
-      }, 50);
-
-      return () => {
-        clearInterval(changeIndex);
-      };
-    }
-  }, [imageIndex, currentRound, bossHP, deathImageIndex]);
+  }, [bossHP, deathImageIndex, isGameRun]);
 
   return (
     <View style={viewStyle(xBody, yBody, widthBody, heightBody)}>

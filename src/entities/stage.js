@@ -21,6 +21,7 @@ export default function Stage(stage) {
   const engine = Matter.Engine.create({ enableSleeping: false });
   const { world } = engine;
   engine.gravity.y = 0;
+
   const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 
   return {

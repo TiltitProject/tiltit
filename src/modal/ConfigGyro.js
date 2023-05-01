@@ -2,13 +2,16 @@ import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { DeviceMotion } from "expo-sensors";
-import { playSound } from "../utils/playSound";
 import { setInitialRotation } from "../features/gameSlice";
 import { select } from "../../assets/audio";
 import Modal from "./Modal";
 import PreviewConfig from "./GyroPreview";
+import playAudio from "../utils/playAudio";
 
-export default function Config({ onSetConfig, isModalVisible }) {
+export default function Config({
+  onSetConfig,
+  isModalVisible,
+}) {
   const [{ beta, gamma }, setData] = useState({
     beta: 0,
     gamma: 0,
@@ -26,7 +29,7 @@ export default function Config({ onSetConfig, isModalVisible }) {
   };
 
   const handleSubscribe = () => {
-    playSound(select, 1);
+    playAudio(select);
     subscribe();
   };
 
@@ -38,7 +41,7 @@ export default function Config({ onSetConfig, isModalVisible }) {
   };
 
   const handleInitialRotation = () => {
-    playSound(select, 1);
+    playAudio(select);
     dispatch(setInitialRotation({ beta, gamma }));
     unsubscribe();
   };
@@ -49,12 +52,12 @@ export default function Config({ onSetConfig, isModalVisible }) {
   }, []);
 
   const handleOpenPreview = (boolean) => {
-    playSound(select, 1);
+    playAudio(select);
     setOpenPreview(boolean);
   };
 
   const handleSetConfig = () => {
-    playSound(select, 1);
+    playAudio(select);
     onSetConfig(false);
   };
 

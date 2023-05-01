@@ -9,11 +9,10 @@ export default function MakeMonster(
   specifics,
   objectNum,
 ) {
-  const initialObstacle = Matter.Bodies.rectangle(
+  const initialObstacle = Matter.Bodies.circle(
     position.x,
     position.y,
-    size.width,
-    size.height,
+    size.width / 2,
     { isStatic: true, specifics, initialPosition: position, label: objectNum },
   );
 

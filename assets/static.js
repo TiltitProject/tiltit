@@ -27,6 +27,9 @@ import ground from "./stage/ground/ground-borderless.png";
 import groundInner from "./stage/ground/ground-inner.png";
 import star from "./effect/star/star.png";
 import starEffect from "./effect/star/starEffect.png";
+import forest from "./background/forest.jpg";
+import bubble from "./Items/bubble.png";
+import melon from "./Items/melon/Melon.png";
 
 export {
   grayBrickColumn,
@@ -58,4 +61,7 @@ export {
   groundInner,
   star,
   starEffect,
+  forest,
+  bubble,
+  melon,
 };

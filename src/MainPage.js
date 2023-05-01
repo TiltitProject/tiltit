@@ -10,7 +10,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Audio } from "expo-av";
 import { backgroundImage } from "../assets/static";
-import { playSound } from "./utils/playSound";
 import { hopefulBGM, start, select } from "../assets/audio";
 import {
   changePage,
@@ -21,6 +20,7 @@ import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
 import SelectStage from "./modal/SelectStage";
 import ConfigGyro from "./modal/ConfigGyro";
+import playAudio from "./utils/playAudio";
 
 export default function MainPage() {
   const dispatch = useDispatch();
@@ -29,6 +29,16 @@ export default function MainPage() {
   const [isFadeIn, setIsFadeIn] = useState(true);
   const [config, setConfig] = useState(false);
   const isModalVisible = useSelector(selectModalVisible);
+  // const [selectEffect, setSelectEffect] = useState(null);
+  // const [startEffect, setStartEffect] = useState(null);
+
+  // const handleSelectSound = () => {
+  //   playSound(selectEffect, setSelectEffect, select, 1);
+  // };
+
+  // const handleStartSound = () => {
+  //   playSound(startEffect, setStartEffect, start, 1);
+  // };
 
   useEffect(() => {
     const playBGM = async () => {
@@ -37,7 +47,7 @@ export default function MainPage() {
       });
 
       setBGM(sound);
-      await sound.setVolumeAsync(0.7);
+      await sound.setVolumeAsync(0.4);
       await sound.playAsync();
     };
     playBGM();
@@ -54,12 +64,12 @@ export default function MainPage() {
 
   const handleModalOpen = () => {
     dispatch(showModal());
-    playSound(select, 1);
+    playAudio(select);
   };
 
   const handleGameStart = () => {
     setIsFadeout(true);
-    playSound(start, 1);
+    playAudio(start);
     if (BGM) {
       BGM.unloadAsync();
     }
@@ -73,7 +83,7 @@ export default function MainPage() {
   };
 
   const openConfig = () => {
-    playSound(select, 1);
+    playAudio(select);
     setConfig(true);
   };
 
@@ -91,8 +101,11 @@ export default function MainPage() {
         <TouchableOpacity style={styles.messageBox} onPress={handleModalOpen}>
           <Text style={styles.textBox}>START GAME</Text>
         </TouchableOpacity>
-
-        {config && <ConfigGyro onSetConfig={handleSetConfig} />}
+        {config && (
+          <ConfigGyro
+            onSetConfig={handleSetConfig}
+          />
+        )}
         <SelectStage
           isModalVisible={isModalVisible}
           onGameStart={handleGameStart}

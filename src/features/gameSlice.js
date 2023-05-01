@@ -96,6 +96,7 @@ const gameSlice = createSlice({
         specials[num + 1] = true;
       });
 
+      state.currentPoint = 0;
       state.itemsVisible = items;
       state.aliveMonsters = monsters;
       state.specialItems = specials;
@@ -341,7 +342,8 @@ export const applyStageResult = () => (dispatch, getState) => {
 
 export const timeCountDown = () => (dispatch, getState) => {
   const leftTime = selectLeftTime(getState());
-
+  const isPlayerMove = selectIsPlayerMove(getState());
+  if (!isPlayerMove) return;
   if (leftTime > 0) {
     return dispatch(countDownLeftTime());
   }

@@ -1,14 +1,14 @@
 import { useDispatch } from "react-redux";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { playSound } from "../utils/playSound";
 import {
   backToMainPage,
   removeModal,
   restartGame,
   setIsFadeOut,
 } from "../features/gameSlice";
-import { start, select } from "../../assets/audio";
+import { select } from "../../assets/audio";
+import playAudio from "../utils/playAudio";
 
 export default function PauseMenu({
   gameEngine,
@@ -18,9 +18,10 @@ export default function PauseMenu({
 }) {
   const dispatch = useDispatch();
 
+
   const handleRestartGame = () => {
     dispatch(setIsFadeOut(true));
-    playSound(start, 1);
+    playAudio(select);
     setTimeout(() => {
       gameEngine.swap(entities);
       dispatch(restartGame());
@@ -29,7 +30,7 @@ export default function PauseMenu({
 
   const handleBackToMainPage = () => {
     dispatch(setIsFadeOut(true));
-    playSound(select, 1);
+    playAudio(select);
     setTimeout(() => {
       gameEngine.swap(entities);
       dispatch(backToMainPage());
@@ -37,12 +38,12 @@ export default function PauseMenu({
   };
 
   const handleModalClose = () => {
-    playSound(select, 1);
+    playAudio(select);
     dispatch(removeModal());
   };
 
   const handleSelectStage = () => {
-    playSound(select, 1);
+    playAudio(select);
     onSelectStage(true);
   };
 

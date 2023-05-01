@@ -3,11 +3,10 @@ import Matter from "matter-js";
 import { View, Image, StyleSheet } from "react-native";
 
 export default function AttackMaker(world, position, size, specifics, number) {
-  const initialObstacle = Matter.Bodies.rectangle(
+  const initialObstacle = Matter.Bodies.circle(
     position.x,
     position.y,
-    size.width,
-    size.height,
+    size.width / 2,
     { number, specifics },
   );
 
@@ -22,8 +21,8 @@ export default function AttackMaker(world, position, size, specifics, number) {
 
 function Attack(props) {
   const { body } = props;
-  const { bounds, position, specifics } = body;
-  const widthBody = bounds.max.x - bounds.min.x;
+  const { position, specifics, circleRadius } = body;
+  const widthBody = circleRadius * 2;
   const widthImage = widthBody * 2.5;
   const xImage = -widthBody * 0.75;
   const yImage = -widthBody * 0.65;

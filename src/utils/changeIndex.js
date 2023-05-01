@@ -18,13 +18,13 @@ const useChangeIndex = (
           return setImageIndex(imageIndex + 1);
         }
         setImageIndex(0);
-      }, 100);
+      }, 200);
 
       return () => {
         clearInterval(changeIndex);
       };
     }
-  }, [imageIndex, currentRound]);
+  }, [imageIndex, currentRound, isPlayerMove]);
 };
 
 export default useChangeIndex;
