@@ -29,16 +29,6 @@ export default function MainPage() {
   const [isFadeIn, setIsFadeIn] = useState(true);
   const [config, setConfig] = useState(false);
   const isModalVisible = useSelector(selectModalVisible);
-  // const [selectEffect, setSelectEffect] = useState(null);
-  // const [startEffect, setStartEffect] = useState(null);
-
-  // const handleSelectSound = () => {
-  //   playSound(selectEffect, setSelectEffect, select, 1);
-  // };
-
-  // const handleStartSound = () => {
-  //   playSound(startEffect, setStartEffect, start, 1);
-  // };
 
   useEffect(() => {
     const playBGM = async () => {
