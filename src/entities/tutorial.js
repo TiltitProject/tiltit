@@ -156,14 +156,5 @@ export default function restart() {
       },
       { height: 40, width: 40 },
     ),
-    // goal: ItemMaker(
-    //   world,
-    //   {
-    //     x: blockLeftBottomX(BLOCK_SIZE * 2) + BLOCK_SIZE * 3,
-    //     y: blockLeftBottomY(BLOCK_SIZE * 2) - GAME_HEIGHT / 8 - BLOCK_SIZE * 15.5 + 3,
-    //   },
-    //   { height: 60, width: 60 },
-    //   "goal",
-    // ),
   };
 }

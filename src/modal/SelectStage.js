@@ -17,20 +17,6 @@ export default function SelectStage({
   onSelectStage,
 }) {
   const dispatch = useDispatch();
-  // const [selectEffect, setSelectEffect] = useState(null);
-
-  // const handleSelectSound = () => {
-  //   playSound(selectEffect, setSelectEffect, select, 1);
-  // };
-
-  // useEffect(
-  //   () => () => {
-  //     if (selectEffect) {
-  //       selectEffect.unloadAsync();
-  //     }
-  //   },
-  //   [],
-  // );
 
   const selectStage = (stage) => {
     dispatch(setIsFadeOut(true));
