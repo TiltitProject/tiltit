@@ -78,7 +78,7 @@ TILTIT은 핸드폰을 기울여, 몬스터를 피하며 미로를 탈출해 목
 위의 그림에서 볼 수 있듯이, 벡터의 값은 x 축의 데이터인 a(x)와 y 축의 데이터인 a(y)를 활용하여 계산 할 수 있습니다.
 
 <br>
-x, y 축의 기울기 값은 DeviceMotion에서 제공하는 'gamma', 'beta' 개념을 적용하였습니다. beta와 gamma는 각각 y 축, x축을 기준으로 하는 회전 각도를 제공하며, output은 -π ~ π 이내의 값입니다.
+x, y 축의 기울기 값은 DeviceMotion에서 제공하는 'gamma', 'beta' 개념을 적용하였습니다. beta와 gamma는 각각 x 축, y 축을 기준으로 하는 회전 각도를 제공하며, output은 -π ~ π 이내의 값입니다.
 <br>
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/106131005/230624623-6e781a4f-258b-4d8a-ac9d-0fc5316ce11d.png">
@@ -660,7 +660,6 @@ export default async function playAudio(resource) {
 
 - React Native Expo
 - Redux-toolkit
-- Styled Components
 - React-Native-Game-Engine
 - matter.js
 - ESLint
