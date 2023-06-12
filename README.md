@@ -19,12 +19,12 @@ TILTIT은 핸드폰을 기울여, 몬스터를 피하며 미로를 탈출해 목
     + [2.2 아이디어: 구글 스프레드 시트를 활용하자.](#22-아이디어-구글-스프레드시트를-활용하자)
     + [2.3 구현 과정: 'col'과 'row'의 값을 요소의 크기와 좌표로 변환하자.](#23-구현-과정-col과-row의-값을-요소의-크기와-좌표로-변환하자)
     + [2.4 결과: 한 번의 함수 호출로 맵 구현.](#24-결과-한-번의-함수-호출로-맵-구현)
-- [🛠️ Optimization](-optimization)
+- [🛠️ Optimization](#-optimization)
   * [1. 원인: 물리엔진이 너무 많은 컴포넌트를 전달하고 있었다.](#1-원인-물리엔진이-너무-많은-컴포넌트를-전달하고-있었다)
   * [2. 해결방법](#2-해결방법)
     + [2.1 사용했던 컴포넌트를 재구성하자.](#21-사용했던-컴포넌트를-재구성-하자)
     + [2.2 충돌 감지를 직접 구현하자.](#22-충돌-감지를-직접-구현하자)
-- [🎞️ User Experience](-user-experience)
+- [🎞️ User Experience](#-user-experience)
   * [1. Gyroscope 초기 기울기 설정 및 미리보기 기능](#1-gyroscope-초기-기울기-설정-및-미리-보기-기능)
   * [2. 애니메이션 효과](#2-애니메이션-효과)
     + [2.1 화면 전환](#21-화면-전환)
@@ -32,11 +32,11 @@ TILTIT은 핸드폰을 기울여, 몬스터를 피하며 미로를 탈출해 목
 - [🔫 Trouble Shooting](#-trouble-shooting)
   * [1. 캐릭터가 벽을 통과한다?](#1-캐릭터가-벽을-통과한다)
   * [2. 효과음이 메모리 누수를 발생시키고 있었다.](#2-효과음이-메모리-누수를-발생시키고-있었다)
-- [🕹️ Feature](-feature)
+- [🕹️ Feature](#-feature)
 - [📂 Tech stack](#-tech-stack)
     + [1. Why React Native Game Engine?](#1-why-react-native-game-engine)
     + [2. Why Matter.js?](#2-why-matterjs)
-- [🗓️ Timeline](#%EF%B8%8F-timeline)
+- [🗓️ Timeline](#-timeline)
     + [프로젝트 기간: 2023.04.03(월) ~ 2023.04.28(금)](#---------20230403------20230428---)
 
 <br>
@@ -373,7 +373,7 @@ const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 <br>
 <br>
 
-# 🛠️ Optimization
+# 🛠 Optimization
 
 구글 스프레드시트의 위치와 크기를 가져올 수 있게 된 이후 대형 맵 제작을 시작했습니다. 스프레드시트에 디자인만 하면 위치와 크기에 맞게 한 번에 렌더링까지 시켜주는 로직을 구현했으니 간단히 끝날 문제로 생각했습니다. 하지만 기껏 4개 뷰포트의 대형 맵을 만들고 나니 화면이 엄청나게 버벅였습니다.
 
@@ -476,7 +476,7 @@ export const getItemOnce = (num) => (dispatch, getState) => {
 <br>
 <br>
 
-# 🎞️ User Experience
+# 🎞 User Experience
 게임 가장 큰 목적은 유저의 즐거운 플레이 경험이라고 생각합니다.
 그러다 보니 지금까지 웹페이지를 개발했을 때 보다 유저 경험을 더욱 신경 쓸 수밖에 없었습니다.
 
@@ -619,7 +619,7 @@ export default async function playAudio(resource) {
 ```
 <br>
 
-# 🕹️ Feature
+# 🕹 Feature
 
 - 메인페이지
   + 기울기 초기값 설정
@@ -688,7 +688,7 @@ export default async function playAudio(resource) {
 
 <br>
 
-# 🗓️ Timeline
+# 🗓 Timeline
 
 ### 프로젝트 기간: 2023.04.03(월) ~ 2023.04.28(금)
 
