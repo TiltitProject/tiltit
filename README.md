@@ -364,7 +364,7 @@ const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 
 <구글 스프레드시트로 디자인 한 대형 맵의 entity>
 
-<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/490490de-f0fe-4c8c-8a8c-3cfaffd1c948">
+<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/e113b96b-8d8b-43c7-8561-004160387ade">
 
 위 스프레드시트에서 초기 뷰포트는 붉은색 박스입니다.
 두 번째 뷰포트는 캐릭터가 파란색 테두리의 위치(f1)에 도착해야만 entity들의 좌표가 변경되며 보이게 됩니다.
@@ -397,7 +397,7 @@ const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 ---
 <구글 스프레드시트로 디자인 한 대형 맵의 entity >
 
-<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/490490de-f0fe-4c8c-8a8c-3cfaffd1c948">
+<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/e113b96b-8d8b-43c7-8561-004160387ade">
 
 처음 생각했던건 보라색 테두리의 이동 플래그(f1)에 도달했을 때를 기준으로 물리엔진에 두 번째 뷰포트의 entity를 전달하는 방식이었습니다.
 하지만 물리엔진에 다른 entity를 인자로 전달하기 위해서는, 게임엔진을 종료시킨 후 새로운 entity를 전달하는 수밖에 없었습니다.
@@ -416,7 +416,7 @@ const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
 
 <첫 번째 뷰포트 entity의 재구성 예시>
 
-<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/c3e574f8-9be5-4891-b26d-2518b7c08ba1">
+<img width="700" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/21dbdf48-a484-428b-8758-bd9dc638d51a">
 
 두 번째 뷰포트가 메인 뷰포트로 이동이 완료 된 이후, 파란색 박스의 s1은 s38의 좌표로 이동합니다.
 마찬가지로 s2 ~ s18에 해당하는 ```Block```들은 s39 ~ s55의 위치로 이동하고, 아이템과 몬스터도 같은 방식으로 재사용 했습니다.
@@ -549,7 +549,7 @@ Development 섹션에서 설명했듯이, 캐릭터는 Device의 기울기에 �
 ## 1. 캐릭터가 벽을 통과한다?
 개발을 하며 기능이 완성될 때마다 주위 사람들에게 플레이를 부탁했습니다. 그러던 중 한 동료가 온몸을 비틀며 게임을 했고, 캐릭터가 벽을 통과하는 현상이 발생했습니다.
 
-<img width="300" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/b80378c8-56f7-40ce-a268-34322d30c9af">
+<img width="300" alt="image" src="https://github.com/TiltitProject/tiltit/assets/106131005/55d95836-6ba6-4371-baa9-6ac8c9bdd57c">
 
 오류 메시지는 전혀 없었습니다. 게임은 제가 구현한 대로 잘 작동하고 있었고, 그럼에도 캐릭터가 벽을 통화한 것입니다. 오류 메시지가 없었기 때문에, 문제 발생하는 상황을 분석해 봤습니다.
 
