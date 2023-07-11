@@ -21,6 +21,7 @@ import Fadeout from "./components/mountAnimation/Fadeout";
 import SelectStage from "./modal/SelectStage";
 import ConfigGyro from "./modal/ConfigGyro";
 import playAudio from "./utils/playAudio";
+import makeMapFx from "./utils/makeMapFx";
 
 export default function MainPage() {
   const dispatch = useDispatch();
@@ -29,6 +30,8 @@ export default function MainPage() {
   const [isFadeIn, setIsFadeIn] = useState(true);
   const [config, setConfig] = useState(false);
   const isModalVisible = useSelector(selectModalVisible);
+
+  makeMapFx();
 
   useEffect(() => {
     const playBGM = async () => {
