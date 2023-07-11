@@ -32,6 +32,9 @@ TILTIT은 핸드폰을 기울여, 몬스터를 피하며 미로를 탈출해 목
 - [🔫 Trouble Shooting](#-trouble-shooting)
   * [1. 캐릭터가 벽을 통과한다?](#1-캐릭터가-벽을-통과한다)
   * [2. 효과음이 메모리 누수를 발생시키고 있었다.](#2-효과음이-메모리-누수를-발생시키고-있었다)
+- [🔗 Refactoring](#-refactoring)
+  * [1. List](#1-list)
+  * [2. 스프레드시트 파싱 로직](#2-스프레드시트-파싱-로직)
 - [🕹️ Feature](#-feature)
 - [📂 Tech stack](#-tech-stack)
     + [1. Why React Native Game Engine?](#1-why-react-native-game-engine)
@@ -617,6 +620,169 @@ export default async function playAudio(resource) {
   }
 }
 ```
+<br>
+
+# Refactoring
+자바스크립트의 이터러블/이터레이터 프로토콜을 활용한 함수형프로그래밍 기법을 적용하여 프로젝트를 개선할 수 있겠다 생각했습니다. 객체나 배열뿐만 아니라 반복적으로 이루어지는 모든 작업에 함수형 프로그래밍을 적용할 수 있을것이라 생각했습니다. fxjs 라이브러리를 활용했습니다.
+
+## 1. List
+- 스프레드시트 파싱 로직
+- 물리엔진의 순회 로직을 함수형 프로그래밍으로
+- 제너레이터를 활요하여 몬스터의 좌우 반복 행동을 정의
+
+## 2. 스프레드시트 파싱 로직
+스프레드시트 파싱 로직은 상당히 많은 반복로직을 순회합니다.
+하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
+이러한 방식을 이터러블을 활용한 함수형프로그래밍 기법으로 일부 개선했습니다.
+
+- 기존
+```js
+
+const scaffoldByRowAndCol = (entity) => {
+  const objects = {
+    block: {},
+    monster: {},
+    item: {},
+    goal: {},
+    flag: {},
+    special: {},
+    boss: {},
+    attack: {},
+  };
+  Array.from(Array(entity.block.number).keys()).forEach((num) => {
+    objects.block[`s${num + 1}`] = {
+      row: [],
+      col: [],
+    };
+  });
+  ...
+  /// 이후 생략
+
+  return objects;
+};
+
+const scaffoldByPosition = (entity) => {
+  const objects = {
+    block: {},
+    monster: {},
+    item: {},
+    goal: {},
+    flag: {},
+    special: {},
+    boss: {},
+    attack: {},
+  };
+  Array.from(Array(entity.block.number).keys()).forEach((num) => {
+    objects.block[num + 1] = {
+      position: {
+        x: 0,
+        y: 0,
+      },
+      size: {
+        width: 0,
+        height: 0,
+      },
+    };
+  });
+  ... 이후 생략
+
+  return objects;
+};
+```
+
+- 변경
+```js
+const scaffoldEntity = (entityInfo, structure) =>
+  go(
+    entityInfo,
+    Object.entries,
+    filter(([_, { number }]) => number),
+    map(([k, v]) => [
+      v.id,
+      go(range(v.number), (numbers) =>
+        numbers.reduce(
+          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
+          {},
+        ),
+      ),
+    ]),
+    (entries) => entries.reduce((obj, [k, v]) => ((obj[k] = v), obj), {}),
+  );
+
+const scaffoldByRowAndCol = (entity) =>
+  scaffoldEntity(entity, {
+    row: [],
+    col: [],
+  });
+
+const scaffoldByPosition = (entity) =>
+  scaffoldEntity(entity, {
+    position: {
+      x: 0,
+      y: 0,
+    },
+    size: {
+      width: 0,
+      height: 0,
+    },
+  });
+```
+
+부끄럽지만 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하게 중복되었습니다.
+함수형프로그래밍을 적용하여 변경한 코드는 불필요한 중복코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 전체 코드를 쓰지는 않았지만, 기존 150줄 가량 차지하던 코드를 단 38줄의 표현으로 대체했습니다.
+
+하지만 위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 코드는 아직 리팩터링에 성공하지 못했습니다.
+
+- 기존
+```js
+const crawlingSheetData = (data, entity) => {
+  const objectRowCol = scaffoldByRowAndCol(entity);
+  const columnArray = Object.values(data);
+
+  columnArray.forEach((eachColumn, columnIndex) => {
+    const rowArray = Object.values(eachColumn);
+
+    rowArray.forEach((object, rowIndex) => {
+      if (object && [...object].includes("s")) {
+        objectRowCol.block[object]?.row.push(rowIndex);
+        objectRowCol.block[object]?.col.push(columnIndex);
+      }
+      ...
+      //하드코딩 생략
+    });
+  });
+
+  return objectRowCol;
+};
+```
+
+- 변경
+
+```js
+
+export default function applySheet() {
+  const scaffoldDataByRowAndCol = scaffoldByRowAndCol(entityInfo[1]);
+
+  go(
+    spreadSheet[1],
+    Object.entries,
+    (object) =>
+      object.forEach(([col, rowsObject]) => {
+        Object.values(rowsObject).forEach((entity, rowIndex) => {
+          if (entity) {
+            const [id, ...nums] = entity;
+            scaffoldDataByRowAndCol[id][nums.join("")].col.push(col);
+            scaffoldDataByRowAndCol[id][nums.join("")].row.push(rowIndex + 1);
+          }
+        });
+      }),
+    () => console.log(JSON.stringify(scaffoldDataByRowAndCol)),
+  );
+}
+```
+콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이터러블을 제대로 제어하지 못해 필요 이상의 데이터가 반영된 것으로 보입니다. 이 부분은 향후 수정하여 반영 할 계획입니다.
+
+
 <br>
 
 # 🕹 Feature

@@ -20,6 +20,7 @@ const entityInfo = {
     columnMultiply: 1,
     gridSize: BLOCK_SIZE,
     block: {
+      id: "s",
       number: 30,
       renderEntity: 30,
       firstEntity: 30,
@@ -32,11 +33,13 @@ const entityInfo = {
       },
     },
     flag: {
+      id: "f",
       number: 0,
       size: 50,
       image: arrowUpper,
     },
     attack: {
+      id: "a",
       number: 0,
       size: BLOCK_SIZE,
       specifics: {
@@ -51,6 +54,7 @@ const entityInfo = {
       },
     },
     boss: {
+      id: "b",
       number: 0,
       size: BLOCK_SIZE * 2,
       specifics: {
@@ -66,10 +70,12 @@ const entityInfo = {
       },
     },
     goal: {
+      id: "g",
       number: 1,
       size: 72,
     },
     special: {
+      id: "n",
       number: 0,
       size: BLOCK_SIZE,
       specifics: {
@@ -84,6 +90,7 @@ const entityInfo = {
       },
     },
     item: {
+      id: "i",
       number: 19,
       renderEntity: 19,
       firstEntity: 19,
@@ -168,6 +175,7 @@ const entityInfo = {
       },
     },
     monster: {
+      id: "m",
       number: 4,
       renderEntity: 4,
       firstEntity: 4,
@@ -244,6 +252,7 @@ const entityInfo = {
     columnMultiply: 3,
     gridSize: BLOCK_SIZE,
     block: {
+      id: "s",
       number: 55,
       renderEntity: 37,
       firstEntity: 18,
@@ -256,15 +265,18 @@ const entityInfo = {
       },
     },
     goal: {
+      id: "g",
       number: 0,
       size: 72,
     },
     flag: {
+      id: "f",
       number: 3,
       size: BLOCK_SIZE,
       image: arrowUpper,
     },
     special: {
+      id: "n",
       number: 2,
       size: BLOCK_SIZE,
       specifics: {
@@ -279,6 +291,7 @@ const entityInfo = {
       },
     },
     attack: {
+      id: "a",
       number: 3,
       size: BLOCK_SIZE,
       specifics: {
@@ -303,6 +316,7 @@ const entityInfo = {
       },
     },
     item: {
+      id: "i",
       number: 27,
       renderEntity: 18,
       firstEntity: 9,
@@ -419,6 +433,7 @@ const entityInfo = {
       },
     },
     boss: {
+      id: "b",
       number: 1,
       size: BLOCK_SIZE,
       specifics: {
@@ -440,6 +455,7 @@ const entityInfo = {
       },
     },
     monster: {
+      id: "m",
       number: 6,
       renderEntity: 4,
       firstEntity: 2,

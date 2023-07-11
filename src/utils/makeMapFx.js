@@ -11,7 +11,7 @@ const scaffoldEntity = (entityInfo, structure) =>
       v.id,
       go(range(v.number), (numbers) =>
         numbers.reduce(
-          (obj, num) => ((obj[`${v.id}${num + 1}`] = structure), obj),
+          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
           {},
         ),
       ),

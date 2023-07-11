@@ -3,7 +3,7 @@ import { Dimensions } from "react-native";
 const FLOOR_WIDTH = 32;
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 
-const makeObject = (entity) => {
+const scaffoldByRowAndCol = (entity) => {
   const objects = {
     block: {},
     monster: {},
@@ -66,7 +66,7 @@ const makeObject = (entity) => {
   return objects;
 };
 
-const makeInitialMap = (entity) => {
+const scaffoldByPosition = (entity) => {
   const objects = {
     block: {},
     monster: {},
@@ -177,8 +177,8 @@ const makeInitialMap = (entity) => {
   return objects;
 };
 
-const makeObjectHash = (data, entity) => {
-  const objectHashInfo = makeObject(entity);
+const crawlingSheetData = (data, entity) => {
+  const objectRowCol = scaffoldByRowAndCol(entity);
   const columnArray = Object.values(data);
 
   columnArray.forEach((eachColumn, columnIndex) => {
@@ -186,41 +186,41 @@ const makeObjectHash = (data, entity) => {
 
     rowArray.forEach((object, rowIndex) => {
       if (object && [...object].includes("s")) {
-        objectHashInfo.block[object]?.row.push(rowIndex);
-        objectHashInfo.block[object]?.col.push(columnIndex);
+        objectRowCol.block[object]?.row.push(rowIndex);
+        objectRowCol.block[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("m")) {
-        objectHashInfo.monster[object]?.row.push(rowIndex);
-        objectHashInfo.monster[object]?.col.push(columnIndex);
+        objectRowCol.monster[object]?.row.push(rowIndex);
+        objectRowCol.monster[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("i")) {
-        objectHashInfo.item[object]?.row.push(rowIndex);
-        objectHashInfo.item[object]?.col.push(columnIndex);
+        objectRowCol.item[object]?.row.push(rowIndex);
+        objectRowCol.item[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("g")) {
-        objectHashInfo.goal[object]?.row.push(rowIndex);
-        objectHashInfo.goal[object]?.col.push(columnIndex);
+        objectRowCol.goal[object]?.row.push(rowIndex);
+        objectRowCol.goal[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("f")) {
-        objectHashInfo.flag[object]?.row.push(rowIndex);
-        objectHashInfo.flag[object]?.col.push(columnIndex);
+        objectRowCol.flag[object]?.row.push(rowIndex);
+        objectRowCol.flag[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("n")) {
-        objectHashInfo.special[object]?.row.push(rowIndex);
-        objectHashInfo.special[object]?.col.push(columnIndex);
+        objectRowCol.special[object]?.row.push(rowIndex);
+        objectRowCol.special[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("b")) {
-        objectHashInfo.boss[object]?.row.push(rowIndex);
-        objectHashInfo.boss[object]?.col.push(columnIndex);
+        objectRowCol.boss[object]?.row.push(rowIndex);
+        objectRowCol.boss[object]?.col.push(columnIndex);
       }
       if (object && [...object].includes("a")) {
-        objectHashInfo.attack[object]?.row.push(rowIndex);
-        objectHashInfo.attack[object]?.col.push(columnIndex);
+        objectRowCol.attack[object]?.row.push(rowIndex);
+        objectRowCol.attack[object]?.col.push(columnIndex);
       }
     });
   });
 
-  return objectHashInfo;
+  return objectRowCol;
 };
 
 const setPositionWidth = (hashInfo, type, staticObject, entity) => {
@@ -261,8 +261,8 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
 };
 
 const makeMapInfo = (data, entity) => {
-  const mapHashInfo = makeObjectHash(data, entity);
-  const staticObjects = makeInitialMap(entity);
+  const mapHashInfo = crawlingSheetData(data, entity);
+  const staticObjects = scaffoldByPosition(entity);
   setPositionWidth(mapHashInfo, "block", staticObjects, entity);
   setPositionWidth(mapHashInfo, "goal", staticObjects, entity);
   setPositionWidth(mapHashInfo, "item", staticObjects, entity);
