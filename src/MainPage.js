@@ -31,8 +31,6 @@ export default function MainPage() {
   const [config, setConfig] = useState(false);
   const isModalVisible = useSelector(selectModalVisible);
 
-  makeMapFx();
-
   useEffect(() => {
     const playBGM = async () => {
       const { sound } = await Audio.Sound.createAsync(hopefulBGM, {

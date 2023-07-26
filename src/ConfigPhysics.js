@@ -1,6 +1,6 @@
 import Matter from "matter-js";
 import { DeviceMotion } from "expo-sensors";
-import adjustDegree from "./utils/adjustDegree";
+import adjustDegree from "./utils/physicsUtils/adjustDegree";
 
 const translateMapY = false;
 const translateMapX = false;
