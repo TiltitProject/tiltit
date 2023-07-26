@@ -1,6 +1,6 @@
-import entityInfo from "../../entities/entitiesInfo";
+import entityInfo from "../../../entities/entitiesInfo";
 
-export const settingBoss = ({ entities, Matter, bossRound }) => {
+export default settingBoss ({ entities, Matter, bossRound }) {
   if (entities.round === bossRound) {
     const { stage } = entities;
     const { world } = entities.physics;
@@ -26,4 +26,4 @@ export const settingBoss = ({ entities, Matter, bossRound }) => {
   }
 };
 
-export const handleMissile = () => {};
+

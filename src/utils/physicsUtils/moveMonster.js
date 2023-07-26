@@ -36,4 +36,5 @@ const moveMonster = (Matter, entities, specifics, type) => {
     }
   });
 };
+
 export default moveMonster;
