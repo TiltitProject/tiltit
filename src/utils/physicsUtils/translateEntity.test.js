@@ -1,6 +1,6 @@
 import Matter from "matter-js";
-import entityInfo from "../entities/entitiesInfo";
-import Stage from "../entities/stage";
+import entityInfo from "../../entities/entitiesInfo";
+import Stage from "../../entities/stage";
 import { translateEntitiesX, translateEntitiesY } from "./translateEntity";
 
 const STAGES = 2;
