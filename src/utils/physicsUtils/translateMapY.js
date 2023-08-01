@@ -1,5 +1,5 @@
 import { Dimensions } from "react-native";
-import { settingBoss } from "./bossUtills/settingBoss";
+import { settingBoss } from "./bossUtils/settingBoss";
 import { translateEntitiesY } from "./translateEntity";
 import entityInfo from "../../entities/entitiesInfo";
 

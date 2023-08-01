@@ -1,20 +1,21 @@
 import Matter from "matter-js";
-import { Dimensions } from "react-native";
 import { DeviceMotion } from "expo-sensors";
 import entityInfo from "./entities/entitiesInfo";
 import adjustDegree from "./utils/physicsUtils/adjustDegree";
 import moveMonster from "./utils/physicsUtils/moveMonster";
-import makeReflectionAngle from "./utils/physicsUtils/makeReflectionAngle";
-import playAudio from "./utils/playAudio";
-import { swipe } from "../assets/audio";
 import { disPatchInteractionWithItem } from "./utils/physicsUtils/checkBoundary";
 import translateAllEntitiesX from "./utils/physicsUtils/translateMapX";
-import { setGuideMissileUnderHPTen } from "./utils/physicsUtils/bossUtills/settingBoss";
 import translateAllEntitiesY from "./utils/physicsUtils/translateMapY";
-
-const WINDOW_HEIGHT = Dimensions.get("window").height;
-const FLOOR_WIDTH = 32;
-const GAME_HEIGHT = WINDOW_HEIGHT - FLOOR_WIDTH;
+import {
+  setGuideMissileUnderHPTen,
+  setThrowItemPositionTimely,
+  setThrowPositionTimely,
+} from "./utils/physicsUtils/bossUtils/setMonsterMissile";
+import throwItems, {
+  throwMonsters,
+} from "./utils/physicsUtils/bossUtils/translateThrowing";
+import detectAttackCollision from "./utils/detectAttackCollision";
+import killMonster from "./utils/killMonster";
 
 let translateMapY = false;
 let translateMapX = false;
@@ -67,94 +68,17 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
   if (entities.round === 4) {
     setGuideMissileUnderHPTen({ Matter, entities });
-    startThrowMonsterTimely({ Matter, entities });
+
+    setThrowPositionTimely({ Matter, entities });
 
     monsterArray.forEach((entityNum) => {
-      const specifics = entityInfo[stage].monster.specifics[entityNum + 1];
-
-      if (specifics.onPosition) {
-        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
-          x: 0,
-          y: 7,
-        });
-
-        specifics.moved += 7;
-
-        if (specifics.moved > GAME_HEIGHT) {
-          specifics.moved = 0;
-          Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
-            x: entities.boss1.body.position.x,
-            y: entities.boss1.body.bounds.max.y,
-          });
-        }
-      }
-
-      if (specifics.guideMissile) {
-        Matter.Body.translate(entities[`monster${entityNum + 1}`].body, {
-          x: specifics.guideMissile.x,
-          y: specifics.guideMissile.y,
-        });
-        specifics.moved += specifics.guideMissile.y;
-
-        if (specifics.moved > GAME_HEIGHT) {
-          specifics.moved = 0;
-          Matter.Body.setPosition(entities[`monster${entityNum + 1}`].body, {
-            x: entities.boss1.body.position.x,
-            y: entities.boss1.body.bounds.max.y,
-          });
-          specifics.guideMissile = {
-            x: (player.position.x - entities.boss1.body.position.x) / 40,
-            y: (player.position.y - entities.boss1.body.position.y) / 40,
-          };
-        }
-      }
+      throwMonsters({ entities, Matter, entityNum });
     });
 
-    const positionTimer = entityInfo[stage].attack.specifics[1].moved;
-
-    if (
-      positionTimer > (GAME_HEIGHT / 3) * 1 &&
-      entityInfo[stage].attack.specifics[2].onPosition === false
-    ) {
-      entityInfo[stage].attack.specifics[2].onPosition = true;
-      Matter.Body.setPosition(entities.attack2.body, {
-        x: player.position.x,
-        y: player.position.y - player.circleRadius,
-      });
-    }
-
-    if (
-      positionTimer > (GAME_HEIGHT / 3) * 2 &&
-      entityInfo[stage].attack.specifics[3].onPosition === false
-    ) {
-      entityInfo[stage].attack.specifics[3].onPosition = true;
-      Matter.Body.setPosition(entities.attack2.body, {
-        x: player.position.x,
-        y: player.position.y - player.circleRadius,
-      });
-    }
+    setThrowItemPositionTimely({ Matter, entities });
 
     attackArray.forEach((entityNum) => {
-      const specifics = entityInfo[stage].attack.specifics[entityNum + 1];
-
-      if (specifics.onPosition) {
-        if (specifics.moved === 0) {
-          playAudio(swipe);
-        }
-        Matter.Body.translate(entities[`attack${entityNum + 1}`].body, {
-          x: 0,
-          y: -20,
-        });
-        specifics.moved += 20;
-
-        if (specifics.moved > GAME_HEIGHT) {
-          specifics.moved = 0;
-          Matter.Body.setPosition(entities[`attack${entityNum + 1}`].body, {
-            x: player.position.x,
-            y: player.position.y - player.circleRadius,
-          });
-        }
-      }
+      throwItems({ entities, Matter, entityNum });
     });
   }
 
@@ -190,21 +114,7 @@ export default function usePhysics(entities, { touches, dispatch }) {
 
   Matter.Events.on(engine, "collisionStart", () => {
     if (stage === 2) {
-      const boss = entities.boss1?.body;
-
-      attackArray.forEach((entityNum) => {
-        const attack = entities[`attack${entityNum + 1}`].body;
-        const hit = Matter.Collision.collides(boss, attack);
-
-        if (hit) {
-          dispatch({ type: "hit_boss", payload: entityNum + 1 });
-          Matter.Body.setPosition(attack, {
-            x: player.position.x,
-            y: -WINDOW_HEIGHT,
-          });
-          entityInfo[stage].boss.specifics[1].HP -= 1;
-        }
-      });
+      detectAttackCollision({ entities, Matter, dispatch });
 
       const flag1 = entities.flag1?.body;
       const arrivedFlag1 = Matter.Collision.collides(
@@ -212,11 +122,10 @@ export default function usePhysics(entities, { touches, dispatch }) {
         flag1,
       );
 
-      const flag3 = entities.flag3?.body;
-      const arrivedFlag3 = Matter.Collision.collides(
-        entities.player.body,
-        flag3,
-      );
+      if (arrivedFlag1) {
+        translateMapY = true;
+        Matter.World.remove(world, flag1);
+      }
 
       const flag2 = entities.flag2?.body;
       const arrivedFlag2 = Matter.Collision.collides(
@@ -228,10 +137,13 @@ export default function usePhysics(entities, { touches, dispatch }) {
         translateMapX = true;
         Matter.World.remove(world, flag2);
       }
-      if (arrivedFlag1) {
-        translateMapY = true;
-        Matter.World.remove(world, flag1);
-      }
+
+      const flag3 = entities.flag3?.body;
+      const arrivedFlag3 = Matter.Collision.collides(
+        entities.player.body,
+        flag3,
+      );
+
       if (arrivedFlag3) {
         translateMapY = true;
         Matter.World.remove(world, flag3);
@@ -246,29 +158,12 @@ export default function usePhysics(entities, { touches, dispatch }) {
       );
       if (collision) {
         if (entities.specialMode) {
-          Matter.Body.setPosition(monsterEntity, {
-            x: monsterEntity.position.x + player.velocity.x * 2,
-            y: monsterEntity.position.y + player.velocity.y * 2,
-          });
-
-          const reflectionAngle = makeReflectionAngle(collision, player);
-
-          Matter.World.remove(world, monsterEntity);
-          entityInfo[stage].monster.specifics[num + 1].alive = false;
-
-          dispatch({
-            type: "kill_monster",
-            payload: {
-              number: num + 1,
-              x:
-                Math.cos(reflectionAngle) * -player.velocity.x -
-                Math.sin(reflectionAngle) * -player.velocity.y +
-                player.velocity.x,
-              y:
-                Math.sin(reflectionAngle) * -player.velocity.x +
-                Math.cos(reflectionAngle) * -player.velocity.y +
-                player.velocity.y,
-            },
+          killMonster({
+            Matter,
+            entities,
+            num,
+            dispatch,
+            collision,
           });
         } else if (entityInfo[stage].monster.specifics[num + 1].alive) {
           dispatch({ type: "game_over" });

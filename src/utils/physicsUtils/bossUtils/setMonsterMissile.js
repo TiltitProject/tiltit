@@ -1,5 +1,6 @@
 import { Dimensions } from "react-native";
 import entityInfo from "../../../entities/entitiesInfo";
+import setPositionOfPlayer from "./setPositionOfPlayer";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const FLOOR_WIDTH = 32;
@@ -48,5 +49,27 @@ export const setThrowPositionTimely = ({ entities, Matter }) => {
       x: entities.boss1.body.bounds.max.x,
       y: entities.boss1.body.bounds.max.y,
     });
+  }
+};
+
+export const setThrowItemPositionTimely = ({ entities, Matter }) => {
+  const { stage } = entities;
+  const attackSpecific = entityInfo[stage].attack.specifics;
+  const attackPositionTimer = entityInfo[stage].attack.specifics[1].moved;
+
+  if (
+    attackPositionTimer > (GAME_HEIGHT / 3) * 1 &&
+    attackSpecific[2].onPosition === false
+  ) {
+    attackSpecific[2].onPosition = true;
+    setPositionOfPlayer({ Matter, entities, entity: "attack2" });
+  }
+
+  if (
+    attackPositionTimer > (GAME_HEIGHT / 3) * 2 &&
+    attackSpecific[3].onPosition === false
+  ) {
+    attackSpecific[3].onPosition = true;
+    setPositionOfPlayer({ Matter, entities, entity: "attack3" });
   }
 };

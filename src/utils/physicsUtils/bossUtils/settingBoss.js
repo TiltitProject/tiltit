@@ -1,6 +1,6 @@
 import entityInfo from "../../../entities/entitiesInfo";
 
-export default settingBoss ({ entities, Matter, bossRound }) {
+export default function settingBoss ({ entities, Matter, bossRound }) {
   if (entities.round === bossRound) {
     const { stage } = entities;
     const { world } = entities.physics;
