@@ -45,29 +45,19 @@ const makeTwoDepthEntry = (spreadsheet) =>
   go(
     spreadsheet,
     Object.entries,
-    map(([colIndex, rowsObject]) => [colIndex, Object.entries(rowsObject)]),
+    map(([_, objectInfo]) => [_, Object.entries(objectInfo)]),
   );
 
 const applySheetColAndRow = (stage) => {
-  const scaffoldByRowAndCol = scaffoldEntity(
-    entityInfo[stage],
-    makeRowAndColumn,
-  );
+  const scaffoldRowAndCol = scaffoldEntity(entityInfo[stage], makeRowAndColumn);
 
-  const filteredEntity = go(
-    entityInfo[stage],
-    Object.entries,
-    filter(([_, { number }]) => number),
-  );
-
-  const findKeyOfId = (id) => {
-    let result = null;
-    filteredEntity.forEach(([key, info]) => {
-      if (info.id === id) result = key;
-    });
-
-    return result;
-  };
+  const findKeyOfId = (sheetId) =>
+    go(
+      entityInfo[stage],
+      Object.entries,
+      filter(([_, { id }]) => id === sheetId),
+      ([[key, _]]) => key,
+    );
 
   return go(
     makeTwoDepthEntry(spreadSheet[stage]),
@@ -76,16 +66,12 @@ const applySheetColAndRow = (stage) => {
         rowEntries.forEach(([rowIndex, entity]) => {
           if (entity) {
             const [id, ...num] = entity;
-            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].col.push(
-              colIndex,
-            );
-            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].row.push(
-              rowIndex,
-            );
+            scaffoldRowAndCol[findKeyOfId(id)][num.join("")].col.push(colIndex);
+            scaffoldRowAndCol[findKeyOfId(id)][num.join("")].row.push(rowIndex);
           }
         });
       }),
-    () => scaffoldByRowAndCol,
+    () => scaffoldRowAndCol,
   );
 };
 

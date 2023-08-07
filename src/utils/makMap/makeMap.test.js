@@ -1,6 +1,6 @@
-import makeMapInfo from "./makeMap";
-import stageSheet from "../../assets/stageSheet.json";
-import entityInfo from "../entities/entitiesInfo";
+import makeMapInfo from "./makeMapFx";
+import stageSheet from "../../../assets/stageSheet.json";
+import entityInfo from "../../entities/entitiesInfo";
 
 const STAGE = 2;
 
