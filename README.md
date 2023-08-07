@@ -918,6 +918,8 @@ const mapInfoFromColAndRow = (stage) => {
 
 ```
 
+<br>
+
 **4. 반복되는 로직은 재사용 가능한 함수로 추출**
 
 반복되는 로직은 재사용 가능한 함수로 추출하여 가독성을 높이고 재사용성을 높이려 했습니다.
@@ -946,6 +948,8 @@ const makeTwoDepthEntry = (spreadsheet) =>
   );
 
 ```
+
+<br>
 
 **trouble shooting**
 
