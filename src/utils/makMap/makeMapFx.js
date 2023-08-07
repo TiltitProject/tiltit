@@ -48,7 +48,7 @@ const makeTwoDepthEntry = (spreadsheet) =>
     map(([_, objectInfo]) => [_, Object.entries(objectInfo)]),
   );
 
-const applySheetColAndRow = (stage) => {
+const crawlingSheetData = (stage) => {
   const scaffoldRowAndCol = scaffoldEntity(entityInfo[stage], makeRowAndColumn);
 
   const findKeyOfId = (sheetId) =>
@@ -79,7 +79,7 @@ const mapInfoFromColAndRow = (stage) => {
   const scaffoldByPosition = scaffoldEntity(entityInfo[stage], makePosition);
 
   return go(
-    makeTwoDepthEntry(applySheetColAndRow(stage)),
+    makeTwoDepthEntry(crawlingSheetData(stage)),
     (obj) =>
       obj.forEach(([id, entitiesNum]) => {
         entitiesNum.forEach(([num, colAndRow]) => {
