@@ -807,7 +807,7 @@ const scaffoldByRowAndCol = (entity) =>
     row: [],
     col: [],
   }); // 문제가 되었던 코드에서는 하나의 객체를 인자로 전달해, 이후 함수에서 적용하는 모든 entity들이 같은 객체를 바라보았습니다.
-```js
+```
 
 스프레드시트의 정보를 토대로 entity에 위치정보와 크기를 반영시키는 로직은 기본의 불필요한 반복호출을 제거하고, 위치를 계산하는 로직을 분리해 가독성을 높였습니다. 
 
@@ -863,7 +863,7 @@ const setPositionWidth = (hashInfo, type, staticObject, entity) => {
   }
 };
 
-```js
+```
 
 - 변경
 
