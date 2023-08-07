@@ -823,7 +823,7 @@ const crawlingSheetData = (stage) => {
 
 <br>
 
-**3. mapInfoFromColAndRow: 반복문 활용으로 반복호출 지양**
+**3. mapInfoFromColAndRow: 반복문 활용으로 반복 호출 지양**
 
 해당 로직은 `crawlingSheetData`함수로 크롤링한 스프레드시트 데이터를 엔티티의 포지션과 크기로 반영하는 함수입니다.
 
