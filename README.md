@@ -729,7 +729,7 @@ const makePosition = () => ({
 부끄럽지만 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하게 중복되었습니다.
 함수형프로그래밍을 적용하여 변경한 코드는 불필요한 중복코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 전체 코드를 쓰지는 않았지만, 기존 150줄 가량 차지하던 코드를 단 38줄의 표현으로 대체했습니다.
 
-하지만 위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 코드는 아직 리팩터링에 성공하지 못했습니다.
+위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 로직은 리팩터링 하는 도중 한가지 문제를 해결해야 했습니다.
 
 - 기존
 ```js
@@ -762,23 +762,26 @@ export default function applySheet() {
   const scaffoldDataByRowAndCol = scaffoldByRowAndCol(entityInfo[1]);
 
   go(
-    spreadSheet[1],
-    Object.entries,
-    (object) =>
-      object.forEach(([col, rowsObject]) => {
-        Object.values(rowsObject).forEach((entity, rowIndex) => {
+    makeTwoDepthEntry(spreadSheet[stage]),
+    (obj) =>
+      obj.forEach(([colIndex, rowEntries]) => {
+        rowEntries.forEach(([rowIndex, entity]) => {
           if (entity) {
-            const [id, ...nums] = entity;
-            scaffoldDataByRowAndCol[id][nums.join("")].col.push(col);
-            scaffoldDataByRowAndCol[id][nums.join("")].row.push(rowIndex + 1);
+            const [id, ...num] = entity;
+            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].col.push(
+              colIndex,
+            );
+            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].row.push(
+              rowIndex,
+            );
           }
         });
       }),
-    () => console.log(JSON.stringify(scaffoldDataByRowAndCol)),
+    () => scaffoldByRowAndCol,
   );
 }
 ```
-콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다.
+콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다. 모든 entity가 각각 다른 뼈대 객체를 바라보도록 새로운 객체를 생성해주었고, 문제를 해결할 수 있었습니다.
 
 문제가 되었던 코드는 아래 코드의 **scaffoldEntity** 때문이었습니다.
 ```js
