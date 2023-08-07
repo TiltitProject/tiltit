@@ -630,17 +630,20 @@ export default async function playAudio(resource) {
 - 물리엔진의 순회 로직을 함수형 프로그래밍으로
 - 제너레이터를 활요하여 몬스터의 좌우 반복 행동을 정의
 
+<br>
+
 ## 2. 스프레드시트 파싱 로직
+---
 스프레드시트 파싱 로직은 상당히 많은 반복로직을 순회합니다.
 하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
 이러한 방식을 이터러블을 활용한 함수형프로그래밍 개선했습니다.
 
-**1. scaffoldByRowAndCol**
+**1. scaffoldByRowAndCol: entry로 반복문 활용**
 
-해당 함수는 맵에 렌더링될 엔티티(`block`, `monster`, `item` 등)에 스프레드 시트의 데이터를 반영하기 위한 기초 객체 구조를 만들어 주는 함수입니다.
+해당 함수는 맵에 렌더링 될 엔티티(`block`, `monster`, `item` 등)에 스프레드시트의 데이터를 반영하기 위한 기초 객체 구조를 만들어 주는 함수입니다.
 
-기존 로직에서는 각각의 엔티티의 객체를 직접 만들고, 직접 엔티티별로 엔티티의 수 만큼 객체 구조를 만들어주었습니다.
-변경된 로직에서는 엔티티의 정보를 담고있는 `entityInfo`의 정보를 토대로 객체 구로를 만듭니다.
+기존 로직에서는 각각의 엔티티의 객체를 직접 만들고, 직접 엔티티 별로 엔티티의 수만큼 객체 구조를 만들어주었습니다.
+변경된 로직에서는 엔티티의 정보를 담고 있는 `entityInfo`의 정보를 토대로 객체 구조를 만듭니다.
 
 - 기존
 ```js
@@ -743,9 +746,11 @@ const makePosition = () => ({
 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하며 명령적으로 중복되었습니다.
 함수형 프로그래밍을 적용하여 변경한 코드는 불필요한 중복 코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 기존 150줄가량 차지하던 코드를 약 30줄의 표현으로 대체했습니다.
 
-**2. crawlingSheetData**
+<br>
 
-해당 `scaffoldByRowAndCol`함수로 만들어진 객체 구조에에 스프레드시트의 데이터를 반영하는 함수입니다.
+**2. crawlingSheetData: 보조함수로 반복문 활용**
+
+해당 로직은 `scaffoldByRowAndCol`함수로 만들어진 객체 구조에에 스프레드시트의 데이터를 반영하는 함수입니다.
 
 기존 로직에서는 스프레드시트를 크롤링하며, id에 해당하는 객체 구조에 정보를 명령적으로 반영했습니다.
 이때, id에 따라 정보를 반영을 하는 로직이 비효율적으로 반복되었고 개선할 필요가 있었습니다.
@@ -816,42 +821,17 @@ const crawlingSheetData = (stage) => {
 `findKeyOfId`라는 보조함수를 사용해 id에 해당하는 객체 구조의 property를 찾을 수 있었으며,
 이중으로 되어있는 entry구조를 순회하며 스프레드시트를 크롤링 데이터를 반영할 수 있었습니다.
 
+<br>
 
+**3. mapInfoFromColAndRow: 반복문 활용으로 반복호출 지양**
 
+해당 로직은 `crawlingSheetData`함수로 크롤링한 스프레드시트 데이터를 엔티티의 포지션과 크기로 반영하는 함수입니다.
 
+기존 조릭에서는 엔티티(`block`, `monster`, `item` 등)에 따라 적용되어야 할 property를 달리하기 위해,
+엔티티별로 해당 함수를 여러번 호출했습니다.
+변경된 로직에서는 `crawlingSheetData`를 순회하며 크롤링한 스프레드시트 데이터를 포지션과 크기로 반영하기 때문에, 불필요한 반복 호출을 제거했습니다.
+또한 좌표를 계산해주는 과정을 함수화하여 가독성을 높였습니다.
 
-
-위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 로직은 리팩터링 하는 도중 한가지 문제를 해결해야 했습니다.
-
-콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다. 모든 entity가 각각 다른 뼈대 객체를 바라보도록 새로운 객체를 생성해주었고, 문제를 해결할 수 있었습니다.
-
-문제가 되었던 코드는 아래 코드의 **scaffoldByRowAndCol** 때문이었습니다.
-```js
-const scaffoldEntity = (entities, structure) =>
-  go(
-    entities,
-    Object.entries,
-    filter(([_, { number }]) => number),
-    map(([k, v]) => [
-      v.id,
-      go(range(v.number), (numbers) =>
-        numbers.reduce(
-          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
-          {},
-        ),
-      ),
-    ]),
-    (entries) => entries.reduce((obj, [k, v]) => ((obj[k] = v), obj), {}),
-  );
-
-const scaffoldByRowAndCol = (entity) =>
-  scaffoldEntity(entity, {
-    row: [],
-    col: [],
-  }); // 문제가 되었던 코드에서는 하나의 객체를 인자로 전달해, 이후 함수에서 적용하는 모든 entity들이 같은 객체를 바라보았습니다.
-```
-
-스프레드시트의 정보를 토대로 entity에 위치정보와 크기를 반영시키는 로직은 기본의 불필요한 반복호출을 제거하고, 위치를 계산하는 로직을 분리해 가독성을 높였습니다. 
 
 - 기존
 
@@ -935,7 +915,74 @@ const mapInfoFromColAndRow = (stage) => {
 
 ```
 
-완전히 함수형 프로그래밍이 적용되었다 하기는 힘들 수 있을것 같습니다. 하지만 반복적으로 수행하는 로직을 함수형 프로그래밍으로 구현해 코드량을 절반 이상 줄일 수 있었습니다. 또한 객체의 프로퍼티를 찾을 때 "s"와 같이 명령적으로 분기처리 하지 않을 수 있었습니다.
+**4. 반복되는 로직은 재사용 가능한 함수로 추출**
+
+반복되는 로직은 재사용 가능한 함수로 추출하여 가독성을 높이고 재사용성을 높이려 했습니다.
+
+
+- 2중 객체를 2중 entry구조로 변환하는 함수
+  
+```js
+
+const makeTwoDepthEntry = (spreadsheet) =>
+  go(
+    spreadsheet,
+    Object.entries,
+    map(([_, objectInfo]) => [_, Object.entries(objectInfo)]),
+  );
+
+```
+- 스프레드시트의 id로 entity객체 구조의 key값을 찾는 함수
+  
+```js
+const makeTwoDepthEntry = (spreadsheet) =>
+  go(
+    spreadsheet,
+    Object.entries,
+    map(([_, objectInfo]) => [_, Object.entries(objectInfo)]),
+  );
+
+```
+
+**trouble shooting**
+`crawlingSheetData`함수로 스프레드시트의 데이터를 엔티티의 기본 구조인 `scaffoldEntity`의 column & row에 적용할 때, 너무 많은 데이터가 반영이 되었습니다.
+문제의 원인은 기존 코드의 **고차함수**에서 **객체 리터럴**로 생성한 객체를 `scaffoldEntity`로 넘겨 주었기 때문이었습니다.
+하나의 주소값을 참조하는 객체를 모든 엔티티 정보에 반영시켰기 때문에, 특정 엔티티의 객체 정보만 변경해도 나머지 모든 엔티티의 정보가 반영되었던 것입니다.
+
+- 문제가 되었던 코드
+
+```js
+const scaffoldEntity = (entities, structure) =>
+  go(
+    entities,
+    Object.entries,
+    filter(([_, { number }]) => number),
+    map(([k, v]) => [
+      v.id,
+      go(range(v.number), (numbers) =>
+        numbers.reduce(
+          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
+          {},
+        ),
+      ),
+    ]),
+    (entries) => entries.reduce((obj, [k, v]) => ((obj[k] = v), obj), {}),
+  );
+
+const scaffoldByRowAndCol = (entity) =>
+  scaffoldEntity(entity, {
+    row: [],
+    col: [],
+  });
+// 해당 함수에서 객체 리터럴로 생성한 객체를 `scaffoldEntity`에 전달했기 때문에 모두 같은 참조를 보고 있었다
+```
+
+자바스크립의 기초인 참조형 데이터의 특징으로 발생된 문제 상황을 겪어볼 수 있어서 다행이었다 생각합니다.
+이 경험을 토대로, 향후 로직을 추상화할 때 데이터가 같은 참조를 바라보는지 확인하는 과정을 거칠 수 있을 것 같습니다.
+
+<br>
+
+완전한 함수형 프로그래밍이 적용되었다 하기는 힘들 수 있을것 같습니다. 하지만 반복적으로 수행하는 로직을 함수형 프로그래밍으로 구현해 코드량을 절반 이상 줄일 수 있었습니다. 또한 객체의 프로퍼티를 찾을 때 "s"와 같이 명령적으로 분기처리 하지 않을 수 있었습니다. 향후 더욱 추상회되고 간결한 함수형 프로그래밍으로 추가 개선 예정입니다.
 
 
 <br>
