@@ -633,7 +633,7 @@ export default async function playAudio(resource) {
 ## 2. 스프레드시트 파싱 로직
 스프레드시트 파싱 로직은 상당히 많은 반복로직을 순회합니다.
 하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
-이러한 방식을 이터러블을 활용한 함수형프로그래밍 기법으로 일부 개선했습니다.
+이러한 방식을 이터러블을 활용한 함수형프로그래밍 개선했습니다.
 
 - 기존
 ```js
@@ -692,16 +692,16 @@ const scaffoldByPosition = (entity) => {
 
 - 변경
 ```js
-const scaffoldEntity = (entityInfo, structure) =>
+const scaffoldEntity = (entities, structure) =>
   go(
-    entityInfo,
+    entities,
     Object.entries,
     filter(([_, { number }]) => number),
     map(([k, v]) => [
-      v.id,
+      k,
       go(range(v.number), (numbers) =>
         numbers.reduce(
-          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
+          (obj, num) => ((obj[`${num + 1}`] = structure()), obj),
           {},
         ),
       ),
@@ -709,23 +709,21 @@ const scaffoldEntity = (entityInfo, structure) =>
     (entries) => entries.reduce((obj, [k, v]) => ((obj[k] = v), obj), {}),
   );
 
-const scaffoldByRowAndCol = (entity) =>
-  scaffoldEntity(entity, {
-    row: [],
-    col: [],
-  });
+const makeRowAndColumn = () => ({
+  row: [],
+  col: [],
+});
 
-const scaffoldByPosition = (entity) =>
-  scaffoldEntity(entity, {
-    position: {
-      x: 0,
-      y: 0,
-    },
-    size: {
-      width: 0,
-      height: 0,
-    },
-  });
+const makePosition = () => ({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  size: {
+    width: 0,
+    height: 0,
+  },
+});
 ```
 
 부끄럽지만 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하게 중복되었습니다.
@@ -780,7 +778,119 @@ export default function applySheet() {
   );
 }
 ```
-콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이터러블을 제대로 제어하지 못해 필요 이상의 데이터가 반영된 것으로 보입니다. 이 부분은 향후 수정하여 반영 할 계획입니다.
+콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다.
+
+문제가 되었던 코드는 아래 코드의 **scaffoldEntity** 때문이었습니다.
+```js
+const scaffoldEntity = (entities, structure) =>
+  go(
+    entities,
+    Object.entries,
+    filter(([_, { number }]) => number),
+    map(([k, v]) => [
+      v.id,
+      go(range(v.number), (numbers) =>
+        numbers.reduce(
+          (obj, num) => ((obj[`${num + 1}`] = structure), obj),
+          {},
+        ),
+      ),
+    ]),
+    (entries) => entries.reduce((obj, [k, v]) => ((obj[k] = v), obj), {}),
+  );
+
+const scaffoldByRowAndCol = (entity) =>
+  scaffoldEntity(entity, {
+    row: [],
+    col: [],
+  }); // 문제가 되었던 코드에서는 하나의 객체를 인자로 전달해, 이후 함수에서 적용하는 모든 entity들이 같은 객체를 바라보았습니다.
+```js
+
+스프레드시트의 정보를 토대로 entity에 위치정보와 크기를 반영시키는 로직은 기본의 불필요한 반복호출을 제거하고, 위치를 계산하는 로직을 분리해 가독성을 높였습니다. 
+
+- 기존
+
+```js
+  setPositionWidth(mapHashInfo, "block", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "goal", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "item", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "monster", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "flag", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "special", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "boss", staticObjects, entity);
+  setPositionWidth(mapHashInfo, "attack", staticObjects, entity);
+/// 불필요한 반복 호출
+
+const setPositionWidth = (hashInfo, type, staticObject, entity) => {
+  if (entity[type].number) {
+    const hashArray = Object.values(hashInfo[type]);
+    let offset = 0;
+    if (
+      type === "item" ||
+      type === "flag" ||
+      type === "special"
+    ) {
+      offset = entity.gridSize / 2;
+    }
+
+   // 가독성을 떨어트리는 임시변수 & 계산 로직
+
+    hashArray.forEach((object, index) => {
+      const propIndex = object.col.length - 1;
+      const height =
+        (object.col[propIndex] - object.col[0] + 1) * entity[type].size;
+      const width =
+        (object.row[propIndex] - object.row[0] + 1) * entity[type].size;
+      const margin = FLOOR_WIDTH / 2;
+      const y =
+        -(entity.columnMultiply - 1) * WINDOW_HEIGHT +
+        (entity.columnMultiply - 1) * FLOOR_WIDTH +
+        margin +
+        10 +
+        offset +
+        height / 2 +
+        object.col[0] * entity.gridSize;
+      const x = margin + width / 2 + offset + object.row[0] * entity.gridSize;
+
+      staticObject[type][index + 1].size.height = height;
+      staticObject[type][index + 1].size.width = width;
+      staticObject[type][index + 1].position.x = x;
+      staticObject[type][index + 1].position.y = y;
+    });
+  }
+};
+
+```js
+
+- 변경
+
+```js
+const mapInfoFromColAndRow = (stage) => {
+  const scaffoldByPosition = scaffoldEntity(entityInfo[stage], makePosition);
+
+  return go(
+    makeTwoDepthEntry(applySheetColAndRow(stage)),
+    (obj) =>
+      obj.forEach(([id, entitiesNum]) => {
+        entitiesNum.forEach(([num, colAndRow]) => {
+          const height = defineHeight({ colAndRow, id, stage });
+          const width = defineWidth({ colAndRow, id, stage });
+          const y = definePositionY({ colAndRow, id, stage });
+          const x = definePositionX({ colAndRow, id, stage });
+
+          scaffoldByPosition[id][num].size.height = height;
+          scaffoldByPosition[id][num].size.width = width;
+          scaffoldByPosition[id][num].position.x = x;
+          scaffoldByPosition[id][num].position.y = y;
+        });
+      }),
+    () => scaffoldByPosition,
+  );
+};
+
+```
+
+완전히 함수형 프로그래밍이 적용되었다 하기는 힘들 수 있을것 같습니다. 하지만 반복적으로 수행하는 로직을 함수형 프로그래밍으로 구현해 코드량을 절반 이상 줄일 수 있었습니다. 또한 객체의 프로퍼티를 찾을 때 "s"와 같이 명령적으로 분기처리 하지 않을 수 있었습니다.
 
 
 <br>
