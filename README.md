@@ -948,6 +948,7 @@ const makeTwoDepthEntry = (spreadsheet) =>
 ```
 
 **trouble shooting**
+
 `crawlingSheetData`함수로 스프레드시트의 데이터를 엔티티의 기본 구조인 `scaffoldEntity`의 column & row에 적용할 때, 너무 많은 데이터가 반영이 되었습니다.
 문제의 원인은 기존 코드의 **고차함수**에서 **객체 리터럴**로 생성한 객체를 `scaffoldEntity`로 넘겨 주었기 때문이었습니다.
 하나의 주소값을 참조하는 객체를 모든 엔티티 정보에 반영시켰기 때문에, 특정 엔티티의 객체 정보만 변경해도 나머지 모든 엔티티의 정보가 반영되었던 것입니다.
