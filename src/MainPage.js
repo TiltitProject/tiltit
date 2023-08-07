@@ -21,7 +21,6 @@ import Fadeout from "./components/mountAnimation/Fadeout";
 import SelectStage from "./modal/SelectStage";
 import ConfigGyro from "./modal/ConfigGyro";
 import playAudio from "./utils/playAudio";
-import makeMapFx from "./utils/makMap/makeMapFx";
 
 export default function MainPage() {
   const dispatch = useDispatch();

@@ -42,9 +42,8 @@ import Header from "./components/Header";
 import Goal from "./components/Goal";
 import stages from "./entities/stage";
 import entityInfo from "./entities/entitiesInfo";
-import makeMapInfo from "./utils/makeMap";
+import makeMapInfo from "./utils/makMap/makeMapFx";
 import Result from "./modal/Result";
-import stageSheet from "../assets/stageSheet.json";
 import Item from "./components/Item";
 import Special from "./components/Special";
 import playAudio from "./utils/playAudio";
@@ -61,7 +60,7 @@ export default function Stage() {
   const isModalVisible = useSelector(selectModalVisible);
   const dispatch = useDispatch();
   const showingCrackedEffect = useSelector(selectCrackEffect);
-  const mapInfo = makeMapInfo(stageSheet[stage], entityInfo[stage]);
+  const mapInfo = makeMapInfo(stage);
   const hasClear = useSelector(selectStageClear);
   const entities = stages(stage);
   const restartCount = useSelector(selectRestartCount);
@@ -186,7 +185,7 @@ export default function Stage() {
               />
             ),
           )}
-        {!isFadeIn && mapInfo.goal[1] && (
+        {!isFadeIn && mapInfo.goal?.[1] && (
           <Goal
             position={mapInfo.goal[1]?.position}
             size={mapInfo.goal[1]?.size}
