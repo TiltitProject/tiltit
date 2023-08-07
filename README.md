@@ -783,7 +783,7 @@ export default function applySheet() {
 ```
 콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다. 모든 entity가 각각 다른 뼈대 객체를 바라보도록 새로운 객체를 생성해주었고, 문제를 해결할 수 있었습니다.
 
-문제가 되었던 코드는 아래 코드의 **scaffoldEntity** 때문이었습니다.
+문제가 되었던 코드는 아래 코드의 **scaffoldByRowAndCol** 때문이었습니다.
 ```js
 const scaffoldEntity = (entities, structure) =>
   go(
