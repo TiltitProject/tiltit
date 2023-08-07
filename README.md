@@ -635,6 +635,15 @@ export default async function playAudio(resource) {
 하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
 이러한 방식을 이터러블을 활용한 함수형프로그래밍 개선했습니다.
 
+### 중복 코드를 반복문으로
+
+**1. scaffoldByRowAndCol**
+
+해당 함수는 맵에 렌더링될 엔티티(`block`, `monster`, `item` 등)에 스프레드 시트의 데이터를 반영하기 위한 기초 객체 구조를 만들어 주는 함수입니다.
+
+기존 로직에서는 각각의 엔티티의 객체를 직접 만들고, 직접 엔티티별로 엔티티의 수 만큼 객체 구조를 만들어주었습니다.
+변경된 로직에서는 엔티티의 정보를 담고있는 `entityInfo`의 정보를 토대로 객체 구로를 만듭니다.
+
 - 기존
 ```js
 
@@ -690,7 +699,14 @@ const scaffoldByPosition = (entity) => {
 };
 ```
 
+변경된 로직에서는 인자로 받은 `entities`를 순회하며, 인자로받은 `structure`를 반영합니다.
+
+`structure`는 스프레드 시트의 column과 row 정보를 반영하기 위한 구조와, 포지션을 반영하기 위한 구조가 있습니다.
+로직을 재활용하기 위해 `structure`를 만드는 함수를 인자로 받아 **재사용성**을 높였습니다.
+
+
 - 변경
+
 ```js
 const scaffoldEntity = (entities, structure) =>
   go(
@@ -726,8 +742,8 @@ const makePosition = () => ({
 });
 ```
 
-부끄럽지만 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하게 중복되었습니다.
-함수형프로그래밍을 적용하여 변경한 코드는 불필요한 중복코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 전체 코드를 쓰지는 않았지만, 기존 150줄 가량 차지하던 코드를 단 38줄의 표현으로 대체했습니다.
+기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하며 명령적으로 중복되었습니다.
+함수형 프로그래밍을 적용하여 변경한 코드는 불필요한 중복 코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 기존 150줄가량 차지하던 코드를 약 30줄의 표현으로 대체했습니다.
 
 위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 로직은 리팩터링 하는 도중 한가지 문제를 해결해야 했습니다.
 
@@ -761,23 +777,19 @@ const crawlingSheetData = (data, entity) => {
 export default function applySheet() {
   const scaffoldDataByRowAndCol = scaffoldByRowAndCol(entityInfo[1]);
 
-  go(
+  return go(
     makeTwoDepthEntry(spreadSheet[stage]),
     (obj) =>
       obj.forEach(([colIndex, rowEntries]) => {
         rowEntries.forEach(([rowIndex, entity]) => {
           if (entity) {
             const [id, ...num] = entity;
-            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].col.push(
-              colIndex,
-            );
-            scaffoldByRowAndCol[findKeyOfId(id)][num.join("")].row.push(
-              rowIndex,
-            );
+            scaffoldRowAndCol[findKeyOfId(id)][num.join("")].col.push(colIndex);
+            scaffoldRowAndCol[findKeyOfId(id)][num.join("")].row.push(rowIndex);
           }
         });
       }),
-    () => scaffoldByRowAndCol,
+    () => scaffoldRowAndCol,
   );
 }
 ```
