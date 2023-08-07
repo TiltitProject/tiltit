@@ -635,8 +635,6 @@ export default async function playAudio(resource) {
 하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
 이러한 방식을 이터러블을 활용한 함수형프로그래밍 개선했습니다.
 
-### 중복 코드를 반복문으로
-
 **1. scaffoldByRowAndCol**
 
 해당 함수는 맵에 렌더링될 엔티티(`block`, `monster`, `item` 등)에 스프레드 시트의 데이터를 반영하기 위한 기초 객체 구조를 만들어 주는 함수입니다.
@@ -701,7 +699,7 @@ const scaffoldByPosition = (entity) => {
 
 변경된 로직에서는 인자로 받은 `entities`를 순회하며, 인자로받은 `structure`를 반영합니다.
 
-`structure`는 스프레드 시트의 column과 row 정보를 반영하기 위한 구조와, 포지션을 반영하기 위한 구조가 있습니다.
+`structure`는 스프레드시트의 column과 row 정보를 반영하기 위한 구조와, 포지션을 반영하기 위한 구조가 있습니다.
 로직을 재활용하기 위해 `structure`를 만드는 함수를 인자로 받아 **재사용성**을 높였습니다.
 
 
@@ -745,7 +743,15 @@ const makePosition = () => ({
 기존 코드에서는 반복문으로 처리할 수 있는 부분이 불필요하며 명령적으로 중복되었습니다.
 함수형 프로그래밍을 적용하여 변경한 코드는 불필요한 중복 코드가 없으며 간결하게 표현된 것을 확인할 수 있습니다. 기존 150줄가량 차지하던 코드를 약 30줄의 표현으로 대체했습니다.
 
-위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 로직은 리팩터링 하는 도중 한가지 문제를 해결해야 했습니다.
+**2. crawlingSheetData**
+
+해당 `scaffoldByRowAndCol`함수로 만들어진 객체 구조에에 스프레드시트의 데이터를 반영하는 함수입니다.
+
+기존 로직에서는 스프레드시트를 크롤링하며, id에 해당하는 객체 구조에 정보를 명령적으로 반영했습니다.
+이때, id에 따라 정보를 반영을 하는 로직이 비효율적으로 반복되었고 개선할 필요가 있었습니다.
+변경된 로직에서는 `findKeyOfId`라는 보조함수로 id에 해당하는 객체 구조의 property를 찾도록 했으며,
+반복문의 활용성을 증가시켰습니다.
+
 
 - 기존
 ```js
@@ -761,6 +767,10 @@ const crawlingSheetData = (data, entity) => {
         objectRowCol.block[object]?.row.push(rowIndex);
         objectRowCol.block[object]?.col.push(columnIndex);
       }
+      if (object && [...object].includes("m")) {
+        objectHashInfo.monster[object]?.row.push(rowIndex);
+        objectHashInfo.monster[object]?.col.push(columnIndex);
+      }
       ...
       //하드코딩 생략
     });
@@ -774,8 +784,17 @@ const crawlingSheetData = (data, entity) => {
 
 ```js
 
-export default function applySheet() {
-  const scaffoldDataByRowAndCol = scaffoldByRowAndCol(entityInfo[1]);
+const crawlingSheetData = (stage) => {
+  const scaffoldRowAndCol = scaffoldEntity(entityInfo[stage], makeRowAndColumn);
+
+  const findKeyOfId = (sheetId) =>
+    go(
+      entityInfo[stage],
+      Object.entries,
+      filter(([_, { id }]) => id === sheetId),
+      ([[key, _]]) => key,
+    );
+  // 스프레드시트의 id와 `entityInfo`의 key를 mapping을 도와주는 함수
 
   return go(
     makeTwoDepthEntry(spreadSheet[stage]),
@@ -791,8 +810,19 @@ export default function applySheet() {
       }),
     () => scaffoldRowAndCol,
   );
-}
+};
 ```
+
+`findKeyOfId`라는 보조함수를 사용해 id에 해당하는 객체 구조의 property를 찾을 수 있었으며,
+이중으로 되어있는 entry구조를 순회하며 스프레드시트를 크롤링 데이터를 반영할 수 있었습니다.
+
+
+
+
+
+
+위의 로직으로 만든 뼈대 객체에 구글 스프레드시트의 정보를 파싱하여 반영하는 로직은 리팩터링 하는 도중 한가지 문제를 해결해야 했습니다.
+
 콘솔을 출력해 보면, 뼈대 객체에 반영된 스프레드 시트의 데이터가 비정상적으로 많았습니다. 이후 확인 결과, 뼈대 객체를 반영하는 고차함수에서 하나의 객체를 모든 entity의 빼대에 적용했던것이 문제였습니다. 뼈대의 모든 entity가 하나의 객체 주소를 참조했기 때문에, 정보가 비정상적으로 많을 수 밖에 없었습니다. 모든 entity가 각각 다른 뼈대 객체를 바라보도록 새로운 객체를 생성해주었고, 문제를 해결할 수 있었습니다.
 
 문제가 되었던 코드는 아래 코드의 **scaffoldByRowAndCol** 때문이었습니다.
