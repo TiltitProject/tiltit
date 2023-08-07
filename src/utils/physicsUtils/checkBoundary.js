@@ -47,7 +47,7 @@ export const disPatchInteractionWithItem = ({ dispatch, entities }) => {
     }
   });
 
-  if (goal.position && isInItemBoundary({ player, item: goal, offset: 2 })) {
+  if (goal?.position && isInItemBoundary({ player, item: goal, offset: 2 })) {
     dispatch({ type: "clear" });
   }
 };

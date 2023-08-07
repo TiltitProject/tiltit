@@ -21,7 +21,7 @@ import Fadeout from "./components/mountAnimation/Fadeout";
 import SelectStage from "./modal/SelectStage";
 import ConfigGyro from "./modal/ConfigGyro";
 import playAudio from "./utils/playAudio";
-import makeMapFx from "./utils/makeMapFx";
+import makeMapFx from "./utils/makMap/makeMapFx";
 
 export default function MainPage() {
   const dispatch = useDispatch();
@@ -92,11 +92,7 @@ export default function MainPage() {
         <TouchableOpacity style={styles.messageBox} onPress={handleModalOpen}>
           <Text style={styles.textBox}>START GAME</Text>
         </TouchableOpacity>
-        {config && (
-          <ConfigGyro
-            onSetConfig={handleSetConfig}
-          />
-        )}
+        {config && <ConfigGyro onSetConfig={handleSetConfig} />}
         <SelectStage
           isModalVisible={isModalVisible}
           onGameStart={handleGameStart}

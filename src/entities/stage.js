@@ -1,7 +1,6 @@
 import Matter from "matter-js";
 import { Dimensions } from "react-native";
 import MakePlayer from "../components/Player";
-import makeMap from "../utils/makeMap";
 import {
   makeBlocks,
   makeMonsters,
@@ -10,8 +9,8 @@ import {
   makeAttacks,
 } from "../utils/makeEntities";
 import entityInfo from "./entitiesInfo";
-import stageSheet from "../../assets/stageSheet.json";
 import FloorMaker from "../components/Floor";
+import mapInfoFromColAndRow from "../utils/makMap/makeMapFx";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const WINDOW_WIDTH = Dimensions.get("window").width;
@@ -22,7 +21,8 @@ export default function Stage(stage) {
   const { world } = engine;
   engine.gravity.y = 0;
 
-  const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
+  // const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
+  const mapInfo = mapInfoFromColAndRow(stage);
 
   return {
     physics: { engine, world },
