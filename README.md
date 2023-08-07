@@ -636,6 +636,7 @@ export default async function playAudio(resource) {
 스프레드시트 파싱 로직은 상당히 많은 반복로직을 순회합니다.
 하지만 기존 코드는 중복이 많고 가독성과 재사용성이 떨어졌습니다.
 이러한 방식을 이터러블을 활용한 함수형프로그래밍 개선했습니다.
+약 300줄이던 기존 코드를 약 100줄로 간소화했습니다.
 
 **1. scaffoldByRowAndCol: entry로 반복문 활용**
 
@@ -951,7 +952,7 @@ const makeTwoDepthEntry = (spreadsheet) =>
 
 <br>
 
-**trouble shooting**
+**🔫trouble shooting**
 
 `crawlingSheetData`함수로 스프레드시트의 데이터를 엔티티의 기본 구조인 `scaffoldEntity`의 column & row에 적용할 때, 너무 많은 데이터가 반영이 되었습니다.
 문제의 원인은 기존 코드의 **고차함수**에서 **객체 리터럴**로 생성한 객체를 `scaffoldEntity`로 넘겨 주었기 때문이었습니다.
