@@ -10,15 +10,22 @@ import {
 import { select } from "../../assets/audio";
 import Modal from "./Modal";
 import playAudio from "../utils/playAudio";
+import { useAppDispatch } from "../store";
+
+interface SelectStageProps {
+  isModalVisible: boolean
+  onGameStart: () => void,
+  onSelectStage?: (boolean:boolean) => void,
+}
 
 export default function SelectStage({
   isModalVisible,
   onGameStart,
   onSelectStage,
-}) {
-  const dispatch = useDispatch();
+}:SelectStageProps) {
+  const dispatch = useAppDispatch();
 
-  const selectStage = (stage) => {
+  const selectStage = (stage: number) => () => {
     dispatch(setIsFadeOut(true));
     playAudio(select);
     setTimeout(() => {
@@ -38,7 +45,7 @@ export default function SelectStage({
 
   const handleSelectStage = () => {
     playAudio(select);
-    onSelectStage(false);
+    onSelectStage && onSelectStage(false);
   };
 
   return (
@@ -49,13 +56,13 @@ export default function SelectStage({
         </View>
         <TouchableOpacity
           style={styles.messageBox}
-          onPress={() => selectStage(1)}
+          onPress={selectStage(1)}
         >
           <Text style={styles.message}>STAGE1</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.messageBox}
-          onPress={() => selectStage(2)}
+          onPress={selectStage(2)}
         >
           <Text style={styles.message}>STAGE2</Text>
         </TouchableOpacity>

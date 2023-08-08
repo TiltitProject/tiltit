@@ -1,35 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Image,
-  ImageBackground,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Image, ImageBackground, View } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { useSelector, useDispatch } from "react-redux";
 import {
-  collideMonster,
   selectCrackEffect,
   selectModalVisible,
   selectRunningGame,
-  showModal,
   runGame,
-  getItemOnce,
-  reachGoal,
   selectCurrentStage,
   selectStageClear,
-  setMapInfo,
-  applyTranslateUpper,
-  invisibleAllItems,
-  applyTranslateRow,
   selectIsFadeOut,
   selectInitialRotation,
-  killMonster,
-  getSpecialItemOnce,
-  offSpecialMode,
-  attackOnce,
   selectRestartCount,
 } from "./features/gameSlice";
 import Physics from "./physics";
@@ -47,81 +28,39 @@ import Result from "./modal/Result";
 import Item from "./components/Item";
 import Special from "./components/Special";
 import playAudio from "./utils/playAudio";
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constant/constant";
+import { useAppDispatch, useAppSelector } from "./store";
+import useGameDispatch from "./Hooks/useGameDispatch";
 
-const WINDOW_HEIGHT = Dimensions.get("window").height;
-const WINDOW_WIDTH = Dimensions.get("window").width;
+export interface GameEnginMethods extends GameEngine {
+  stop: () => void;
+}
 
 export default function Stage() {
-  const [gameEngine, setGameEngine] = useState(null);
-  const isFadeOut = useSelector(selectIsFadeOut);
-  const [isFadeIn, setIsFadeIn] = useState(true);
-  const stage = useSelector(selectCurrentStage);
-  const running = useSelector(selectRunningGame);
-  const isModalVisible = useSelector(selectModalVisible);
-  const dispatch = useDispatch();
-  const showingCrackedEffect = useSelector(selectCrackEffect);
+  const [gameEngine, setGameEngine] = useState<GameEnginMethods | null>(null);
+  const [isFadeIn, setIsFadeIn] = useState<boolean>(true);
+  const dispatch = useAppDispatch();
+  const isFadeOut = useAppSelector(selectIsFadeOut);
+  const stage = useAppSelector(selectCurrentStage);
+  const running = useAppSelector(selectRunningGame);
+  const isModalVisible = useAppSelector(selectModalVisible);
+  const showingCrackedEffect = useAppSelector(selectCrackEffect);
+  const hasClear = useAppSelector(selectStageClear);
+  const restartCount = useAppSelector(selectRestartCount);
+  const initialRotation = useAppSelector(selectInitialRotation);
+  const handleGameEngine = useGameDispatch(gameEngine);
   const mapInfo = makeMapInfo(stage);
-  const hasClear = useSelector(selectStageClear);
   const entities = stages(stage);
-  const restartCount = useSelector(selectRestartCount);
-  entities.initialRotation = useSelector(selectInitialRotation);
 
   useEffect(() => {
-    dispatch(runGame(entityInfo[stage]));
-    dispatch(setMapInfo({ stage, mapInfo }));
+    dispatch(runGame({ stage, mapInfo }));
+    entities.initialRotation = initialRotation;
     playAudio(swipe);
 
     setTimeout(() => {
       setIsFadeIn(false);
     }, 700);
   }, []);
-
-  const handleModalOpen = () => {
-    dispatch(showModal());
-    playAudio(select);
-  };
-
-  const handleGameEngine = (e) => {
-    switch (e.type) {
-      case "hit_boss":
-        playAudio(hit);
-        dispatch(attackOnce(e.payload));
-        break;
-      case "off_specialItem":
-        dispatch(offSpecialMode());
-        break;
-      case "get_specialItem":
-        dispatch(getSpecialItemOnce(e.payload));
-        break;
-      case "kill_monster":
-        dispatch(killMonster(e.payload));
-        break;
-      case "complete_move_row":
-        dispatch(applyTranslateRow(e.payload));
-        break;
-      case "complete_move_upper":
-        dispatch(applyTranslateUpper(e.payload));
-        break;
-      case "move_page":
-        dispatch(invisibleAllItems());
-        break;
-      case "clear":
-        dispatch(reachGoal());
-        break;
-      case "get_item":
-        dispatch(getItemOnce(e.payload));
-        break;
-      case "game_over":
-        dispatch(collideMonster());
-        gameEngine.stop();
-        break;
-      case "pause":
-        handleModalOpen();
-        break;
-      default:
-        break;
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -132,11 +71,7 @@ export default function Stage() {
         {isFadeIn && <FadeIn />}
         {isFadeOut && <Fadeout />}
         {showingCrackedEffect && (
-          <Image
-            style={styles.crackedScreen}
-            source={crackedScreen}
-            contentFit="cover"
-          />
+          <Image style={styles.crackedScreen} source={crackedScreen} />
         )}
         <Menu
           gameEngine={gameEngine}
@@ -154,7 +89,7 @@ export default function Stage() {
         <Header key={`header${restartCount}`} />
         <GameEngine
           key={`game${restartCount}`}
-          ref={(ref) => {
+          ref={(ref: GameEnginMethods) => {
             setGameEngine(ref);
           }}
           systems={[Physics]}

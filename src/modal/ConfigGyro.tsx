@@ -7,16 +7,19 @@ import { select } from "../../assets/audio";
 import Modal from "./Modal";
 import PreviewConfig from "./GyroPreview";
 import playAudio from "../utils/playAudio";
+import { Subscription } from "expo-sensors/build/Pedometer";
 
-export default function Config({
-  onSetConfig,
-  isModalVisible,
-}) {
+interface ConfigProps {
+  onSetConfig: (boolean: boolean) => void;
+  isModalVisible?: boolean;
+}
+
+export default function Config({ onSetConfig, isModalVisible }: ConfigProps) {
   const [{ beta, gamma }, setData] = useState({
     beta: 0,
     gamma: 0,
   });
-  const [subscription, setSubscription] = useState(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [openPreview, setOpenPreview] = useState(false);
   const dispatch = useDispatch();
 
@@ -51,7 +54,7 @@ export default function Config({
     return () => unsubscribe();
   }, []);
 
-  const handleOpenPreview = (boolean) => {
+  const handleOpenPreview = (boolean: boolean) => {
     playAudio(select);
     setOpenPreview(boolean);
   };

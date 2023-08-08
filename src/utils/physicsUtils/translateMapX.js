@@ -49,7 +49,7 @@ export default function translateAllEntitiesX({
         y: 0,
       });
     } else {
-      dispatch({ type: "complete_move_row", payload: movedWidth });
+      dispatch({ type: "complete_move_x", payload: movedWidth });
 
       itemArray.forEach((num) => {
         mapInfo.item[num + 1].position.x += movedWidth;
