@@ -15,7 +15,99 @@ const FLOOR_WIDTH = 32;
 const GAME_WIDTH = WINDOW_WIDTH - FLOOR_WIDTH;
 const BLOCK_SIZE = GAME_WIDTH / 16;
 
-const entityInfo = {
+interface Entity {
+  id: string;
+  number: number;
+  size: number;
+}
+
+interface BlockImage {
+  row: string;
+  column: string;
+  goldTwice: string;
+  ground: string;
+}
+
+interface Block extends Entity {
+  renderEntity: number;
+  firstEntity: number;
+  image: BlockImage;
+}
+
+interface Flag extends Entity {
+  image: string;
+}
+
+interface RoundSpecific {
+  image: string;
+  round: number;
+}
+
+interface MoveSpecific {
+  onPosition: boolean;
+  moved: number;
+}
+
+interface Attack extends Entity {
+  specifics: Record<number, MoveSpecific & RoundSpecific>;
+}
+
+interface EntityHasRound extends Entity {
+  specifics: Record<number, RoundSpecific>;
+}
+
+interface Position {
+  x: number;
+  y: number;
+}
+
+interface MonsterSpecifics extends MoveSpecific {
+  image: string[];
+  round: number;
+  axis: "x" | "y";
+  speed: number;
+  distance: number;
+  changeMove: boolean;
+  alive: boolean;
+  translateMap: Position;
+  guideMissile?: boolean;
+}
+
+interface Monster extends Entity {
+  specifics: Record<number, MonsterSpecifics>;
+}
+
+interface BossSpecifics {
+  idleImage: string[];
+  deathImage: string[];
+  round: number;
+  translateMap: Position;
+  axis?: "x" | "y";
+  speed?: number;
+  distance?: number;
+  changeMove?: boolean;
+  alive?: boolean;
+  HP?: number;
+}
+
+interface Boss extends Entity {
+  specifics?: Record<number, BossSpecifics>;
+}
+
+export interface EntityInfo {
+  columnMultiply: number;
+  gridSize: number;
+  block: Block;
+  goal: Entity;
+  flag: Flag;
+  special: EntityHasRound;
+  attack: Attack;
+  item: EntityHasRound;
+  boss: Boss;
+  monster: Monster;
+}
+
+const entityInfo: Record<number, EntityInfo> = {
   1: {
     columnMultiply: 1,
     gridSize: BLOCK_SIZE,
@@ -42,16 +134,7 @@ const entityInfo = {
       id: "a",
       number: 0,
       size: BLOCK_SIZE,
-      specifics: {
-        1: {
-          image: apple,
-          round: 4,
-        },
-        2: {
-          image: apple,
-          round: 4,
-        },
-      },
+      specifics: {},
     },
     boss: {
       id: "b",
@@ -92,8 +175,6 @@ const entityInfo = {
     item: {
       id: "i",
       number: 19,
-      renderEntity: 19,
-      firstEntity: 19,
       size: BLOCK_SIZE,
       specifics: {
         1: {
@@ -177,8 +258,6 @@ const entityInfo = {
     monster: {
       id: "m",
       number: 4,
-      renderEntity: 4,
-      firstEntity: 4,
       size: 40,
       specifics: {
         1: {
@@ -318,8 +397,6 @@ const entityInfo = {
     item: {
       id: "i",
       number: 27,
-      renderEntity: 18,
-      firstEntity: 9,
       size: BLOCK_SIZE,
       specifics: {
         1: {
@@ -457,8 +534,6 @@ const entityInfo = {
     monster: {
       id: "m",
       number: 6,
-      renderEntity: 4,
-      firstEntity: 2,
       size: BLOCK_SIZE * 2,
       specifics: {
         1: {

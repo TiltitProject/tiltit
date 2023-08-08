@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import entityInfo from "../entities/entitiesInfo";
 
 const initialState = {
   hasCollideMonster: false,
@@ -79,9 +80,10 @@ const gameSlice = createSlice({
       state.currentPage = action.payload;
     },
     runGame: (state, action) => {
-      const monsterNumber = action.payload.monster.number;
-      const itemNumber = action.payload.item.number;
-      const specialItemNumber = action.payload.special.number;
+      const {stage, mapInfo} = action.payload;
+      const monsterNumber = entityInfo[stage].monster.number;
+      const itemNumber = entityInfo[stage].item.number;
+      const specialItemNumber = entityInfo[stage].special.number;
       const items = {};
       const monsters = {};
       const specials = {};
@@ -96,6 +98,7 @@ const gameSlice = createSlice({
         specials[num + 1] = true;
       });
 
+      state.mapState[stage] = mapInfo;
       state.currentPoint = 0;
       state.itemsVisible = items;
       state.aliveMonsters = monsters;
@@ -146,10 +149,6 @@ const gameSlice = createSlice({
     },
     stopPlayer: (state) => {
       state.isPlayerMove = false;
-    },
-    setMapInfo: (state, action) => {
-      const { stage, mapInfo } = action.payload;
-      state.mapState[stage] = mapInfo;
     },
     pageMove: (state) => {
       state.isPlayerMove = false;
@@ -256,7 +255,6 @@ export const {
   countDownLeftTime,
   setStageResult,
   stopPlayer,
-  setMapInfo,
   pageMove,
   completeMove,
   hideItems,
@@ -360,7 +358,7 @@ export const invisibleAllItems = () => (dispatch, getState) => {
   dispatch(hideItems({ specialItemKeys, itemKeys }));
 };
 
-export const applyTranslateUpper = (height) => (dispatch, getState) => {
+export const applyTranslateY = (height) => (dispatch, getState) => {
   const currentStage = selectCurrentStage(getState());
   const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
   const specialItemKeys = Object.keys(
@@ -372,7 +370,7 @@ export const applyTranslateUpper = (height) => (dispatch, getState) => {
   );
 };
 
-export const applyTranslateRow = (width) => (dispatch, getState) => {
+export const applyTranslateX = (width) => (dispatch, getState) => {
   const currentStage = selectCurrentStage(getState());
   const itemKeys = Object.keys(selectMapState(getState())[currentStage].item);
   const specialItemKeys = Object.keys(

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { Audio } from "expo-av";
 import { backgroundImage } from "../assets/static";
 import { hopefulBGM, start, select } from "../assets/audio";
@@ -21,14 +20,15 @@ import Fadeout from "./components/mountAnimation/Fadeout";
 import SelectStage from "./modal/SelectStage";
 import ConfigGyro from "./modal/ConfigGyro";
 import playAudio from "./utils/playAudio";
+import { useAppDispatch, useAppSelector } from "./store";
 
 export default function MainPage() {
-  const dispatch = useDispatch();
-  const [BGM, setBGM] = useState(null);
-  const [isFadeout, setIsFadeout] = useState(false);
-  const [isFadeIn, setIsFadeIn] = useState(true);
-  const [config, setConfig] = useState(false);
-  const isModalVisible = useSelector(selectModalVisible);
+  const dispatch = useAppDispatch();
+  const isModalVisible = useAppSelector(selectModalVisible);
+  const [BGM, setBGM] = useState<Audio.Sound | null>(null);
+  const [isFadeout, setIsFadeout] = useState<boolean>(false);
+  const [isFadeIn, setIsFadeIn] = useState<boolean>(true);
+  const [config, setConfig] = useState<boolean>(false);
 
   useEffect(() => {
     const playBGM = async () => {
@@ -68,7 +68,7 @@ export default function MainPage() {
     }, 700);
   };
 
-  const handleSetConfig = (boolean) => {
+  const handleSetConfig = (boolean: boolean) => {
     setConfig(boolean);
   };
 

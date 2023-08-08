@@ -60,7 +60,7 @@ export default function translateAllEntitiesY({
 
       Matter.Body.translate(entities.player.body, { x: 0, y: 10 });
 
-      dispatch({ type: "complete_move_upper", payload: movedHeight });
+      dispatch({ type: "complete_move_y", payload: movedHeight });
 
       itemArray.forEach((num) => {
         mapInfo.item[num + 1].position.y += movedHeight;
