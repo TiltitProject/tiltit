@@ -1,19 +1,19 @@
 import React from "react";
 import Matter from "matter-js";
-import Monster from "../../components/Monster";
+import Monster from "./Monster";
 
 export default function MakeMonster(
   world,
   position,
   size,
   specifics,
-  objectNum,
+  objectNum
 ) {
   const initialObstacle = Matter.Bodies.circle(
     position.x,
     position.y,
     size.width / 2,
-    { isStatic: true, specifics, initialPosition: position, label: objectNum },
+    { isStatic: true, specifics, initialPosition: position, label: objectNum }
   );
 
   Matter.World.add(world, initialObstacle);
