@@ -24,11 +24,11 @@ import { useAppDispatch, useAppSelector } from "./store";
 
 export default function MainPage() {
   const dispatch = useAppDispatch();
+  const isModalVisible = useAppSelector(selectModalVisible);
   const [BGM, setBGM] = useState<Audio.Sound | null>(null);
   const [isFadeout, setIsFadeout] = useState<boolean>(false);
   const [isFadeIn, setIsFadeIn] = useState<boolean>(true);
   const [config, setConfig] = useState<boolean>(false);
-  const isModalVisible = useAppSelector(selectModalVisible);
 
   useEffect(() => {
     const playBGM = async () => {

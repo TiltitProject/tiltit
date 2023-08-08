@@ -1,26 +1,31 @@
 import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Subscription } from "expo-sensors/build/Pedometer";
 import { DeviceMotion } from "expo-sensors";
 import { setInitialRotation } from "../features/gameSlice";
 import { select } from "../../assets/audio";
 import Modal from "./Modal";
 import PreviewConfig from "./GyroPreview";
 import playAudio from "../utils/playAudio";
-import { Subscription } from "expo-sensors/build/Pedometer";
 
 interface ConfigProps {
   onSetConfig: (boolean: boolean) => void;
   isModalVisible?: boolean;
 }
 
+interface GyroData {
+  beta: number;
+  gamma: number;
+}
+
 export default function Config({ onSetConfig, isModalVisible }: ConfigProps) {
-  const [{ beta, gamma }, setData] = useState({
+  const [{ beta, gamma }, setData] = useState<GyroData>({
     beta: 0,
     gamma: 0,
   });
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [openPreview, setOpenPreview] = useState(false);
+  const [openPreview, setOpenPreview] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const subscribe = () => {

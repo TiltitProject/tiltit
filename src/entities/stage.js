@@ -21,7 +21,6 @@ export default function Stage(stage) {
   const { world } = engine;
   engine.gravity.y = 0;
 
-  // const mapInfo = makeMap(stageSheet[stage], entityInfo[stage]);
   const mapInfo = mapInfoFromColAndRow(stage);
 
   return {

@@ -17,7 +17,7 @@ import Physics from "./physics";
 import { crackedScreen, space, forest } from "../assets/static";
 import FadeIn from "./components/mountAnimation/FadeIn";
 import Fadeout from "./components/mountAnimation/Fadeout";
-import { select, swipe, hit } from "../assets/audio";
+import { swipe } from "../assets/audio";
 import Menu from "./modal/Menu";
 import Header from "./components/Header";
 import Goal from "./components/Goal";
