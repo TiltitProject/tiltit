@@ -1,5 +1,5 @@
 import BlockMaker from "../components/Block";
-import MonsterMaker from "../entities/utils/makeMonster";
+import MonsterMaker from "../components/makeMonster";
 import FlagMaker from "../components/Flag";
 import { arrowRight, groundInner } from "../../assets/static";
 import MakeBoss from "../components/BossMonster";
@@ -27,12 +27,12 @@ export const makeBlocks = (world, mapInfo, entity) => {
       blockImage = groundInner;
     }
 
-    objects[`block${objectNum}`] = BlockMaker(
+    objects[`block${objectNum}`] = BlockMaker({
       world,
-      mapInfo.block[objectNum].position,
-      mapInfo.block[objectNum].size,
-      blockImage,
-    );
+      position: mapInfo.block[objectNum].position,
+      size: mapInfo.block[objectNum].size,
+      image: blockImage,
+    });
   });
 
   return objects;
@@ -49,7 +49,7 @@ export const makeBossMonster = (world, mapInfo, entity) => {
       mapInfo.boss[objectNum].position,
       mapInfo.boss[objectNum].size,
       entity.boss.specifics[objectNum],
-      objectNum,
+      objectNum
     );
   });
 
@@ -67,7 +67,7 @@ export const makeMonsters = (world, mapInfo, entity) => {
       mapInfo.monster[objectNum].position,
       mapInfo.monster[objectNum].size,
       entity.monster.specifics[objectNum],
-      objectNum,
+      objectNum
     );
   });
 
@@ -85,7 +85,7 @@ export const makeAttacks = (world, mapInfo, entity) => {
       mapInfo.attack[objectNum].position,
       mapInfo.attack[objectNum].size,
       entity.attack.specifics[objectNum],
-      objectNum,
+      objectNum
     );
   });
 
@@ -105,7 +105,7 @@ export const makeFlags = (world, mapInfo, entity) => {
         mapInfo.flag[objectNum].position,
         mapInfo.flag[objectNum].size,
         image,
-        objectNum,
+        objectNum
       );
     });
 
